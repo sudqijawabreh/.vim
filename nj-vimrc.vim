@@ -60,6 +60,10 @@ set foldmethod=indent
 set foldenable
 set foldlevelstart=10
 set foldnestmax=10      " no more than 10 fold levels please
+" cd sets path to the path of the file in the current buffer.
+nnoremap cd :cd %:p:h
+" Open the NERDTree on the path of the file in the current buffer.
+nnoremap t :NERDTree %:p:h
 
 
 set nocompatible              " be iMproved, required
@@ -75,6 +79,7 @@ call vundle#begin('$USERPROFILE/vimfiles/bundle/')
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'ctrlp/ctrlp.vim'
 Plugin 'tpope/vim-surround'
+Plugin 'scrooloose/nerdtree'
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
 " plugin on GitHub repo
