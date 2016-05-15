@@ -2,6 +2,7 @@
 set ruler
 " Display the line numbers.
 set number
+set relativenumber
 " Turn sounds off.
 set visualbell
 " Shows a horizontal highlight on the line with the cursor.
@@ -28,7 +29,12 @@ set wildmode=full
 " Line-break wraps full words at the end of a sentence for readability.
 set wrap
 set linebreak
-
+"
+"hide tool bars
+:set guioptions-=m  "remove menu bar
+:set guioptions-=T  "remove toolbar
+:set guioptions-=r  "remove right-hand scroll bar
+:set guioptions-=L  "remove left-hand scroll bar
 
 
 color slate 
@@ -42,6 +48,10 @@ if has("gui_running")
 endif
 
 
+
+
+" set spelling true
+ set spell
 
 " Set tabs to 4 characters and expand to spaces, activate smart indentation.
 " See tabstop help for more info.
@@ -65,6 +75,8 @@ nnoremap cd :cd %:p:h
 " Open the NERDTree on the path of the file in the current buffer.
 nnoremap t :NERDTree %:p:h
 
+" set directory to server
+nnoremap project:cd C:\xampp\htdocs
 
 set nocompatible              " be iMproved, required
 filetype off                  " required
@@ -80,6 +92,10 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'ctrlp/ctrlp.vim'
 Plugin 'tpope/vim-surround'
 Plugin 'scrooloose/nerdtree'
+Plugin 'vim-latex/vim-latex'
+Plugin 'Syntastic'
+"Plugin 'Valloric/YouCompleteMe'
+"Plugin 'altercation/vim-colors-solarized'
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
 " plugin on GitHub repo
