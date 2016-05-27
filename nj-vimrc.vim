@@ -1,3 +1,5 @@
+" hidden buffer
+set hidden
 " Display line and column number in bottom ruler.
 set ruler
 " Display the line numbers.
@@ -22,6 +24,9 @@ set smartcase
 
 " Set wildchar visual completion awesomeness.
 " This is enhanced command line completion and it rocks.
+if has("autocmd")
+    autocmd bufwritepost nj-vimrc.vim source $MYVIMRC
+endif
 set wildmenu 
 set wildmode=full
 
@@ -70,13 +75,31 @@ set foldmethod=indent
 set foldenable
 set foldlevelstart=10
 set foldnestmax=10      " no more than 10 fold levels please
+"map edit vimrc
+let mapleader = ","
+nmap <leader>v :tabedit ~/vimfiles/nj-vimrc.vim<CR>
 " cd sets path to the path of the file in the current buffer.
 nnoremap cd :cd %:p:h
 " Open the NERDTree on the path of the file in the current buffer.
 nnoremap t :NERDTree %:p:h
-
+"mapping for Gundo plugin
+"nnoremap <F5> :GundoToggle<CR>
+"mapping for undo toggle
+nnoremap <F5> :UndotreeToggle<cr>
 " set directory to server
 nnoremap project:cd C:\xampp\htdocs
+"map for indentation
+vmap < <gv
+vmap > >gv
+"window mappin
+"map + <C-w>+
+"map - <C-w>-
+"for power line
+
+set nocompatible   " Disable vi-compatibility
+set laststatus=2   " Always show the statusline
+set encoding=utf-8 " Necessary to show Unicode glyphs
+"let g:Powerline_symbols = 'fancy'
 
 set nocompatible              " be iMproved, required
 filetype off                  " required
@@ -89,7 +112,12 @@ call vundle#begin('$USERPROFILE/vimfiles/bundle/')
 
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
-Plugin 'ctrlp/ctrlp.vim'
+Plugin 'tpope/vim-fugitive'
+"Plugin 'powerline/powerline'
+Plugin 'mbbill/undotree'
+Plugin 'Lokaltog/vim-powerline'
+Plugin 'tommcdo/vim-exchange'
+Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'tpope/vim-surround'
 Plugin 'scrooloose/nerdtree'
 Plugin 'vim-latex/vim-latex'
