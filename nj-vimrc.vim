@@ -1,3 +1,4 @@
+cd ~/Documents/temp 
 " hidden buffer
 set hidden
 " Display line and column number in bottom ruler.
@@ -9,7 +10,6 @@ set relativenumber
 set visualbell
 " Shows a horizontal highlight on the line with the cursor.
 set cursorline
-
 " Activate highlighting search pattern matches & incremental search.
 " Incremental search means your cursor will jump to the first match as you
 " type.
@@ -42,7 +42,7 @@ set linebreak
 :set guioptions-=L  "remove left-hand scroll bar
 
 
-color slate 
+color slate
 syntax on
 
 if has("gui_running")
@@ -75,6 +75,8 @@ set foldmethod=indent
 set foldenable
 set foldlevelstart=10
 set foldnestmax=10      " no more than 10 fold levels please
+"eclim
+let g:EclimCompletionMethod = 'omnifunc'
 "map edit vimrc
 let mapleader = ","
 nmap <leader>v :tabedit ~/vimfiles/nj-vimrc.vim<CR>
@@ -100,9 +102,17 @@ set nocompatible   " Disable vi-compatibility
 set laststatus=2   " Always show the statusline
 set encoding=utf-8 " Necessary to show Unicode glyphs
 "let g:Powerline_symbols = 'fancy'
-
+"delimeter
+let delimitMate_expand_cr = 1
+set backspace=2
 set nocompatible              " be iMproved, required
 filetype off                  " required
+
+
+
+
+
+
 
 " set the runtime path to include Vundle and initialize
 set rtp+=$HOME/vimfiles/bundle/Vundle.vim
@@ -112,17 +122,18 @@ call vundle#begin('$USERPROFILE/vimfiles/bundle/')
 
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
+Plugin 'Raimondi/delimitMate'
 Plugin 'tpope/vim-fugitive'
 "Plugin 'powerline/powerline'
 Plugin 'mbbill/undotree'
-Plugin 'Lokaltog/vim-powerline'
+"Plugin 'Lokaltog/vim-powerline'
 Plugin 'tommcdo/vim-exchange'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'tpope/vim-surround'
 Plugin 'scrooloose/nerdtree'
 Plugin 'vim-latex/vim-latex'
-Plugin 'Syntastic'
-"Plugin 'Valloric/YouCompleteMe'
+"Plugin 'Syntastic'
+Plugin 'Valloric/YouCompleteMe'
 "Plugin 'altercation/vim-colors-solarized'
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
