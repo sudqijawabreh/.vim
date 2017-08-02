@@ -1,4 +1,3 @@
-cd ~/Desktop/Academy
 " hidden buffer
 set hidden 
 " Display line and column number in bottom ruler.
@@ -134,7 +133,7 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
 
 
-color Monokai
+"color Monokai
 
 " set the runtime path to include Vundle and initialize
 set rtp+=$HOME/vimfiles/bundle/Vundle.vim
@@ -144,10 +143,7 @@ call vundle#begin('$USERPROFILE/vimfiles/bundle/')
 
 " let Vundle manage Vundle, required
 " Track the engine.
- Plugin 'SirVer/ultisnips'
- Plugin 'flazz/vim-colorschemes'
 " " Snippets are separated from the engine. Add this if you want them:
-Plugin 'honza/vim-snippets'
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'Raimondi/delimitMate'
 Plugin 'tpope/vim-fugitive'
@@ -156,13 +152,13 @@ Plugin 'tommcdo/vim-exchange'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'tpope/vim-surround'
 Plugin 'scrooloose/nerdtree'
-Plugin 'vim-latex/vim-latex'
-Plugin 'xolox/vim-misc'
-Plugin 'xolox/vim-shell'
+"Plugin 'vim-latex/vim-latex'
+"Plugin 'xolox/vim-misc'
+"Plugin 'xolox/vim-shell'
 "Plugin 'xolox/vim-easytags'
 "Plugin 'Syntastic'
-Plugin 'Valloric/YouCompleteMe'
-Plugin 'fsharp/vim-fsharp'
+"Plugin 'Valloric/YouCompleteMe'
+"Plugin 'fsharp/vim-fsharp'
 
 "Plugin 'altercation/vim-colors-solarized'
 " The following are examples of different formats supported.
