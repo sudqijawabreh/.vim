@@ -1,4 +1,6 @@
+"cd ~
 " hidden buffer
+color slate
 set hidden 
 " Display line and column number in bottom ruler.
 set ruler
@@ -14,7 +16,7 @@ set cursorline
 " type.
 set hlsearch
 set incsearch
-
+set number
 " idont know
 
 " Activate case-insensitive & smart case search (if a capital letter is used
@@ -68,7 +70,7 @@ if exists("g:ctrl_user_command")
     unlet g:ctrlp_user_command
 endif
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*/vendor/*,*/\.git/*
-nnoremap <leader>f :CtrlPBuffer<CR>
+nmap <leader>b :CtrlPBuffer<CR>
 " set spelling true
 set spell
 
@@ -130,9 +132,6 @@ let g:UltiSnipsExpandTrigger="<c-tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
-
-
-
 "color Monokai
 
 " set the runtime path to include Vundle and initialize
@@ -145,6 +144,7 @@ call vundle#begin('$USERPROFILE/vimfiles/bundle/')
 " Track the engine.
 " " Snippets are separated from the engine. Add this if you want them:
 Plugin 'VundleVim/Vundle.vim'
+Plugin 'noah/vim256-color'
 Plugin 'Raimondi/delimitMate'
 Plugin 'tpope/vim-fugitive'
 Plugin 'mbbill/undotree'
@@ -152,6 +152,7 @@ Plugin 'tommcdo/vim-exchange'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'tpope/vim-surround'
 Plugin 'scrooloose/nerdtree'
+Plugin 'tpope/vim-repeat'
 "Plugin 'vim-latex/vim-latex'
 "Plugin 'xolox/vim-misc'
 "Plugin 'xolox/vim-shell'
@@ -159,8 +160,7 @@ Plugin 'scrooloose/nerdtree'
 "Plugin 'Syntastic'
 "Plugin 'Valloric/YouCompleteMe'
 "Plugin 'fsharp/vim-fsharp'
-
-"Plugin 'altercation/vim-colors-solarized'
+Plugin 'altercation/vim-colors-solarized'
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
 " plugin on GitHub repo
@@ -207,16 +207,15 @@ command! -nargs=0 -bar Update if &modified
 nnoremap <silent> <C-S> :<C-u>Update<CR>
 :inoremap <c-s> <c-o>:Update<CR>
 
-
 "ctags
 "":let g:easytags_async= 1
 "escap to jk
 :imap jk <Esc>
 if has("gui_running")
   " Set a nicer font.
-  "set guifont=Inconsolata\ for\ Powerline:h12
-  set guifont=Ubuntu\ Mono\ derivative\ Powerline:h12
-  "set guifont=Consolas:h11:cDEFAULT
+""  set guifont=Inconsolata\ for\ Powerline:h12
+  "set guifont=Ubuntu\ Mono\ derivative\ Powerline:h12
+ set guifont=Consolas:h11:cDEFAULT
   " Hide the toolbar.
   set guioptions-=T
 endif
@@ -326,23 +325,12 @@ endfunction
 nnoremap <F8> :call NextColor(1)<CR>
 nnoremap <S-F8> :call NextColor(-1)<CR>
 nnoremap <A-F8> :call NextColor(0)<CR>
-
-" Set color scheme according to current time of day.
-function! s:HourColor()
-  let hr = str2nr(strftime('%H'))
-  if hr <= 3
-    let i = 0
-  elseif hr <= 7
-    let i = 1
-  elseif hr <= 14
-    let i = 2
-  elseif hr <= 18
-    let i = 3
-  else
-    let i = 4
-  endif
-  let nowcolors = 'elflord morning desert evening pablo'
-  execute 'colorscheme '.split(nowcolors)[i]
-  redraw
-  echo g:colors_name
-endfunction
+" copy macthed search to clippored
+"http://vim.wikia.com/wiki/Copy_search_matches
+function! CopyMatches(reg)
+      let hits = []
+        %s//\=len(add(hits, submatch(0))) ? submatch(0) : ''/gne
+          let reg = empty(a:reg) ? '+' : a:reg
+            execute 'let @'.reg.' = join(hits, "\n") . "\n"'
+        endfunction
+        command! -register CopyMatches call CopyMatches(<q-reg>)" Set color scheme according to current time of day.
