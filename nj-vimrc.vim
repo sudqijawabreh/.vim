@@ -1,14 +1,20 @@
 let mapleader = ","
 if vsvim
+    cd C:\Users\Sudqi\Documents\r365\r365\Application\
     nnoremap gi :vsc Edit.GoToImplementation<CR>
-    map gr :vsc Edit.FindAllReferences<CR>
+    "map gr :vsc Edit.FindAllReferences<CR>
+    map gr :csx FindAllReferences<CR>
     map gp :vsc Edit.PeekDefinition<CR>
+    map g; `.
 
+    nnoremap <C-k> :vsc Edit.MoveControlUP<cr>
+    nnoremap <C-j> :vsc Edit.MoveControlDown<cr>
     nnoremap <C-o> :vsc View.NavigateBackward<cr>
     nnoremap <C-i> :vsc View.NavigateForward<cr>
     " break out of the tyranny of text! Navigate by method
-    nnoremap <leader>n :vsc Edit.NextMethod<CR>zz
-    nnoremap <leader>m :vsc Edit.PreviousMethod<CR>zz
+    nnoremap <leader>n :vsc Edit.NextMethod<CR>
+    nnoremap <leader>m :vsc Edit.PreviousMethod<CR>
+    nnoremap <leader>M :csx methods<CR>
     "
     nnoremap R :vsc Refactor.Rename<cr>
     "
@@ -17,7 +23,11 @@ if vsvim
     nnoremap <leader>E :vsc View.PreviousError<cr>
     "
     " " testing and debugging
-    "nnoremap <leader>b :vsc Debug.ToggleBreakpoint<cr>
+    nnoremap <leader>b :vsc Debug.ToggleBreakpoint<cr>
+    nnoremap <leader>d :vsc Debug.Start<cr>
+    nnoremap sl :vsc Debug.StepOver<cr>
+    nnoremap si :vsc Debug.StepInto<cr>
+    nnoremap so :vsc Debug.StepInto<cr>
     nnoremap <leader>r :vsc TestExplorer.RunAllTestsInContext<cr>
     nnoremap <leader>R :vsc TestExplorer.DebugAllTestsInContext<cr>
 
@@ -27,11 +37,17 @@ if vsvim
     nnoremap B :vsc Edit.SubwordPrevious<cr>
     nnoremap dc :vsc Edit.SubwordDeleteNext<cr>
     nnoremap cc :vsc Edit.SubwordDeleteNext<cr>i
+
+    nnoremap gt :vsc Window.NextTab<cr>
+    nnoremap gT :vsc Window.PreviousTab<cr>
     "
     " " open the change parameter window, a bit fake because it's not a
     " text-object
     nnoremap cia :vsc Refactor.ReorderParameters<cr>
     xnoremap $ $h
+
+    nnoremap <leader>f gg=G<C-o><C-o>
+    "nnoremap gt `[v`]
 endif
 map <S-s> <nop>
 nmap <S-s> <nop>
@@ -41,6 +57,8 @@ xnoremap s) <ESC>`>i)<ESC>`<i(<ESC>
 xnoremap sb <ESC>`>i)<ESC>`<i(<ESC>
 xnoremap s" <ESC>`>i"<ESC>x`<i"<ESC>
 xnoremap s' <ESC>`>i'<ESC>x`<i'<ESC>
+xnoremap s> <ESC>`>i><ESC>`<i<<ESC>
+xnoremap s< <ESC>`>i><ESC>`<i<<ESC>
 xnoremap s[ <ESC>`>i]<ESC>`<i[<ESC>
 xnoremap s{ <ESC>`>a<cr>}<ESC>`<i{<cr><ESC>vaB=
 xnoremap s} <ESC>`>a<cr>}<ESC>`<i{<cr><ESC>vaB=
@@ -52,6 +70,8 @@ nnoremap s) ciw(<C-r>")<Esc>
 nnoremap sb ciw(<C-r>")<Esc>
 nnoremap s" ciw"<C-r>""<Esc>
 nnoremap s' ciw'<C-r>"'<Esc>
+nnoremap s< ciw<<C-r>"><Esc>
+nnoremap s> ciw<<C-r>"><Esc>
 nnoremap s[ ciw[<C-r>"]<Esc>
 nnoremap s{ ciw{<C-r>"}<Esc>
 nnoremap s} ciw{<C-r>"}<Esc>
@@ -62,6 +82,8 @@ nmap ss) ^v$s(
 nmap ssb ^v$s(
 nmap ss" ^v$s"
 nmap ss' ^v$s'
+nmap ss< ^v$s>
+nmap ss> ^v$s>
 nmap ss[ ^v$s[
 nmap ss{ ^v$s{
 nmap ss} ^v$s{
@@ -75,21 +97,21 @@ nnoremap ds{ vi{"adva{d"aPv`[`]=
 nnoremap ds} vi{"adva{d"aPv`[`]=
 nnoremap dsB vi{"adva{d"aPv`[`]=
 nnoremap ds< vi<dvhp
+nnoremap ds> vi<dvhp
 nnoremap ds" vi"dvhp
 nnoremap ds' vi'dvhp
 
 nnoremap cs"' vi"oh<Esc>msvi"l<Esc>cl'<Esc>`scl'<Esc>
 nnoremap cs'" vi'oh<Esc>msvi'l<Esc>cl"<Esc>`scl"<Esc>
 xnoremap s* <ESC>`>i*/<ESC>`<i/*<ESC>
-nnoremap gt `[v`]
 nnoremap ds* /\*\/<cr>xx?\/\*<cr>xx
 set virtualedit=onemore
+
+nnoremap cv 0f=lC
 "helloThere
 "nnoremap <leader>w :set nohlsearch<CR>/[A-Z]<CR>:set hlsearch<CR>
 "nnoremap <C-Left> :call search('\<\<Bar>\u', 'bW')<CR>
 "vnoremap <leader>( xi()<Esc>P
-cd ~
-cd .\Documents\r365\r365\Application\
 
 "if has("windows") && ! has("unix") 
 ""    set shell=C:\Windows\System32\wsl.exe
@@ -99,7 +121,10 @@ cd .\Documents\r365\r365\Application\
 ""endif
 if has('unix')
     let g:Home="/mnt/c/Users/Sudqi"
+    cd /mnt/c/Users/Sudqi/Documents/r365
 else
+    cd ~
+    cd .\Documents\r365\r365\Application\
     let g:Home=$HOME
 endif
 " to allow recursive search using find
