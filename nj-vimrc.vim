@@ -164,7 +164,7 @@ set smartcase
 "for save file shortcut
 " Set wildchar visual completion awesomeness.
 " This is enhanced command line completion and it rocks.
-"set wildmenu 
+set wildmenu 
 set wildmode=full
 
 " Turning on line wrapping and line-break for easy text-file editing.
@@ -179,6 +179,7 @@ set wildmode=full
 :set guioptions-=L  "remove left-hand scroll bar
 
 syntax on
+                                                
 
 "no backup or swap
 set nobackup
@@ -196,15 +197,30 @@ if has("gui_running")
         "endif
     endif
 endif
-"macro
+"make ripgripp defualt for vim
+if executable("rg")
+    set grepprg=rg\ --vimgrep\ --no-heading
+    set grepformat=%f:%l:%c:%m,%f:%l:%m
+endif
+let g:ctrlp_max_files=0
+let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:50,results:50'
+"change ctrlp match function using plugin
+let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
 "ctrlp speed up
+"let g:ctrlp_use_caching = 1
+"let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
-"let g:ctrlp_user_command = 'dir %s /-n /b /s /a-d'
-let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
-if executable('ag')
-    "let g:ctrlp_user_command = 'ag -l --nocolor -g "" %s'
-    let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-    let g:ctrlp_use_caching=0
+let g:ctrlp_user_command = 'dir %s /-n /b /s /a-d'
+"let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
+let g:ctrlp_use_caching=1
+"if executable('ag')
+"    "let g:ctrlp_user_command = 'ag -l --nocolor -g "" %s'
+"    let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+"    let g:ctrlp_use_caching=0
+"endif
+if executable('rg')
+    let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
+    let g:ctrlp_use_caching = 0
 endif
 "if exists("g:ctrl_user_command")
 "    unlet g:ctrlp_user_command
@@ -224,7 +240,7 @@ set expandtab
 set smartindent
 set smarttab
 set autoindent
-
+set shiftround " When at 3 spaces and I hit >>, go to 4, not 5.
 " Enabled folding on indent level. That way it works on any code & html, xml
 " etc. 
 " Setting foldlevelstart ensures that for newly opened files folds are open
@@ -249,7 +265,7 @@ noremap <leader>s :source %<CR>
 "mapping for undo toggle
 nnoremap <F5> :UndotreeToggle<cr>
 " set directory to server"
-nnoremap <leader>c :let @*=@e<CR>
+"nnoremap <leader>c :let @*=@e<CR>
 "map for indentation
 vmap < <gv
 vmap > >gv
@@ -296,6 +312,8 @@ Plugin 'tpope/vim-repeat'
 Plugin 'jacoborus/tender.vim'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-expand-region'
+"Plugin 'OmniSharp/omnisharp-vim'
+Plugin 'aserebryakov/vim-todo-lists'
 "Plugin 'vim-latex/vim-latex'
 "Plugin 'xolox/vim-misc'
 "Plugin 'xolox/vim-shell'
@@ -304,6 +322,7 @@ Plugin 'vim-expand-region'
 "Plugin 'Valloric/YouCompleteMe'
 "Plugin 'fsharp/vim-fsharp'
 Plugin 'altercation/vim-colors-solarized'
+Plugin 'FelikZ/ctrlp-py-matcher'
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
 " plugin on GitHub repo
@@ -487,3 +506,5 @@ else
 endif
 
 let g:lightline = { 'colorscheme': 'tender' }
+let g:VimTodoListsDatesEnabled = 1
+let g:VimTodoListsMoveItems = 0
