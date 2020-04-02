@@ -311,82 +311,46 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
 "color Monokai
 
-" set the runtime path to include Vundle and initialize
-"set rtp+=/mnt/c/Users/Sudqi/vimfiles/bundle/Vundle.vim
-let &rtp .=",".g:Home."/vimfiles/bundle/Vundle.vim"
-call vundle#begin(g:Home."/vimfiles/bundle/Vundle.vim")
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
-
-" let Vundle manage Vundle, required
-" Track the engine.
-" " Snippets are separated from the engine. Add this if you want them:
-Plugin 'VundleVim/Vundle.vim'
-"Plugin 'noah/vim256-color'
-Plugin 'Raimondi/delimitMate'
-Plugin 'tpope/vim-fugitive'
-Plugin 'mbbill/undotree'
-Plugin 'tommcdo/vim-exchange'
-Plugin 'ctrlpvim/ctrlp.vim'
-"Plugin 'tpope/vim-surround'
-Plugin 'scrooloose/nerdtree'
-Plugin 'tpope/vim-repeat'
-Plugin 'jacoborus/tender.vim'
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-expand-region'
-"Plugin 'OmniSharp/omnisharp-vim'
-Plugin 'aserebryakov/vim-todo-lists'
-"Plugin 'vim-latex/vim-latex'
-"Plugin 'xolox/vim-misc'
-"Plugin 'xolox/vim-shell'
-"Plugin 'xolox/vim-easytags'
-"Plugin 'Syntastic'
-"Plugin 'Valloric/YouCompleteMe'
-"Plugin 'fsharp/vim-fsharp'
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'FelikZ/ctrlp-py-matcher'
-Plugin 'tpope/vim-rsi'
-Plugin 'taku-o/vim-zoom'
-Plugin 'tomasiser/vim-code-dark'
-Plugin 'vim/killersheep'
-Plugin 'neoclide/coc.nvim'
+call plug#begin(g:Home.'/.vim/plugged')
+"Plug 'noah/vim256-color'
+Plug 'Raimondi/delimitMate'
+Plug 'tpope/vim-fugitive'
+Plug 'mbbill/undotree'
+Plug 'tommcdo/vim-exchange'
+Plug 'ctrlpvim/ctrlp.vim'
+"Plug 'tpope/vim-surround'
+Plug 'scrooloose/nerdtree'
+Plug 'tpope/vim-repeat'
+Plug 'jacoborus/tender.vim'
+Plug 'vim-airline/vim-airline'
+"Plug 'vim-expand-region'
+"Plug 'OmniSharp/omnisharp-vim'
+Plug 'aserebryakov/vim-todo-lists'
+"Plug 'vim-latex/vim-latex'
+"Plug 'xolox/vim-misc'
+"Plug 'xolox/vim-shell'
+"Plug 'xolox/vim-easytags'
+"Plug 'Syntastic'
+"Plug 'Valloric/YouCompleteMe'
+"Plug 'fsharp/vim-fsharp'
+Plug 'altercation/vim-colors-solarized'
+Plug 'FelikZ/ctrlp-py-matcher'
+Plug 'tpope/vim-rsi'
+Plug 'taku-o/vim-zoom'
+Plug 'tomasiser/vim-code-dark'
+Plug 'vim/killersheep'
+"Plug 'neoclide/coc.nvim'
 " vim colorschemes
-Plugin 'lifepillar/vim-solarized8'
-Plugin 'arcticicestudio/nord-vim'
-Plugin 'drewtempelmeyer/palenight.vim'
-Plugin 'tommcdo/vim-fubitive'
-Plugin 'machakann/vim-swap'
-Plugin 'psliwka/vim-smoothie'
-"Plugin 'terryma/vim-multiple-cursors'
-" The following are examples of different formats supported.
-" Keep Plugin commands between vundle#begin/end.
-" plugin on GitHub repo
-"Plugin 'tpope/vim-fugitive'
-" plugin from http://vim-scripts.org/vim/scripts.html
-"Plugin 'L9'
-" Git plugin not hosted on GitHub
-" git repos on your local machine (i.e. when working on your own plugin)
-"Plugin 'file:///home/gmarik/path/to/plugin'
-" The sparkup vim script is in a subdirectory of this repo called vim.
-" Pass the path to set the runtimepath properly.
-"Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
-" Install L9 and avoid a Naming conflict if you've already installed a
-" different version somewhere else.
-"Plugin 'ascenator/L9', {'name': 'newL9'}
+Plug 'lifepillar/vim-solarized8'
+Plug 'arcticicestudio/nord-vim'
+Plug 'drewtempelmeyer/palenight.vim'
+Plug 'tommcdo/vim-fubitive'
+Plug 'machakann/vim-swap'
+Plug 'psliwka/vim-smoothie'
+"Plug 'terryma/vim-multiple-cursors'
 
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-"filetype plugin on
-"
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
-"
-" see :h vundle for more details or wiki for FAQ
+call plug#end()
+
 " Put your non-
 "s
 "Ctrl s h
