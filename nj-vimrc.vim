@@ -3,12 +3,12 @@ if vsvim
     cd C:\Users\Sudqi\Documents\r365\r365\Application\
     nnoremap gi :vsc Edit.GoToImplementation<CR>
     "map gr :vsc Edit.FindAllReferences<CR>
-    map gr :csx FindAllReferences<CR>
+    map gr :vsc Edit.FindAllReferences<CR>
     map gp :vsc Edit.PeekDefinition<CR>
     map g; `.
 
-    nnoremap <C-k> :vsc Edit.MoveControlUP<cr>
-    nnoremap <C-j> :vsc Edit.MoveControlDown<cr>
+    "nnoremap <C-k> :vsc Edit.MoveControlUP<cr>
+    "nnoremap <C-j> :vsc Edit.MoveControlDown<cr>
     nnoremap <C-o> :vsc View.NavigateBackward<cr>
     nnoremap <C-i> :vsc View.NavigateForward<cr>
     " break out of the tyranny of text! Navigate by method
@@ -32,7 +32,6 @@ if vsvim
     nnoremap <leader>R :vsc TestExplorer.DebugAllTestsInContext<cr>
 
     nnoremap <C-_> :vsc Edit.CommentSelection<cr>
-
     nnoremap W :vsc Edit.SubwordNext<cr>
     nnoremap B :vsc Edit.SubwordPrevious<cr>
     nnoremap dc :vsc Edit.SubwordDeleteNext<cr>
@@ -46,17 +45,25 @@ if vsvim
     nnoremap cia :vsc Refactor.ReorderParameters<cr>
     xnoremap $ $h
 
-    nnoremap <leader>f gg=G<C-o><C-o>
+    "select funciton paramters
+    vnoremap i, /[,)]<cr>ho?[,(]<cr>l<ESC>:nohl<cr>gv
+    vnoremap a, /[,)]<cr>ho?[,(]<cr><ESC>:nohl<cr>gv
+    nnoremap ci, /[,)]<cr>hvo?[,(]<cr>l<ESC>:nohl<cr>gvc
+    nnoremap di, /[,)]<cr>hvo?[,(]<cr>l<ESC>:nohl<cr>gvd
+
+    set virtualedit=onemore
+
+    noremap <leader>f gg=G<C-o><C-o>
     "nnoremap gt `[v`]
 endif
-map <S-s> <nop>
-nmap <S-s> <nop>
+"map <S-s> <nop>
+"nmap <S-s> <nop>
 nmap s <nop>
 xnoremap s( <ESC>`>i)<ESC>`<i(<ESC>
 xnoremap s) <ESC>`>i)<ESC>`<i(<ESC>
 xnoremap sb <ESC>`>i)<ESC>`<i(<ESC>
-xnoremap s" <ESC>`>i"<ESC>x`<i"<ESC>
-xnoremap s' <ESC>`>i'<ESC>x`<i'<ESC>
+xnoremap s" <ESC>`>i"<ESC>`<i"<ESC>
+xnoremap s' <ESC>`>i'<ESC>`<i'<ESC>
 xnoremap s> <ESC>`>i><ESC>`<i<<ESC>
 xnoremap s< <ESC>`>i><ESC>`<i<<ESC>
 xnoremap s[ <ESC>`>i]<ESC>`<i[<ESC>
@@ -105,15 +112,29 @@ nnoremap cs"' vi"oh<Esc>msvi"l<Esc>cl'<Esc>`scl'<Esc>
 nnoremap cs'" vi'oh<Esc>msvi'l<Esc>cl"<Esc>`scl"<Esc>
 xnoremap s* <ESC>`>i*/<ESC>`<i/*<ESC>
 nnoremap ds* /\*\/<cr>xx?\/\*<cr>xx
-set virtualedit=onemore
+
+"insert new line without entering insert mode
+nmap <S-Enter> O<Esc>
+nmap <CR> o<Esc>
+
+"move between splits freely
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-h> <C-W>h
+map <C-l> <C-W>l
+
+"delete and select swap objects
+"omap i, <Plug>(swap-textobject-i)
+"xmap i, <Plug>(swap-textobject-i)
+"omap a, <Plug>(swap-textobject-a)
+"xmap a, <Plug>(swap-textobject-a)
 
 nnoremap cv 0f=lC
-"helloThere
+nnoremap <leader>h :noh<cr>
 "nnoremap <leader>w :set nohlsearch<CR>/[A-Z]<CR>:set hlsearch<CR>
 "nnoremap <C-Left> :call search('\<\<Bar>\u', 'bW')<CR>
-"vnoremap <leader>( xi()<Esc>P
 
-"if has("windows") && ! has("unix") 
+"if has("windows") && ! has("unix")
 ""    set shell=C:\Windows\System32\wsl.exe
 ""    set shellpipe=|
 ""    set shellredir=>
@@ -123,8 +144,11 @@ if has('unix')
     let g:Home="/mnt/c/Users/Sudqi"
     cd /mnt/c/Users/Sudqi/Documents/r365
 else
+    "cd C:\Users\Sudqi\Documents\project\dc-project-management
     cd ~
-    cd .\Documents\r365\r365\Application\
+    cd .\Documents\r365\
+    "cd .\Documents\r365\r365forms\
+    "cd .\Documents\r365\r365\
     let g:Home=$HOME
 endif
 " to allow recursive search using find
@@ -203,15 +227,13 @@ if executable("rg")
     set grepformat=%f:%l:%c:%m,%f:%l:%m
 endif
 let g:ctrlp_max_files=0
-let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:50,results:50'
+let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:10,results:50'
 "change ctrlp match function using plugin
 let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
 "ctrlp speed up
-"let g:ctrlp_use_caching = 1
-"let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
 let g:ctrlp_user_command = 'dir %s /-n /b /s /a-d'
-"let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
+let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
 let g:ctrlp_use_caching=1
 "if executable('ag')
 "    "let g:ctrlp_user_command = 'ag -l --nocolor -g "" %s'
@@ -323,6 +345,19 @@ Plugin 'aserebryakov/vim-todo-lists'
 "Plugin 'fsharp/vim-fsharp'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'FelikZ/ctrlp-py-matcher'
+Plugin 'tpope/vim-rsi'
+Plugin 'taku-o/vim-zoom'
+Plugin 'tomasiser/vim-code-dark'
+Plugin 'vim/killersheep'
+Plugin 'neoclide/coc.nvim'
+" vim colorschemes
+Plugin 'lifepillar/vim-solarized8'
+Plugin 'arcticicestudio/nord-vim'
+Plugin 'drewtempelmeyer/palenight.vim'
+Plugin 'tommcdo/vim-fubitive'
+Plugin 'machakann/vim-swap'
+Plugin 'psliwka/vim-smoothie'
+"Plugin 'terryma/vim-multiple-cursors'
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
 " plugin on GitHub repo
@@ -330,7 +365,6 @@ Plugin 'FelikZ/ctrlp-py-matcher'
 " plugin from http://vim-scripts.org/vim/scripts.html
 "Plugin 'L9'
 " Git plugin not hosted on GitHub
-"Plugin 'git://git.wincent.com/command-t.git'
 " git repos on your local machine (i.e. when working on your own plugin)
 "Plugin 'file:///home/gmarik/path/to/plugin'
 " The sparkup vim script is in a subdirectory of this repo called vim.
@@ -380,7 +414,7 @@ if has("gui_running")
     " Set a nicer font.
     ""  set guifont=Inconsolata\ for\ Powerline:h12
     "set guifont=Ubuntu\ Mono\ derivative\ Powerline:h12
-    set guifont=Consolas:h11:cDEFAULT
+    set guifont=Consolas:h10:cDEFAULT
     " Hide the toolbar.
     set guioptions-=T
 endif
@@ -409,7 +443,7 @@ if v:version < 700 || exists('loaded_setcolors') || &cp
 endif
 
 let loaded_setcolors = 1
-let s:mycolors = ['slate', 'torte', 'darkblue', 'delek', 'murphy', 'elflord', 'pablo', 'koehler']  " colorscheme names that we use to set color
+"let s:mycolors = ['slate', 'torte', 'darkblue', 'delek', 'murphy', 'elflord', 'pablo', 'koehler']  " colorscheme names that we use to set color
 
 " Set list of color scheme names that we will use, except
 " argument 'now' actually changes the current color scheme.
@@ -502,9 +536,17 @@ command! -register CopyMatches call CopyMatches(<q-reg>)" Set color scheme accor
 if has("gui_running")
     colorscheme solarized
 else
-    colorscheme solarized8
+    colorscheme solarized9
 endif
 
 let g:lightline = { 'colorscheme': 'tender' }
 let g:VimTodoListsDatesEnabled = 1
 let g:VimTodoListsMoveItems = 0
+"emacs bingin rsi plugin
+"not needed you can use <C-w> 
+imap <C-BS> <M-BS>
+"Do not redraw screen in the middle of a macro. Makes them complete faster.
+set lazyredraw
+
+"Run the current line as if it were a command. Often more convenient than q: when experimenting.
+nnoremap <leader>e :exe getline(line('.'))<cr>
