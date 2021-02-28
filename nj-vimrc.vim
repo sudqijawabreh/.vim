@@ -1,3 +1,21 @@
+" Set tabs to 4 characters and expand to spaces, activate smart indentation.
+" See tabstop help for more info.
+" Setting tabstop & softtabstop to the same value to avoid messy layout with mixed tabs & spaces.
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+set expandtab
+set autoindent
+set shiftround " When at 3 spaces and I hit >>, go to 4, not 5.
+set list
+set showmatch
+set scrolloff=2
+
+
+noremap <C-c> "*y
+noremap <C-v> "*p
+inoremap <C-c> "*y
+inoremap <C-v> <C-r>*
 let mapleader = ","
 nmap s ysiw
 xmap s S
@@ -19,10 +37,6 @@ map <C-l> <C-W>l
 "xmap i, <Plug>(swap-textobject-i)
 "omap a, <Plug>(swap-textobject-a)
 "xmap a, <Plug>(swap-textobject-a)
-autocmd FileType gitcommit setlocal spell
-autocmd FileType gitcommit setlocal complete+=kspell
-autocmd FileType todo setlocal spell
-autocmd FileType todo setlocal complete+=kspell
 
 nnoremap cv 0f=lC
 nnoremap <leader>h :noh<cr>
@@ -71,7 +85,7 @@ set ruler
 "set number
 set relativenumber
 " Turn sounds off.
-set visualbell
+"set visualbell
 " Shows a horizontal highlight on the line with the cursor.
 "set cursorline
 " Activate highlighting search pattern matches & incremental search.
@@ -155,25 +169,14 @@ set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*/vendor/*,*/\.git/*
 set nospell
 
 let g:gruvbox_contrast_dark = 'hard'
-" Set tabs to 4 characters and expand to spaces, activate smart indentation.
-" See tabstop help for more info.
-" Setting tabstop & softtabstop to the same value to avoid messy layout with mixed tabs & spaces.
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
-set expandtab
-set smartindent
-set smarttab
-set autoindent
-set shiftround " When at 3 spaces and I hit >>, go to 4, not 5.
 " Enabled folding on indent level. That way it works on any code & html, xml
 " etc. 
 " Setting foldlevelstart ensures that for newly opened files folds are open
 " unless they are 10 levels deep.
-set foldmethod=indent
-set foldenable
-set foldlevelstart=10
-set foldnestmax=10      " no more than 10 fold levels please
+"set foldmethod=indent
+"set foldenable
+"set foldlevelstart=10
+"set foldnestmax=10      " no more than 10 fold levels please
 "eclim
 let g:EclimCompletionMethod = 'omnifunc'
 "map edit vimrc
@@ -213,6 +216,10 @@ let g:UltiSnipsExpandTrigger="<c-tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
+autocmd FileType gitcommit setlocal spell
+autocmd FileType gitcommit setlocal complete+=kspell
+autocmd FileType todo setlocal spell
+autocmd FileType todo setlocal complete+=kspell
 "color Monokai
 
 call plug#begin(g:Home.'/.vim/plugged')
@@ -250,7 +257,7 @@ Plug 'arcticicestudio/nord-vim'
 Plug 'drewtempelmeyer/palenight.vim'
 Plug 'tommcdo/vim-fubitive'
 Plug 'machakann/vim-swap'
-Plug 'psliwka/vim-smoothie'
+"Plug 'psliwka/vim-smoothie'
 Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-line'
 "Plug 'w0ng/vim-hybrid'
@@ -262,9 +269,17 @@ Plug 'sgur/vim-textobj-parameter'
 Plug 'habamax/vim-sendtoterm'
 "Plug 'terryma/vim-multiple-cursors'
 Plug 'ThePrimeagen/vim-be-good'
-"Plug 'paulkass/jira-vim'
+Plug 'machakann/vim-highlightedyank'
+Plug 'joshdick/onedark.vim'
+Plug 'rakr/vim-one'
+Plug 'dyng/ctrlsf.vim'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'skamsie/vim-lineletters'
+"Plug 'thinkpixellab/flatland'
+"Plug 'thinca/vim-painter'
 call plug#end()
-
+nmap <silent>,, <Plug>LineLetters
 " Put your non-
 "s
 "Ctrl s h
@@ -318,28 +333,42 @@ else
     "colorscheme solarized8
     colorscheme gruvbox
 endif
+if has('win32')
+  nmap ,cs :let @*=substitute(expand("%"), "/", "\\", "g")<CR>
+  nmap ,cl :let @*=substitute(expand("%:p"), "/", "\\", "g")<CR>
 
-let g:lightline = { 'colorscheme': 'tender' }
-let g:VimTodoListsDatesEnabled = 1
+  " This will copy the path in 8.3 short format, for DOS and Windows 9x
+  nmap ,c8 :let @*=substitute(expand("%:p:8"), "/", "\\", "g")<CR>
+else
+  nmap ,cs :let @*=expand("%")<CR>
+  nmap ,cl :let @*=expand("%:p")<CR>
+endif
+let g:highlightedyank_highlight_duration = 500
+let g:lightline = { 'colorscheme': 'tendi' }
+"let g:VimTodoListsDatesEnabled = 0
 let g:VimTodoListsMoveItems = 0
 "emacs binding rsi plugin
 "not needed you can use <C-w> 
 imap <C-BS> <M-BS>
 "Do not redraw screen in the middle of a macro. Makes them complete faster.
-set lazyredraw
 
 "generate GUID
-nmap gu :read !python -c "import uuid;print(str(uuid.uuid4()).upper())"<cr>
+"nmap gu :read !python -c "import uuid;print(str(uuid.uuid4()).upper())"<cr>
 
 "Run the current line as if it were a command. Often more convenient than q: when experimenting.
-nnoremap <leader>e :exe getline(line('.'))<cr>
-nnoremap <leader>f f(
+"nnoremap <leader>e :exe getline(line('.'))<cr>
+nnoremap <leader>f 0f(h
+
+vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
+
 
 if g:vsvim == 0
     nnoremap gd :YcmCompleter GoToDefinition<CR>
     nnoremap gr :YcmCompleter GoToReferences<CR>
     nnoremap rr :YcmCompleter RefactorRename<space><C-R><C-W>
     nnoremap gi :YcmCompleter GoToImplementation<CR>
+
+    nnoremap <silent> <leader>t :OmniSharpTypeLookup<CR>
     "go to interface
     nmap <leader>gi gg/class<CR><leader>h$gd
     "append current method to interface
@@ -350,6 +379,8 @@ if g:vsvim == 0
     nmap <leader>gmd 0f(h"ayiwvily<leader>gi/<C-R>a<CR><leader>h
     "nmap <leader>gum vilhy0f(hgi0wv$hp
     
+    xnoremap s> <ESC>`<i<<ESC>`>la><ESC>
+    xnoremap s< <ESC>`>a><ESC>`<i<<ESC>
 endif
 "let g:ycm_auto_start_csharp_server = 1
 if g:vsvim == 1
@@ -361,7 +392,7 @@ if g:vsvim == 1
     map g; `.
 
     "go to interface
-    nmap <leader>gi gg/class<CR><leader>h$gd
+    nmap <leader>gi gg/class<CR>$gd<leader>h
     noremap <leader>last /<C-R>s<CR>
 
     "use macros instead of mapping cause visual studio bug when going to
@@ -387,7 +418,7 @@ if g:vsvim == 1
     nnoremap <leader>m :vsc Edit.PreviousMethod<CR>
     nnoremap <leader>M :csx methods<CR>
     "
-    nnoremap R :vsc Refactor.Rename<cr>
+    nnoremap rr :vsc Refactor.Rename<cr>
     "
     " " jump between compilation errors
     nnoremap <leader>e :vsc View.NextError<cr>
@@ -403,8 +434,8 @@ if g:vsvim == 1
     nnoremap <leader>R :vsc TestExplorer.DebugAllTestsInContext<cr>
 
     nnoremap <C-_> :vsc Edit.CommentSelection<cr>
-    nnoremap W :vsc Edit.SubwordNext<cr>
-    nnoremap B :vsc Edit.SubwordPrevious<cr>
+    "nnoremap W :vsc Edit.SubwordNext<cr>
+    "nnoremap B :vsc Edit.SubwordPrevious<cr>
     nnoremap dc :vsc Edit.SubwordDeleteNext<cr>
     nnoremap cc :vsc Edit.SubwordDeleteNext<cr>i
 
@@ -441,7 +472,7 @@ if g:vsvim == 1
 
     set virtualedit=onemore
 
-    noremap <leader>f gg=G<C-o><C-o>
+    "noremap <leader>f gg=G<C-o><C-o>
 
     vnoremap J :vsc Edit.MoveSelectedLinesDown<cr>
     vnoremap K :vsc Edit.MoveSelectedLinesUp<cr>
@@ -499,8 +530,12 @@ if g:vsvim == 1
 
     nnoremap cs"' vi"oh<Esc>msvi"l<Esc>cl'<Esc>`scl'<Esc>
     nnoremap cs'" vi'oh<Esc>msvi'l<Esc>cl"<Esc>`scl"<Esc>
+    xnoremap sc <ESC>`>i*)<ESC>`<i(*<ESC>
+    nnoremap dc /\*)<cr>xx?(\*<cr>xx
     xnoremap s* <ESC>`>i*/<ESC>`<i/*<ESC>
     nnoremap ds* /\*\/<cr>xx?\/\*<cr>xx
+
+    nmap ,cs :vsc File.CopyFullPath<cr>
 
 endif
 
