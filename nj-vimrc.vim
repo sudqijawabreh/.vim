@@ -10,6 +10,13 @@ set shiftround " When at 3 spaces and I hit >>, go to 4, not 5.
 set list
 set showmatch
 set scrolloff=2
+set mouse=a "sorry but it reasonable to use mouse sometimes
+"set verbosefile=~/verbose.log
+"set verbose=8
+" neovide configs
+let g:neovide_cursor_trail_length=0.0
+let g:neovide_cursor_animation_length=0.0
+let g:neovide_transparency=0.9
 
 
 noremap <C-c> "*y
