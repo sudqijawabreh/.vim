@@ -567,6 +567,7 @@ if g:vsvim == 1
     map gr :vsc Edit.FindAllReferences<CR>
     map gp :vsc Edit.PeekDefinition<CR>
     map g; `.
+    nmap <leader>f :vsc Edit.GoToAll<CR>
 
     "go to interface
     nmap <leader>gi gg/class<CR>$gd<leader>h
