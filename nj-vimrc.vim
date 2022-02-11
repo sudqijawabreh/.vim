@@ -571,22 +571,22 @@ if g:vsvim == 1
 
     vnoremap // y/\V<C-R>"<CR>
     "go to interface
-    nmap <leader>gi gg/class<CR>$gd<leader>h
-    noremap <leader>last /<C-R>s<CR>
+    "nmap <leader>gi gg/class<CR>$gd<leader>h
+    "noremap <leader>last /<C-R>s<CR>
 
     "use macros instead of mapping cause visual studio bug when going to
     "implementation
     "append current method to interface
-    let @i = 'yy,gij%PdawA;Oj0f('
-    noremap <leader>gai @i
+    "let @i = 'yy,gij%PdawA;Oj0f('
+    "noremap <leader>gai @i
 
     "update signature in the interface
-    let @e = '0f(h"syiwvily,gi,lastvilp0dwA;0f(h,h'
-    noremap <leader> gui @e
+    "let @e = '0f(h"syiwvily,gi,lastvilp0dwA;0f(h,h'
+    "noremap <leader>gui @e
 
     "go to method definition in the interface
-    let @g = '0f(h"syiwvily,gi,last,h'
-    noremap <leader>gmd @g
+    "let @g = '0f(h"syiwvily,gi,last,h'
+    "noremap <leader>gmd @g
 
     "nnoremap <C-k> :vsc Edit.MoveControlUP<cr>
     "nnoremap <C-j> :vsc Edit.MoveControlDown<cr>
