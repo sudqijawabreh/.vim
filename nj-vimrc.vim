@@ -1,4 +1,4 @@
-" Set tabs to 4 characters and expand to spaces, activate smart indentation.
+" Set tabs to 4 character
 " See tabstop help for more info.
 " Setting tabstop & softtabstop to the same value to avoid messy layout with mixed tabs & spaces.
 set tabstop=4
@@ -62,7 +62,7 @@ set nofixeol
 "nnoremap <C-Left> :call search('\<\<Bar>\u', 'bW')<CR>
 
 "if has("windows") && ! has("unix")
-""    set shell=C:\Windows\System32\wsl.exe
+""    set shell=C:\Windows\System32\wsl.ex
 ""    set shellpipe=|
 ""    set shellredir=>
 ""    set shellcmdflag=
@@ -86,6 +86,10 @@ set path =**
 if (has("termguicolors"))
 
     set termguicolors
+    "set term=xterm
+    set t_Co=256
+    let &t_AB="\e[48;5;%dm"
+    let &t_AF="\e[38;5;%dm"
 
 endif
 "cd ~
@@ -158,7 +162,7 @@ endif
 let g:ctrlp_max_files=0
 let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:10,results:50'
 "change ctrlp match function using plugin
-let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
+"let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
 "ctrlp speed up
 let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
 let g:ctrlp_user_command = 'dir %s /-n /b /s /a-d'
@@ -200,7 +204,9 @@ nmap <leader>v :execute("tabedit ".g:Home."/vimfiles/nj-vimrc.vim")<CR>
 nnoremap cd :lcd %:p:h
 nmap <leader>a :NERDTreeToggle<CR>
 nmap ,n :NERDTreeFind<CR>
-noremap <leader>s :source %<CR>
+"let NERDTreeDirArrowExpandable = '+'
+"let NERDTreeDirArrowCollapsible = '~'
+noremap <leader>s :source %<CR> :noh<CR>
 "mapping for Gundo plugin
 "nnoremap <F5> :GundoToggle<CR>
 "mapping for undo toggle
@@ -364,8 +370,8 @@ nmap k gk
 if has("gui_running")
     " Set a nicer font.
     ""  set guifont=Inconsolata\ for\ Powerline:h12
-    "set guifont=Ubuntu\ Mono\ derivative\ Powerline:h12
-    set guifont=Consolas:h10:cDEFAULT
+    set guifont=Ubuntu\ Mono\ derivative\ Powerline:h10
+    "set guifont=Consolas:h10:cDEFAULT
     " Hide the toolbar.
     set guioptions-=T
 endif
@@ -561,7 +567,7 @@ if g:vsvim == 0
 endif
 "let g:ycm_auto_start_csharp_server = 1
 if g:vsvim == 1
-    cd C:\Users\Sudqi\Documents\r365\r365\Application\
+    cd C:\Users\MSI\Documents\r365\r365\Application\
     nnoremap gi :vsc Edit.GoToImplementation<CR>
     "map gr :vsc Edit.FindAllReferences<CR>
     map gr :vsc Edit.FindAllReferences<CR>
