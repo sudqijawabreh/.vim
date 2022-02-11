@@ -387,6 +387,18 @@ endif
     endtry
 endfunction
 
+function! MyFoldText()
+    let nblines = v:foldend - v:foldstart + 1
+    let w = winwidth(0) - &foldcolumn - (&number ? 8 : 0)
+    "let line = getline(v:foldstart)
+    let line = getline(v:foldend)
+    "let comment = substitute(line, '/\*\|\*/\|{{{\d\=', '', 'g')
+    "let expansionString = repeat(".", w - strwidth(nblines.comment.'"'))
+    let txt = '"' . line . '....' . nblines
+    return txt
+endfunction
+set foldtext=MyFoldText()
+
 " copy macthed search to clippored
 "http://vim.wikia.com/wiki/Copy_search_matches
 function! CopyMatches(reg)
