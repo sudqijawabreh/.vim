@@ -462,10 +462,16 @@ vnoremap =j :!python -m json.tool<CR>
 "let g:node_client_debug = 1
 "let $NODE_CLIENT_LOG_FILE = '~/sudqilog.txt'
 if g:vsvim == 0
-    nnoremap gd :YcmCompleter GoToDefinition<CR>
-    nnoremap gr :YcmCompleter GoToReferences<CR>
-    nnoremap rr :YcmCompleter RefactorRename<space><C-R><C-W>
-    nnoremap gi :YcmCompleter GoToImplementation<CR>
+    xmap <leader>r  <Plug>(SendToTerm)
+    nmap <leader>r  <Plug>(SendToTerm)
+    omap <leader>r  <Plug>(SendToTerm)
+    nmap <leader>rr  <Plug>(SendToTermLine)
+    nmap <leader>ct :execute "SendTextToTerm cd " . getcwd() <cr>
+    "xmap <C-CR>  <Plug>(SendToTerm)
+    nnoremap <s-y> y$
+
+    augroup omnisharp_commands
+    autocmd!
 
     nnoremap <silent> <leader>t :OmniSharpTypeLookup<CR>
     "go to interface
