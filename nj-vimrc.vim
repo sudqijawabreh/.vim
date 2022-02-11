@@ -80,7 +80,8 @@ else
 endif
 " to allow recursive search using find
 set path =**
-nmap 0 ^
+" no need use <C-_> 
+"nmap 0 ^
 "set termguicolors what so ever
 if (has("termguicolors"))
 
