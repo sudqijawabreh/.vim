@@ -282,7 +282,6 @@ Plug 'tommcdo/vim-exchange'
 Plug 'tpope/vim-surround'
 Plug 'scrooloose/nerdtree'
 Plug 'tpope/vim-repeat'
-Plug 'jacoborus/tender.vim'
 Plug 'vim-airline/vim-airline'
 "Plug 'vim-expand-region'
 Plug 'OmniSharp/omnisharp-vim'
@@ -411,10 +410,14 @@ endfunction
 command! -register CopyMatches call CopyMatches(<q-reg>)" Set color scheme according to current time of day.
 if has("gui_running")
     "colorscheme solarized
-    colorscheme gruvbox
+    "colorscheme gruvbox
+    "colorscheme onedark
+    colorscheme nightfox
 else
     "colorscheme solarized8
-    colorscheme gruvbox
+    "colorscheme gruvbox
+    "colorscheme onedark
+    colorscheme nightfox
 endif
 if has('win32')
   nmap ,cs :let @*=substitute(expand("%"), "/", "\\", "g")<CR>
