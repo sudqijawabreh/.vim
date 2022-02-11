@@ -421,7 +421,9 @@ else
 endif
 if has('win32')
   nmap ,cs :let @*=substitute(expand("%"), "/", "\\", "g")<CR>
-  nmap ,cl :let @*=substitute(expand("%:p"), "/", "\\", "g")<CR>
+  nmap ,cl :let @*=substitute(expand("%:p:h"), "/", "\\", "g")<CR>
+  nmap <leader>cd :redir @a \| pwd \| redir END \| let @*=@a<CR>
+  nmap <leader>cf :let @*=substitute(expand("%:t"), "/", "\\", "g")<CR>
 
   " This will copy the path in 8.3 short format, for DOS and Windows 9x
   nmap ,c8 :let @*=substitute(expand("%:p:8"), "/", "\\", "g")<CR>
