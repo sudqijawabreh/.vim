@@ -288,47 +288,49 @@ Plug 'vim-airline/vim-airline'
 Plug 'OmniSharp/omnisharp-vim'
 Plug 'aserebryakov/vim-todo-lists'
 "Plug 'vim-latex/vim-latex'
-"Plug 'xolox/vim-misc'
-"Plug 'xolox/vim-shell'
-"Plug 'xolox/vim-easytags'
-"Plug 'Syntastic'
-Plug 'Valloric/YouCompleteMe'
+"Plug 'Valloric/YouCompleteMe'
 "Plug 'fsharp/vim-fsharp'
-Plug 'altercation/vim-colors-solarized'
-Plug 'FelikZ/ctrlp-py-matcher'
 Plug 'tpope/vim-rsi'
-Plug 'taku-o/vim-zoom'
-Plug 'tomasiser/vim-code-dark'
-Plug 'vim/killersheep'
-"Plug 'neoclide/coc.nvim'
-" vim colorschemes
-Plug 'lifepillar/vim-solarized8'
-Plug 'arcticicestudio/nord-vim'
-Plug 'drewtempelmeyer/palenight.vim'
+"Plug 'taku-o/vim-zoom'
 Plug 'tommcdo/vim-fubitive'
 Plug 'machakann/vim-swap'
-"Plug 'psliwka/vim-smoothie'
 Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-entire'
 Plug 'kana/vim-textobj-line'
-"Plug 'w0ng/vim-hybrid'
-Plug 'tomasiser/vim-code-dark'
-Plug 'morhetz/gruvbox'
 "Plug 'shmup/vim-sql-syntax'
 Plug 'tpope/vim-unimpaired'
 Plug 'sgur/vim-textobj-parameter'
-Plug 'habamax/vim-sendtoterm'
-"Plug 'terryma/vim-multiple-cursors'
-Plug 'ThePrimeagen/vim-be-good'
-Plug 'machakann/vim-highlightedyank'
-Plug 'joshdick/onedark.vim'
-Plug 'rakr/vim-one'
-Plug 'dyng/ctrlsf.vim'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
-Plug 'skamsie/vim-lineletters'
-"Plug 'thinkpixellab/flatland'
-"Plug 'thinca/vim-painter'
+Plug 'sudqijawabreh/vim-sendtoterm'
+"Plug 'ThePrimeagen/vim-be-good'
+" not needed in nvim 0.6
+"Plug 'machakann/vim-highlightedyank'
+" using grep inside vim instead
+"Plug 'dyng/ctrlsf.vim'
+"Plug 'skamsie/vim-lineletters'
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-fzy-native.nvim'
+Plug 'nvim-telescope/telescope-project.nvim'
+Plug 'cljoly/telescope-repo.nvim'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'michaeljsmith/vim-indent-object',
+Plug 'AndrewRadev/diffurcate.vim',
+"Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+"Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
+"Plug 'wookayin/fzf-ripgrep.vim'
+Plug 'godlygeek/tabular'
+"Plug 'puremourning/vimspector'
+" can be used to edit text in the browser
+"Plug 'subnut/nvim-ghost.nvim', {'do': ':call nvim_ghost#installer#install()'}
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'powershell -executionpolicy bypass -File install.ps1',
+    \ }
+Plug 'ionide/Ionide-vim', {
+     \ 'do':  'powershell -ExecutionPolicy Unrestricted .\install.ps1',
+     \}
+
 call plug#end()
 nmap <silent>,, <Plug>LineLetters
 " Put your non-
