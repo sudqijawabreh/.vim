@@ -205,6 +205,7 @@ noremap <leader>s :source %<CR>
 "nnoremap <F5> :GundoToggle<CR>
 "mapping for undo toggle
 nnoremap <F5> :UndotreeToggle<cr>
+let g:undotree_WindowLayout=2
 " set directory to server"
 "nnoremap <leader>c :let @*=@e<CR>
 "map for indentation
