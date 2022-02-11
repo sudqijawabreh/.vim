@@ -72,8 +72,8 @@ if has('unix')
     cd /mnt/c/Users/Sudqi/Documents/r365
 else
     "cd C:\Users\Sudqi\Documents\project\dc-project-management
-    cd ~
-    cd .\Documents\r365\
+    "cd ~
+    "cd .\Documents\r365\
     "cd .\Documents\r365\r365forms\
     "cd .\Documents\r365\r365\
     let g:Home=$HOME
