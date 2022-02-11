@@ -230,16 +230,29 @@ filetype off                  " required
 let g:UltiSnipsExpandTrigger="<c-tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+ 
+"Add branch name at the beginning of the commit message
+augroup Commit
+    "autocmd FileType gitcommit :execute "normal /branch\<cr>wyiWggpA" | startinsert!
+augroup END
 
-autocmd FileType gitcommit setlocal spell
-autocmd FileType gitcommit setlocal complete+=kspell
-autocmd FileType todo setlocal spell
-autocmd FileType todo setlocal complete+=kspell
-"color Monokai
+augroup Spell
+    autocmd!
+    autocmd FileType gitcommit setlocal spell
+    autocmd FileType gitcommit setlocal complete+=kspell
+    autocmd FileType todo setlocal spell
+    autocmd FileType todo setlocal complete+=kspell
+augroup END
 
-call plug#begin(g:Home.'/.vim/plugged')
-"Plug 'noah/vim256-color'
-Plug 'Raimondi/delimitMate'
+augroup lsp
+    autocmd!
+    autocmd FileType fsharp nmap gr <Plug>(lcn-references)
+    autocmd FileType fsharp nmap <F4> <Plug>(lcn-menu)
+    autocmd FileType fsharp nmap <buffer> <silent>K <Plug>(lcn-hover)
+    autocmd FileType fsharp nmap <buffer> <silent> gd <Plug>(lcn-definition)
+    autocmd FileType fsharp xnoremap s* <ESC>`>a*)<ESC>`<i(*<ESC> " multiple line comment for fsharp
+    autocmd FileType fsharp nnoremap ds* /\*)<cr>xx?(\*<cr>xx "delete multiple line comment
+augroup END
 Plug 'tpope/vim-fugitive'
 Plug 'mbbill/undotree'
 Plug 'tommcdo/vim-exchange'
