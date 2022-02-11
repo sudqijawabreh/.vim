@@ -6,6 +6,7 @@ set shiftwidth=4
 set softtabstop=4
 set expandtab
 set autoindent
+set smartindent
 set shiftround " When at 3 spaces and I hit >>, go to 4, not 5.
 set list
 set showmatch
