@@ -211,6 +211,8 @@ let g:undotree_WindowLayout=2
 "map for indentation
 vmap < <gv
 vmap > >gv
+"find number of occurrences
+map ,* *<C-O>:%s///gn<CR>
 "window mappin
 "map + <C-w>+
 "map - <C-w>-
