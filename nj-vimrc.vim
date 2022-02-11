@@ -374,6 +374,18 @@ endif
 "python powerline_setup()
 "python del powerline_setup
 
+ function! OpenPowershell()
+    try
+        if bufexists(bufname("term://*powershell")) > 0 
+            execute "sb term://*powershell"
+        else
+            execute 'sp | term powershell'
+        endif
+    catch /^Vim\%((\a\+)\)\=:E37/   
+            execute "BufOnly"
+            execute "bd"
+    endtry
+endfunction
 
 " copy macthed search to clippored
 "http://vim.wikia.com/wiki/Copy_search_matches
