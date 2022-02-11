@@ -9,6 +9,7 @@ set autoindent
 set smartindent
 set shiftround " When at 3 spaces and I hit >>, go to 4, not 5.
 set list
+set listchars=tab:▷▷⋮
 set showmatch
 set scrolloff=2
 set mouse=a "sorry but it reasonable to use mouse sometimes
