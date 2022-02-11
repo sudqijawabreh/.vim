@@ -333,6 +333,12 @@ Plug 'ionide/Ionide-vim', {
 
 call plug#end()
 nmap <silent>,, <Plug>LineLetters
+vmap <silent>,, <Plug>LineLetters
+let g:coc_global_extensions=[ 'coc-tsserver']
+let g:coc_sources_disable_map = { 'cs': ['cs-2', 'cs-3', 'cs-4'] }
+command! -bang -nargs=? -complete=dir Files
+        \ call fzf#vim#files(<q-args>, {'options': ['--layout=reverse', '--info=inline', '--preview', 'cat {}']}, <bang>0)
+
 " Put your non-
 "s
 "Ctrl s h
