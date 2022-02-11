@@ -352,7 +352,7 @@ command! -nargs=0 -bar Update if &modified
                     \|    endif
                     \|endif
 nnoremap <silent> <C-S> :<C-u>Update<CR>
-:inoremap <c-s> <c-o>:Update<CR>
+inoremap <c-s> <c-o>:Update<CR>
 
 "for wrapping
 nmap j gj
