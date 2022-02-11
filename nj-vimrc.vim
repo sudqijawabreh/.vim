@@ -191,8 +191,6 @@ set background=dark
 "set foldenable
 "set foldlevelstart=10
 "set foldnestmax=10      " no more than 10 fold levels please
-"eclim
-let g:EclimCompletionMethod = 'omnifunc'
 "map edit vimrc
 nmap <leader>v :execute("tabedit ".g:Home."/vimfiles/nj-vimrc.vim")<CR>
 " cd sets path to the path of te file in the current buffer.
