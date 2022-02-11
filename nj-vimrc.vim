@@ -253,6 +253,28 @@ augroup lsp
     autocmd FileType fsharp xnoremap s* <ESC>`>a*)<ESC>`<i(*<ESC> " multiple line comment for fsharp
     autocmd FileType fsharp nnoremap ds* /\*)<cr>xx?(\*<cr>xx "delete multiple line comment
 augroup END
+
+call plug#begin(g:Home.'/.vimfiles/plugged')
+" vim colorschemes
+"Plug 'tomasiser/vim-code-dark'
+"Plug 'lifepillar/vim-solarized8'
+"Plug 'joshdick/onedark.vim'
+"Plug 'folke/tokyonight.nvim'
+"Plug 'morhetz/gruvbox'
+"Plug 'tomasiser/vim-code-dark'
+"Plug 'drewtempelmeyer/palenight.vim'
+"Plug 'rakr/vim-one'
+"Plug 'jacoborus/tender.vim'
+"Plug 'altercation/vim-colors-solarized'
+"Plug 'wuelnerdotexe/vim-enfocado'
+"Plug 'sonph/onehalf', { 'rtp': 'vim' }
+"Plug 'arcticicestudio/nord-vim'
+Plug 'EdenEast/nightfox.nvim'
+"--------------------
+"Plug 'Raimondi/delimitMate'
+"Plug 'OrangeT/vim-csharp'
+"Plug 'terryma/vim-expand-region'
+Plug '9mm/vim-closer'
 Plug 'tpope/vim-fugitive'
 Plug 'mbbill/undotree'
 Plug 'tommcdo/vim-exchange'
