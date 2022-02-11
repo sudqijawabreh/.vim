@@ -763,5 +763,144 @@ if g:vsvim == 1
 
 endif
 
-let g:OmniSharp_highlight_types = 2
+" OmniSharp: {{{
+let g:OmniSharp_popup_position = 'peek'
+if has('nvim')
+  let g:OmniSharp_popup_options = {
+  \ 'winhl': 'Normal:NormalFloat'
+  \}
+else
+  let g:OmniSharp_popup_options = {
+  \ 'highlight': 'Normal',
+  \ 'padding': [0, 0, 0, 0],
+  \ 'border': [1]
+  \}
+endif
+let g:OmniSharp_popup_mappings = {
+\ 'sigNext': '<C-n>',
+\ 'sigPrev': '<C-p>',
+\ 'pageDown': ['<C-f>', '<PageDown>'],
+\ 'pageUp': ['<C-b>', '<PageUp>']
+\}
+
+
+let g:OmniSharp_highlight_groups = {
+\ 'ExcludedCode': 'NonText'
+\}
+" }}}
+let g:OmniSharp_highlight_types = 0
 let g:OmniSharp_server_stdio = 1
+let g:OmniSharp_start_server = 0
+
+lua << EOF
+require('telescope').setup{
+  defaults = {
+    vimgrep_arguments = {
+      'rg',
+      '--color=never',
+      '--no-heading',
+      '--with-filename',
+      '--line-number',
+      '--column',
+      '--smart-case'
+    },
+    prompt_prefix = "> ",
+    selection_caret = "> ",
+    entry_prefix = "  ",
+    initial_mode = "insert",
+    selection_strategy = "reset",
+    sorting_strategy = "descending",
+    layout_strategy = "horizontal",
+    layout_config = {
+      horizontal = {
+        mirror = false,
+      },
+      vertical = {
+        mirror = false,
+      },
+    },
+    file_sorter =  require'telescope.sorters'.get_fuzzy_file,
+    file_ignore_patterns = {},
+    generic_sorter =  require'telescope.sorters'.get_generic_fuzzy_sorter,
+    winblend = 0,
+    border = {},
+    borderchars = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
+    color_devicons = true,
+    use_less = true,
+    path_display = {},
+    set_env = { ['COLORTERM'] = 'truecolor' }, -- default = nil,
+    file_previewer = require'telescope.previewers'.vim_buffer_cat.new,
+    grep_previewer = require'telescope.previewers'.vim_buffer_vimgrep.new,
+    qflist_previewer = require'telescope.previewers'.vim_buffer_qflist.new,
+    preview = {
+        treesitter = false,
+    },
+   path_display = {
+       'shorten',
+       'absolute',
+     },
+    mappings = {
+        i = {
+             ["<c-j>"] = require("telescope.actions").move_selection_next,
+            -- Right hand side can also be the name of the action as a string
+            ["<c-k>"] = require("telescope.actions").move_selection_previous
+        }
+    },
+    require('telescope').setup {
+        extensions = {
+            fzy_native = {
+                override_generic_sorter = false,
+                override_file_sorter = true,
+            }
+        }
+    }
+  }
+}
+require('telescope').load_extension('fzy_native')
+require'telescope'.load_extension'repo'
+require'telescope'.load_extension('project')
+EOF
+
+"function! ClearTerminal()
+"  let s:scroll_value = &scrollback
+"  set scrollback=1
+"  let &g:scrollback=1
+"  echo &scrollback
+"  call feedkeys("\i")
+"  call feedkeys("clear\<CR>")
+"  call feedkeys("\<C-\>\<C-n>")
+"  call feedkeys("\i")
+"  sleep 10m
+"  let &scrollback=s:scroll_value
+"endfunction
+"
+"function! ClearPythonTerminal()
+"  set scrollback = 1
+"  let &g:scrollback=1
+"  echo &scrollback
+"  call feedkeys("\i")
+"  call feedkeys("import os\<CR>")
+"  call feedkeys("x = os.system('cls')\<CR>")
+"  call feedkeys("\<C-\>\<C-n>")
+"  call feedkeys("\i")
+"  sleep 10m
+" " let &scrollback=s:scroll_value
+"endfunction
+"
+"tnoremap <C-\><C-l> <C-\><C-n>:call ClearTerminal()<cr>
+"tnoremap <C-\><C-p> <C-\><C-n>:call ClearPythonTerminal()<cr>
+lua <<EOF
+--require'nvim-treesitter.configs'.setup {
+--   indent = {
+--        enable = false
+--   },
+--  highlight = {
+--    enable = false,
+--    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+--    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+--    -- Using this option may slow down your editor, and you may see some duplicate highlights.
+--    -- Instead of true it can also be a list of languages
+--    additional_vim_regex_highlighting = false,
+--  },
+--}
+EOF
