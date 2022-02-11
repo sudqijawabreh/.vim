@@ -670,7 +670,6 @@ if g:vsvim == 1
     xnoremap s{ <ESC>`>a<cr>}<ESC>`<i{<cr><ESC>vaB=
     xnoremap s} <ESC>`>a<cr>}<ESC>`<i{<cr><ESC>vaB=
     xnoremap sB <ESC>`>a<cr>}<ESC>`<i{<cr><ESC>vaB=
-    nnoremap <leader>; A;<ESC>
 
     nmap s( viws(
     nmap s) viws)
@@ -717,6 +716,50 @@ if g:vsvim == 1
     nnoremap ds* /\*\/<cr>xx?\/\*<cr>xx
 
     nmap ,cs :vsc File.CopyFullPath<cr>
+    "Copy full path to clipboard then escap backslash and finally pass it to
+    "powershell to split it then copy it back to clipboard
+    nmap ,cf :vsc File.CopyFullPath<cr>o<C-r>*<Esc>:s/\\/\\\\/g<CR>vil"*ddd :read !powershell -Command Split-Path <C-r>* -leaf<cr>jvil"*ydd
+
+    " And map goToNextLocaion to <c-p> in visual studio to make it work in
+    " the symbols window
+    nnoremap <C-n> :vsc Edit.GoToNextLocation<CR>
+    nnoremap <C-p> :vsc Edit.GoToPrevLocation<CR>
+    xnoremap <C-n> <Esc>:vsc Edit.GoToNextLocation<CR>
+    xnoremap <C-p> <Esc>:vsc Edit.GoToPrevLocation<CR>
+
+    inoremap <C-n> <C-o>:vsc Edit.CompleteWord<CR>
+    inoremap <C-p> <Esc>:vsc Edit.GoToPrevLocation<CR>
+
+    nnoremap gof :vsc File.OpenContainingFolder<cr>
+    nnoremap <S-k> :vsc Edit.QuickInfo<CR>
+    nnoremap <leader>; :vsc SolutionExplorer.SyncWithActiveDocument<CR>
+    nnoremap <C-W>o :vsc File.CloseAllButThis<CR>
+
+    nnoremap dai          :csx IndentObject dai<CR>
+    nnoremap daI          :csx IndentObject daI<CR>
+    nnoremap dii          :csx IndentObject dii<CR>
+
+    nnoremap yai          :csx IndentObject yai<CR>
+    nnoremap yaI          :csx IndentObject yaI<CR>
+    nnoremap yii          :csx IndentObject yii<CR>
+
+    nnoremap cai          :csx IndentObject cai<CR>
+    nnoremap caI          :csx IndentObject caI<CR>
+    nnoremap cii          :csx IndentObject cii<CR>
+
+    vnoremap ai           :csx IndentObject vai<CR>
+    vnoremap aI           :csx IndentObject vaI<CR>
+    vnoremap ii           :csx IndentObject vii<CR>
+
+    vnoremap i,           :csx ParamObject vi,<CR>
+    vnoremap a,           :csx ParamObject va,<CR>
+    nnoremap di,          :csx ParamObject di,<CR>
+    nnoremap yi,          :csx ParamObject yi,<CR>
+
+    vnoremap im           :csx MethodTextObject vim<CR>
+    vnoremap am           :csx MethodTextObject vam<CR>
+    nnoremap dim          :csx MethodTextObject dim<CR>
+    nnoremap yim          :csx MethodTextObject yim<CR>
 
 endif
 
