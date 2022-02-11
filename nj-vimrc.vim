@@ -432,7 +432,8 @@ else
   nmap ,cl :let @*=expand("%:p")<CR>
 endif
 let g:highlightedyank_highlight_duration = 500
-let g:lightline = { 'colorscheme': 'tendi' }
+"let g:lightline = { 'colorscheme': 'tendi' }
+let g:lightline = { 'colorscheme': 'nightfox' }
 "let g:VimTodoListsDatesEnabled = 0
 let g:VimTodoListsMoveItems = 0
 "emacs binding rsi plugin
