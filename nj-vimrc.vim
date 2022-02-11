@@ -569,6 +569,7 @@ if g:vsvim == 1
     map g; `.
     nmap <leader>f :vsc Edit.GoToAll<CR>
 
+    vnoremap // y/\V<C-R>"<CR>
     "go to interface
     nmap <leader>gi gg/class<CR>$gd<leader>h
     noremap <leader>last /<C-R>s<CR>
