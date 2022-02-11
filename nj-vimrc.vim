@@ -21,8 +21,9 @@ let g:neovide_cursor_animation_length=0.0
 let g:neovide_transparency=0.9
 
 noremap <C-v> "*p
-inoremap <C-c> "*y
-inoremap <C-v> <C-r>*
+vnoremap <C-c> "*y
+inoremap <C-v> <Esc>"*pi
+cnoremap <C-v> <C-r>*
 let mapleader = ","
 nmap s ysiw
 xmap s S
