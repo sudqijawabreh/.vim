@@ -254,7 +254,7 @@ augroup lsp
     autocmd!
     autocmd FileType fsharp nmap gr <Plug>(lcn-references)
     autocmd FileType fsharp nmap <F4> <Plug>(lcn-menu)
-    autocmd FileType fsharp nmap <buffer> <silent>K <Plug>(lcn-hover)
+    "autocmd FileType fsharp nmap <buffer> <silent>K <Plug>(lcn-hover)
     autocmd FileType fsharp nmap <buffer> <silent> gd <Plug>(lcn-definition)
     autocmd FileType fsharp xnoremap s* <ESC>`>a*)<ESC>`<i(*<ESC> " multiple line comment for fsharp
     autocmd FileType fsharp nnoremap ds* /\*)<cr>xx?(\*<cr>xx "delete multiple line comment
@@ -321,6 +321,7 @@ Plug 'cljoly/telescope-repo.nvim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'michaeljsmith/vim-indent-object',
 Plug 'AndrewRadev/diffurcate.vim',
+Plug 'dense-analysis/ale'
 "Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 "Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
 "Plug 'wookayin/fzf-ripgrep.vim'
@@ -482,17 +483,17 @@ if g:vsvim == 0
     " Note that the type is echoed to the Vim command line, and will overwrite
     " any other messages in this space including e.g. ALE linting messages.
     "autocmd CursorHold *.cs OmniSharpTypeLookup
-    autocmd CursorHold nmape <S-k> OmniSharpTypeLookup
+    autocmd FileType cs nmap <silent> <buffer> K <Plug>(omnisharp_type_lookup)
 
     " The following commands are contextual, based on the cursor position.
     autocmd FileType cs nmap <silent> <buffer> gd <Plug>(omnisharp_go_to_definition)
     autocmd FileType cs nmap <silent> <buffer> gr <Plug>(omnisharp_find_usages)
     autocmd FileType cs nmap <silent> <buffer> gi <Plug>(omnisharp_find_implementations)
     autocmd FileType cs nmap <silent> <buffer> gp <Plug>(omnisharp_preview_definition)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>ospi <Plug>(omnisharp_preview_implementations)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>ost <Plug>(omnisharp_type_lookup)
+    "autocmd FileType cs nmap <silent> <buffer> <Leader>ospi <Plug>(omnisharp_preview_implementations)
+    "autocmd FileType cs nmap <silent> <buffer> <Leader>ost <Plug>(omnisharp_type_lookup)
     autocmd FileType cs nmap <silent> <buffer> <Leader>osd <Plug>(omnisharp_documentation)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>osfs <Plug>(omnisharp_find_symbol)
+    "autocmd FileType cs nmap <silent> <buffer> <Leader>osfs <Plug>(omnisharp_find_symbol)
     autocmd FileType cs nmap <silent> <buffer> <Leader>osfx <Plug>(omnisharp_fix_usings)
     autocmd FileType cs nmap <silent> <buffer> <C-\> <Plug>(omnisharp_signature_help)
     autocmd FileType cs imap <silent> <buffer> <C-\> <Plug>(omnisharp_signature_help)
@@ -503,19 +504,21 @@ if g:vsvim == 0
     " Find all code errors/warnings for the current solution and populate the quickfix window
     autocmd FileType cs nmap <silent> <buffer> <Leader>osgcc <Plug>(omnisharp_global_code_check)
     " Contextual code actions (uses fzf, vim-clap, CtrlP or unite.vim selector when available)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>osca <Plug>(omnisharp_code_actions)
-    autocmd FileType cs xmap <silent> <buffer> <Leader>osca <Plug>(omnisharp_code_actions)
+    autocmd FileType cs nmap <silent> <buffer> <leader>oa <Plug>(omnisharp_code_actions)
+    autocmd FileType cs xmap <silent> <buffer> <leader>oa <Plug>(omnisharp_code_actions)
     " Repeat the last code action performed (does not use a selector)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>os. <Plug>(omnisharp_code_action_repeat)
-    autocmd FileType cs xmap <silent> <buffer> <Leader>os. <Plug>(omnisharp_code_action_repeat)
+    autocmd FileType cs nmap <silent> <buffer> <leader>os. <Plug>(omnisharp_code_action_repeat)
+    autocmd FileType cs xmap <silent> <buffer> <leader>os. <Plug>(omnisharp_code_action_repeat)
+    autocmd FileType cs nmap <silent> <buffer> <leader>oh <Plug>(omnisharp_highlight)
 
     autocmd FileType cs nmap <silent> <buffer> <Leader>os= <Plug>(omnisharp_code_format)
 
-    autocmd FileType cs nmap <silent> <buffer> <Leader>osnm <Plug>(omnisharp_rename)
+    autocmd FileType cs nmap <silent> <buffer> <Leader>rr <Plug>(omnisharp_rename)
 
     autocmd FileType cs nmap <silent> <buffer> <Leader>osre <Plug>(omnisharp_restart_server)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>osst <Plug>(omnisharp_start_server)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>ossp <Plug>(omnisharp_stop_server)
+    "autocmd FileType cs nmap <silent> <buffer> <Leader>osst <Plug>(omnisharp_start_server)
+    autocmd FileType cs nmap <silent> <buffer> <Leader>ost <Plug>(omnisharp_start_server)
+    autocmd FileType cs nmap <silent> <buffer> <Leader>osp <Plug>(omnisharp_stop_server)
     augroup END
 
     nnoremap <silent>gof : silent !explorer %:p:h<CR>
@@ -778,7 +781,7 @@ if has('nvim')
 else
   let g:OmniSharp_popup_options = {
   \ 'highlight': 'Normal',
-  \ 'padding': [0, 0, 0, 0],
+  \ 'padding': [1, 0, 0, 0],
   \ 'border': [1]
   \}
 endif
@@ -794,7 +797,7 @@ let g:OmniSharp_highlight_groups = {
 \ 'ExcludedCode': 'NonText'
 \}
 " }}}
-let g:OmniSharp_highlight_types = 0
+let g:OmniSharp_highlight_types = 1
 let g:OmniSharp_server_stdio = 1
 let g:OmniSharp_start_server = 0
 
