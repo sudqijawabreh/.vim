@@ -594,8 +594,8 @@ if g:vsvim == 1
     nnoremap <C-o> :vsc View.NavigateBackward<cr>
     nnoremap <C-i> :vsc View.NavigateForward<cr>
     " break out of the tyranny of text! Navigate by method
-    nnoremap <leader>n :vsc Edit.NextMethod<CR>
-    nnoremap <leader>m :vsc Edit.PreviousMethod<CR>
+    nnoremap ]m :vsc Edit.NextMethod<CR>
+    nnoremap [m :vsc Edit.PreviousMethod<CR>
     nnoremap <leader>M :csx methods<CR>
     "
     nnoremap rr :vsc Refactor.Rename<cr>
