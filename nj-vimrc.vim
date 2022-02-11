@@ -20,8 +20,6 @@ let g:neovide_cursor_trail_length=0.0
 let g:neovide_cursor_animation_length=0.0
 let g:neovide_transparency=0.9
 
-
-noremap <C-c> "*y
 noremap <C-v> "*p
 inoremap <C-c> "*y
 inoremap <C-v> <C-r>*
