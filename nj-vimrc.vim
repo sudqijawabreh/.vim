@@ -625,10 +625,10 @@ if g:vsvim == 1
     xnoremap $ $h
 
     "select function parameters
-    vnoremap i, /[,)]<cr>ho?[,(]<cr>l<ESC>:nohl<cr>gv
-    vnoremap a, /[,)]<cr>ho?[,(]<cr><ESC>:nohl<cr>gv
-    nnoremap ci, /[,)]<cr>hvo?[,(]<cr>l<ESC>:nohl<cr>gvc
-    nnoremap di, /[,)]<cr>hvo?[,(]<cr>l<ESC>:nohl<cr>gvd
+    "vnoremap i, /[,)]<cr>ho?[,(]<cr>l<ESC>:nohl<cr>gv
+    "vnoremap a, /[,)]<cr>ho?[,(]<cr><ESC>:nohl<cr>gv
+    "nnoremap ci, /[,)]<cr>hvo?[,(]<cr>l<ESC>:nohl<cr>gvc
+    "nnoremap di, /[,)]<cr>hvo?[,(]<cr>l<ESC>:nohl<cr>gvd
 
     nnoremap [c :vsc Diff.PreviousDifference<cr>
     nnoremap ]c :vsc Diff.NextDifference<cr>
