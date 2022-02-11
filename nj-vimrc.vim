@@ -48,9 +48,10 @@ map <C-l> <C-W>l
 
 nnoremap cv 0f=lC
 nnoremap <leader>h :noh<cr>
-nnoremap <leader>b :CtrlPBuffer<cr>
-vnoremap J :m '>+1<CR>gv=gv
-vnoremap K :m '<-2<CR>gv=gv
+"nnoremap <leader>b :CtrlPBuffer<cr>
+nnoremap <leader>b :Telescope buffers<cr>
+"vnoremap J :m '>+1<CR>gv=gv
+"vnoremap K :m '<-2<CR>gv=gv
 noremap <leader>p "0p
 command! BufOnly execute '%bdelete|edit #|normal `"'
 set nofixeol
