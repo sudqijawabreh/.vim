@@ -442,7 +442,7 @@ imap <C-BS> <M-BS>
 "Do not redraw screen in the middle of a macro. Makes them complete faster.
 
 "generate GUID
-"nmap gu :read !python -c "import uuid;print(str(uuid.uuid4()).upper())"<cr>
+nmap gu :read !python -c "import uuid;print(str(uuid.uuid4()).upper())"<cr>vil"*ydd
 
 "Run the current line as if it were a command. Often more convenient than q: when experimenting.
 "nnoremap <leader>e :exe getline(line('.'))<cr>
