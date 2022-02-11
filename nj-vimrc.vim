@@ -446,11 +446,21 @@ nmap gu :read !python -c "import uuid;print(str(uuid.uuid4()).upper())"<cr>vil"*
 
 "Run the current line as if it were a command. Often more convenient than q: when experimenting.
 "nnoremap <leader>e :exe getline(line('.'))<cr>
-nnoremap <leader>f 0f(h
+"nnoremap <leader>f 0f(h
 
 vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
+tnoremap <silent> <ESC> <C-\><C-n>
 
+ "nnoremap <C-p> <cmd>Telescope find_files<cr>
+nnoremap <leader>t :call OpenPowershell()<cr>
+"nnoremap <leader>x :sb term<cr>
+nnoremap <leader>f <cmd>Telescope find_files preview=false<cr>
+nnoremap <leader>cp <cmd>Telescope project<cr>
+"nnoremap <leader>fr :lua require'telescope.builtin'.resume{}<CR>
+vnoremap =j :!python -m json.tool<CR>
 
+"let g:node_client_debug = 1
+"let $NODE_CLIENT_LOG_FILE = '~/sudqilog.txt'
 if g:vsvim == 0
     nnoremap gd :YcmCompleter GoToDefinition<CR>
     nnoremap gr :YcmCompleter GoToReferences<CR>
