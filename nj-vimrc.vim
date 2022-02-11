@@ -511,6 +511,9 @@ if g:vsvim == 0
     autocmd FileType cs nmap <silent> <buffer> <Leader>osst <Plug>(omnisharp_start_server)
     autocmd FileType cs nmap <silent> <buffer> <Leader>ossp <Plug>(omnisharp_stop_server)
     augroup END
+
+    nnoremap <silent>gof : silent !explorer %:p:h<CR>
+    
     "go to interface
     nmap <leader>gi gg/class<CR><leader>h$gd
     "append current method to interface
