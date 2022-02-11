@@ -590,6 +590,7 @@ if g:vsvim == 1
 
     "nnoremap <C-k> :vsc Edit.MoveControlUP<cr>
     "nnoremap <C-j> :vsc Edit.MoveControlDown<cr>
+    nnoremap <C-e> :vsc View.ErrorList<cr>
     nnoremap <C-o> :vsc View.NavigateBackward<cr>
     nnoremap <C-i> :vsc View.NavigateForward<cr>
     " break out of the tyranny of text! Navigate by method
