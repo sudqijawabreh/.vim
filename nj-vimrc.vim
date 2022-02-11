@@ -196,7 +196,7 @@ set background=dark
 "set foldlevelstart=10
 "set foldnestmax=10      " no more than 10 fold levels please
 "map edit vimrc
-nmap <leader>v :execute("tabedit ".g:Home."/vimfiles/nj-vimrc.vim")<CR>
+nmap <leader>v :execute("tab drop ".g:Home."/vimfiles/nj-vimrc.vim")<CR>
 " cd sets path to the path of te file in the current buffer.
 "nnoremap cd :cd %:p:h
 " Open the NERDTree on the path of the file in the current buffer.
