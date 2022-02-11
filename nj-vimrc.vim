@@ -53,8 +53,11 @@ nnoremap <leader>b :Telescope buffers<cr>
 "vnoremap J :m '>+1<CR>gv=gv
 "vnoremap K :m '<-2<CR>gv=gv
 noremap <leader>p "0p
+nnoremap <leader>j `[
+nnoremap <leader>l `]
 command! BufOnly execute '%bdelete|edit #|normal `"'
 set nofixeol
+
 "nnoremap <leader>w :set nohlsearch<CR>/[A-Z]<CR>:set hlsearch<CR>
 "nnoremap <C-Left> :call search('\<\<Bar>\u', 'bW')<CR>
 
