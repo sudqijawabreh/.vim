@@ -182,6 +182,7 @@ set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*/vendor/*,*/\.git/*
 set nospell
 
 let g:gruvbox_contrast_dark = 'hard'
+set background=dark
 " Enabled folding on indent level. That way it works on any code & html, xml
 " etc. 
 " Setting foldlevelstart ensures that for newly opened files folds are open
