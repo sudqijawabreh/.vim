@@ -646,6 +646,7 @@ if g:vsvim == 1
     nnoremap <leader>dl :vsc Diff.RightOnlyView<cr>
 
     nnoremap <leader>gc :vsc Team.Git.GoToGitChanges<cr>
+    nnoremap <leader>gb :vsc Team.Git.Annotate<cr>
     nnoremap <leader>c :vsc Team.Git.CompareWithUnmodified<cr>
 
     nnoremap <leader>i V'[']=<C-[>
