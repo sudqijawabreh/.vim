@@ -440,7 +440,12 @@ let g:VimTodoListsMoveItems = 0
 imap <C-BS> <M-BS>
 
 "generate GUID
-nmap gu :read !python -c "import uuid;print(str(uuid.uuid4()).upper())"<cr>vil"*ydd
+nmap <leader>gu :read !python -c "import uuid;print(str(uuid.uuid4()).upper())"<cr>vil"*ydd
+nmap <leader>gb :Git blame<CR>
+nmap <leader>gl :Git! log -100 --pretty="%h \| %d %s (%cr) [%an]" <CR>
+nmap <leader>gp :Git! push origin<CR>
+nmap <leader>gs :Git<CR>
+xmap <leader>gb :Git blame<CR>
 
 "Run the current line as if it were a command. Often more convenient than q: when experimenting.
 "nnoremap <leader>e :exe getline(line('.'))<cr>
