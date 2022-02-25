@@ -575,6 +575,7 @@ if g:vsvim == 1
     map gp :vsc Edit.PeekDefinition<CR>
     map g; `.
     nmap <leader>f :vsc Edit.GoToAll<CR>
+    map <c-s> :w<CR>
 
     vnoremap // y/\V<C-R>"<CR>
     "go to interface
