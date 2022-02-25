@@ -84,12 +84,7 @@ set path =**
 "nmap 0 ^
 "set termguicolors what so ever
 if (has("termguicolors"))
-
     set termguicolors
-    "set term=xterm
-    set t_Co=256
-    let &t_AB="\e[48;5;%dm"
-    let &t_AF="\e[38;5;%dm"
 
 endif
 "cd ~
@@ -126,6 +121,7 @@ set wildmode=full
 " Turning on line wrapping and line-break for easy text-file editing.
 " Line-break wraps full words at the end of a sentence for readability.
 set nowrap
+hi SpellBad  gui=underline
 set nospell
 "set linebreak
 "
@@ -148,9 +144,6 @@ if has("gui_running")
     set guioptions=icpM
     if has('win32') || has('win64')
         "if (v:version == 704 && has("patch393")) || v:version > 704
-        set relativenumber 
-        "set renderoptions=type:directx,level:0.75,gamma:1.25,contrast:0.25,
-        ""            \geom:1,renmode:5,taamode:1
         "endif
     endif
 endif
@@ -182,11 +175,9 @@ endif
 "endif
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*/vendor/*,*/\.git/*
 "nmap <leader>b :CtrlPBuffer<CR>
-" set spelling false
-set nospell
 
 let g:gruvbox_contrast_dark = 'hard'
-set background=dark
+"set background=dark
 " Enabled folding on indent level. That way it works on any code & html, xml
 " etc. 
 " Setting foldlevelstart ensures that for newly opened files folds are open
@@ -245,11 +236,12 @@ augroup END
 augroup Spell
     autocmd!
     autocmd FileType gitcommit setlocal spell
+    " Force to use underline for spell check results
+    autocmd FileType gitcommit hi SpellBad  gui=underline    
     autocmd FileType gitcommit setlocal complete+=kspell
     autocmd FileType todo setlocal spell
     autocmd FileType todo setlocal complete+=kspell
 augroup END
-
 augroup lsp
     autocmd!
     autocmd FileType fsharp nmap gr <Plug>(lcn-references)
