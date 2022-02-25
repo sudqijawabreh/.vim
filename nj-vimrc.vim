@@ -400,13 +400,13 @@ set foldtext=MyFoldText()
 " copy macthed search to clippored
 "http://vim.wikia.com/wiki/Copy_search_matches
 function! CopyMatches(reg)
-
     let hits = []
     %s//\=len(add(hits, submatch(0))) ? submatch(0) : ''/gne
     let reg = empty(a:reg) ? '+' : a:reg
     execute 'let @'.reg.' = join(hits, "\n") . "\n"'
 endfunction
 command! -register CopyMatches call CopyMatches(<q-reg>)" Set color scheme according to current time of day.
+
 if has("gui_running")
     "colorscheme solarized
     "colorscheme gruvbox
@@ -796,7 +796,7 @@ let g:OmniSharp_highlight_groups = {
 \ 'ExcludedCode': 'NonText'
 \}
 " }}}
-let g:OmniSharp_highlight_types = 1
+let g:OmniSharp_highlight_types = 0
 let g:OmniSharp_server_stdio = 1
 let g:OmniSharp_start_server = 0
 
