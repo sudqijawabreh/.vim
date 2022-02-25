@@ -453,6 +453,7 @@ xmap <leader>gb :Git blame<CR>
 
 vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
 tnoremap <silent> <ESC> <C-\><C-n>
+tnoremap <silent> <c-j> <C-\><c-n><c-w>j
 
  "nnoremap <C-p> <cmd>Telescope find_files<cr>
 nnoremap <leader>t :call OpenPowershell()<cr>
