@@ -300,7 +300,7 @@ Plug 'sgur/vim-textobj-parameter'
 Plug 'sudqijawabreh/vim-sendtoterm'
 "Plug 'ThePrimeagen/vim-be-good'
 " not needed in nvim 0.6
-"Plug 'machakann/vim-highlightedyank'
+Plug 'machakann/vim-highlightedyank'
 " using grep inside vim instead
 "Plug 'dyng/ctrlsf.vim'
 "Plug 'skamsie/vim-lineletters'
