@@ -269,8 +269,10 @@ call plug#begin(g:Home.'/.vimfiles/plugged')
 "Plug 'wuelnerdotexe/vim-enfocado'
 "Plug 'sonph/onehalf', { 'rtp': 'vim' }
 "Plug 'arcticicestudio/nord-vim'
+Plug 'jceb/vim-textobj-uri'
 Plug 'EdenEast/nightfox.nvim'
 "--------------------
+Plug 'jceb/vim-textobj-uri'
 "Plug 'Raimondi/delimitMate'
 "Plug 'OrangeT/vim-csharp'
 "Plug 'terryma/vim-expand-region'
