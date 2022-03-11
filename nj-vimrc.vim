@@ -54,6 +54,7 @@ nnoremap <leader>b :Telescope buffers<cr>
 "vnoremap K :m '<-2<CR>gv=gv
 " paste last copied text, avoids pasting deleted text
 noremap <leader>p "0p
+noremap gy `[v`] 
 nnoremap <leader>j `[
 nnoremap <leader>l `]
 command! BufOnly execute '%bdelete|edit #|normal `"'
