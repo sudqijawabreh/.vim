@@ -52,6 +52,7 @@ nnoremap <leader>h :noh<cr>
 nnoremap <leader>b :Telescope buffers<cr>
 "vnoremap J :m '>+1<CR>gv=gv
 "vnoremap K :m '<-2<CR>gv=gv
+" paste last copied text, avoids pasting deleted text
 noremap <leader>p "0p
 nnoremap <leader>j `[
 nnoremap <leader>l `]
@@ -385,6 +386,7 @@ endif
     endtry
 endfunction
 
+" a function to change fold text to include text in the last line
 function! MyFoldText()
     let nblines = v:foldend - v:foldstart + 1
     let w = winwidth(0) - &foldcolumn - (&number ? 8 : 0)
@@ -452,15 +454,20 @@ xmap <leader>gb :Git blame<CR>
 "nnoremap <leader>f 0f(h
 
 vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
+
+" terminal mode mappings
 tnoremap <silent> <ESC> <C-\><C-n>
 tnoremap <silent> <c-j> <C-\><c-n><c-w>j
 
  "nnoremap <C-p> <cmd>Telescope find_files<cr>
+" show terminal buffer if already opend or create a new one
 nnoremap <leader>t :call OpenPowershell()<cr>
 "nnoremap <leader>x :sb term<cr>
 nnoremap <leader>f <cmd>Telescope find_files preview=false<cr>
 nnoremap <leader>cp <cmd>Telescope project<cr>
 "nnoremap <leader>fr :lua require'telescope.builtin'.resume{}<CR>
+"
+"beautify json
 vnoremap =j :!python -m json.tool<CR>
 
 "let g:node_client_debug = 1
@@ -471,7 +478,6 @@ if g:vsvim == 0
     omap <leader>r  <Plug>(SendToTerm)
     nmap <leader>rr  <Plug>(SendToTermLine)
     nmap <leader>ct :execute "SendTextToTerm cd " . getcwd() <cr>
-    "xmap <C-CR>  <Plug>(SendToTerm)
     nnoremap <s-y> y$
 
     augroup omnisharp_commands
