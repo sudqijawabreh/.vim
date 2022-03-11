@@ -24,7 +24,7 @@ noremap <C-v> "*p
 vnoremap <C-c> "*y
 inoremap <C-v> <Esc>"*pi
 cnoremap <C-v> <C-r>*
-let mapleader = ","
+let mapleader = " "
 nmap s ysiw
 xmap s S
 "map <S-s> <nop>
