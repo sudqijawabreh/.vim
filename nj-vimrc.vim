@@ -272,6 +272,7 @@ call plug#begin(g:Home.'/.vimfiles/plugged')
 Plug 'jceb/vim-textobj-uri'
 Plug 'EdenEast/nightfox.nvim'
 "--------------------
+Plug 'kana/vim-textobj-function', { 'for':['c', 'cpp', 'vim', 'java'] }
 Plug 'jceb/vim-textobj-uri'
 "Plug 'Raimondi/delimitMate'
 "Plug 'OrangeT/vim-csharp'
