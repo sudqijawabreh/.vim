@@ -469,6 +469,8 @@ tnoremap <silent> <c-j> <C-\><c-n><c-w>j
 " show terminal buffer if already opend or create a new one
 nnoremap <leader>t :call OpenPowershell()<cr>
 "nnoremap <leader>x :sb term<cr>
+"nnoremap <Leader>f :lua require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({}))<cr>
+"nnoremap <Leader>f :lua require'telescope.builtin'.find_files(require('telescope.themes').get_ivy({}))<cr>
 nnoremap <leader>f <cmd>Telescope find_files preview=false<cr>
 nnoremap <leader>cp <cmd>Telescope project<cr>
 "nnoremap <leader>fr :lua require'telescope.builtin'.resume{}<CR>
@@ -836,28 +838,13 @@ require('telescope').setup{
     initial_mode = "insert",
     selection_strategy = "reset",
     sorting_strategy = "descending",
-    layout_strategy = "horizontal",
-    layout_config = {
-      horizontal = {
-        mirror = false,
-      },
-      vertical = {
-        mirror = false,
-      },
-    },
-    file_sorter =  require'telescope.sorters'.get_fuzzy_file,
+    layout_strategy = "vertical",
     file_ignore_patterns = {},
-    generic_sorter =  require'telescope.sorters'.get_generic_fuzzy_sorter,
     winblend = 0,
     border = {},
     borderchars = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
-    color_devicons = true,
-    use_less = true,
     path_display = {},
-    set_env = { ['COLORTERM'] = 'truecolor' }, -- default = nil,
-    file_previewer = require'telescope.previewers'.vim_buffer_cat.new,
-    grep_previewer = require'telescope.previewers'.vim_buffer_vimgrep.new,
-    qflist_previewer = require'telescope.previewers'.vim_buffer_qflist.new,
+    --set_env = { ['COLORTERM'] = 'truecolor' }, -- default = nil,
     preview = {
         treesitter = false,
     },
