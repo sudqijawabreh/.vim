@@ -299,10 +299,6 @@ Plug 'vim-airline/vim-airline'
 "Plug 'vim-expand-region'
 Plug 'OmniSharp/omnisharp-vim'
 Plug 'aserebryakov/vim-todo-lists'
-'fugitivecall' is not recognized as an internal or external command,
-operable program or batch file.
-'fugitivecall' is not recognized as an internal or external command,
-operable program or batch file.
 "Plug 'vim-latex/vim-latex'
 "Plug 'Valloric/YouCompleteMe'
 "Plug 'fsharp/vim-fsharp'
@@ -545,6 +541,9 @@ if g:vsvim == 0
     autocmd FileType cs nmap <silent> <buffer> <Leader>ost <Plug>(omnisharp_start_server)
     autocmd FileType cs nmap <silent> <buffer> <Leader>osp <Plug>(omnisharp_stop_server)
     augroup END
+
+    nmap <m-k> :cprev<cr>
+    nmap <m-j> :cnext<cr>
 
     xnoremap g/ y: grep! <C-r>" \| copen <cr>
 
