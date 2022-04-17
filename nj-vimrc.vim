@@ -533,10 +533,6 @@ if g:vsvim == 0
 
     "open current file folder
     nnoremap <silent>gof : !explorer %:h<CR>
-
-    " start open program or image under the cursor
-    nnoremap mm  :lcd %:p:h<CR> :!start <cfile><CR>
-    xnoremap mm  y:!start "" "<c-r>"" <cr>
     
     "go to interface
     nmap <leader>gi gg/class<CR><leader>h$gd
