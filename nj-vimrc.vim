@@ -235,6 +235,15 @@ augroup Commit
     "autocmd FileType gitcommit :execute "normal /branch\<cr>wyiWggpA" | startinsert!
 augroup END
 
+augroup vimscript
+    autocmd!
+    if has('win32')
+        "open plugin in the browser
+        autocmd FileType vim xnoremap <leader>gx y:!start https://github.com/<c-r>"<cr>
+        autocmd FileType vim nnoremap <leader>gx 0vi'y:!start https://github.com/<c-r>"<cr>
+    endif
+augroup END
+
 augroup Spell
     autocmd!
     autocmd FileType gitcommit setlocal spell
