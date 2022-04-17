@@ -232,7 +232,7 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
  
 "Add branch name at the beginning of the commit message
 augroup Commit
-    "autocmd FileType gitcommit :execute "normal /branch\<cr>wyiWggpA" | startinsert!
+    autocmd FileType gitcommit nnoremap gb :put!=fugitive#head()<cr>
 augroup END
 
 augroup vimscript
@@ -299,6 +299,10 @@ Plug 'vim-airline/vim-airline'
 "Plug 'vim-expand-region'
 Plug 'OmniSharp/omnisharp-vim'
 Plug 'aserebryakov/vim-todo-lists'
+'fugitivecall' is not recognized as an internal or external command,
+operable program or batch file.
+'fugitivecall' is not recognized as an internal or external command,
+operable program or batch file.
 "Plug 'vim-latex/vim-latex'
 "Plug 'Valloric/YouCompleteMe'
 "Plug 'fsharp/vim-fsharp'
