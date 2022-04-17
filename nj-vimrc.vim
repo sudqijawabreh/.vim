@@ -546,6 +546,8 @@ if g:vsvim == 0
     autocmd FileType cs nmap <silent> <buffer> <Leader>osp <Plug>(omnisharp_stop_server)
     augroup END
 
+    xnoremap g/ y: grep! <C-r>" \| copen <cr>
+
     "open current file folder
     nnoremap <silent>gof : !explorer %:h<CR>
     xnoremap <leader>gf y: Find <C-r>"<CR> 
