@@ -284,6 +284,7 @@ call plug#begin(g:Home.'/.vimfiles/plugged')
 Plug 'jceb/vim-textobj-uri'
 Plug 'EdenEast/nightfox.nvim'
 Plug 'vimwiki/vimwiki'
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
 "--------------------
 "query db
 Plug 'tpope/vim-dadbod'
