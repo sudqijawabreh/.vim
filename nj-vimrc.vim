@@ -267,6 +267,8 @@ augroup END
 packadd cfilter
 
 call plug#begin(g:Home.'/.vimfiles/plugged')
+"show code context
+Plug 'wellle/context.vim'
 " vim colorschemes
 "Plug 'tomasiser/vim-code-dark'
 "Plug 'lifepillar/vim-solarized8'
@@ -375,6 +377,11 @@ command! -nargs=0 -bar Update if &modified
                     \|endif
 nnoremap <silent> <C-S> :<C-u>Update<CR>
 inoremap <c-s> <c-o>:Update<CR>
+
+
+let g:context_enabled = 0
+"show context for a while
+nnoremap <leader>k :ContextPeek<cr>
 
 "for wrapping
 nmap j gj
