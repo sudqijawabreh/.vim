@@ -280,6 +280,8 @@ call plug#begin(g:Home.'/.vimfiles/plugged')
 "Plug 'arcticicestudio/nord-vim'
 Plug 'jceb/vim-textobj-uri'
 Plug 'EdenEast/nightfox.nvim'
+Plug 'vimwiki/vimwiki'
+"--------------------
 "--------------------
 Plug 'bps/vim-textobj-python'
 Plug 'kana/vim-textobj-function', { 'for':['c', 'cpp', 'vim', 'java'] }
