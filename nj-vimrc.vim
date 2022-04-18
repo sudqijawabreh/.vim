@@ -562,7 +562,7 @@ if g:vsvim == 0
 
     " start open program or image under the cursor
     nnoremap mm  :lcd %:p:h<CR> :!start <cfile><CR>
-    xnoremap mm  y:!start "" "<c-r>"" <cr>
+    xnoremap mm  :lcd %:p:h<CR>y:!start "" "<c-r>"" <cr>
     
     "go to interface
     nmap <leader>gi gg/class<CR><leader>h$gd
