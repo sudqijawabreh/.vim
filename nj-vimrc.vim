@@ -880,7 +880,9 @@ require('telescope').setup{
         i = {
              ["<c-j>"] = require("telescope.actions").move_selection_next,
             -- Right hand side can also be the name of the action as a string
-            ["<c-k>"] = require("telescope.actions").move_selection_previous
+            ["<c-k>"] = require("telescope.actions").move_selection_previous,
+
+            ["<M-p>"] = action_layout.toggle_preview
         }
     },
     require('telescope').setup {
