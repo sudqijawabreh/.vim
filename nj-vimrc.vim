@@ -282,6 +282,9 @@ Plug 'jceb/vim-textobj-uri'
 Plug 'EdenEast/nightfox.nvim'
 Plug 'vimwiki/vimwiki'
 "--------------------
+"query db
+Plug 'tpope/vim-dadbod'
+Plug 'kristijanhusak/vim-dadbod-ui'
 "--------------------
 Plug 'bps/vim-textobj-python'
 Plug 'kana/vim-textobj-function', { 'for':['c', 'cpp', 'vim', 'java'] }
