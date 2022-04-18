@@ -561,8 +561,10 @@ if g:vsvim == 0
     xnoremap <leader>gf y: Find <C-r>"<CR> 
 
     " start open program or image under the cursor
-    nnoremap mm  :lcd %:p:h<CR> :!start <cfile><CR>
-    xnoremap mm  :lcd %:p:h<CR>y:!start "" "<c-r>"" <cr>
+    if has('win32')
+        nnoremap mm  :lcd %:p:h<CR> :!start <cfile><CR>
+        xnoremap mm  :lcd %:p:h<CR>y:!start "" "<c-r>"" <cr>
+    endif
     
     "go to interface
     nmap <leader>gi gg/class<CR><leader>h$gd
