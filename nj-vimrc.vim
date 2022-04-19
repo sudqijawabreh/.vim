@@ -267,6 +267,7 @@ augroup END
 packadd cfilter
 
 call plug#begin(g:Home.'/.vimfiles/plugged')
+Plug 'tpope/vim-commentary'
 "show code context
 Plug 'wellle/context.vim'
 " vim colorschemes
@@ -520,6 +521,7 @@ if g:vsvim == 0
     " Note that the type is echoed to the Vim command line, and will overwrite
     " any other messages in this space including e.g. ALE linting messages.
     "autocmd CursorHold *.cs OmniSharpTypeLookup
+    autocmd FileType cs setlocal commentstring=\/\/%s
     autocmd FileType cs nmap <silent> <buffer> K <Plug>(omnisharp_type_lookup)
 
     " The following commands are contextual, based on the cursor position.
