@@ -478,6 +478,7 @@ nmap <leader>gb :Git blame<CR>
 xmap <leader>gb :Git blame<CR>
 nmap <leader>gl :Git! log -100 --pretty="%h \| %d %s (%cr) [%an]" <CR>
 nmap <leader>gp :Git! push origin<CR>
+nmap <leader>gP :Git! push origin --force<CR>
 nmap <leader>gs :Git<CR>
 nmap <leader>gd :Gdiffsplit<CR>
 
