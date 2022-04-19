@@ -270,22 +270,6 @@ call plug#begin(g:Home.'/.vimfiles/plugged')
 Plug 'tpope/vim-commentary'
 "show code context
 Plug 'wellle/context.vim'
-" vim colorschemes
-"Plug 'tomasiser/vim-code-dark'
-"Plug 'lifepillar/vim-solarized8'
-"Plug 'joshdick/onedark.vim'
-"Plug 'folke/tokyonight.nvim'
-"Plug 'morhetz/gruvbox'
-"Plug 'tomasiser/vim-code-dark'
-"Plug 'drewtempelmeyer/palenight.vim'
-"Plug 'rakr/vim-one'
-"Plug 'jacoborus/tender.vim'
-"Plug 'altercation/vim-colors-solarized'
-"Plug 'wuelnerdotexe/vim-enfocado'
-"Plug 'sonph/onehalf', { 'rtp': 'vim' }
-"Plug 'arcticicestudio/nord-vim'
-Plug 'jceb/vim-textobj-uri'
-Plug 'EdenEast/nightfox.nvim'
 Plug 'vimwiki/vimwiki'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
 "--------------------
@@ -346,6 +330,23 @@ Plug 'dense-analysis/ale'
 "Plug 'wookayin/fzf-ripgrep.vim'
 Plug 'godlygeek/tabular'
 "Plug 'puremourning/vimspector'
+"--------------------
+" vim colorschemes
+Plug 'EdenEast/nightfox.nvim'
+"Plug 'tomasiser/vim-code-dark'
+"Plug 'lifepillar/vim-solarized8'
+"Plug 'joshdick/onedark.vim'
+"Plug 'folke/tokyonight.nvim'
+"Plug 'morhetz/gruvbox'
+"Plug 'tomasiser/vim-code-dark'
+"Plug 'drewtempelmeyer/palenight.vim'
+"Plug 'rakr/vim-one'
+"Plug 'jacoborus/tender.vim'
+"Plug 'altercation/vim-colors-solarized'
+"Plug 'wuelnerdotexe/vim-enfocado'
+"Plug 'sonph/onehalf', { 'rtp': 'vim' }
+"Plug 'arcticicestudio/nord-vim'
+"--------------------
 " can be used to edit text in the browser
 "Plug 'subnut/nvim-ghost.nvim', {'do': ':call nvim_ghost#installer#install()'}
 Plug 'autozimu/LanguageClient-neovim', {
