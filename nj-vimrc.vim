@@ -497,8 +497,8 @@ tnoremap <silent> <c-j> <C-\><c-n><c-w>j
 nnoremap <leader>t :call OpenPowershell()<cr>
 "nnoremap <leader>x :sb term<cr>
 "nnoremap <Leader>f :lua require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({}))<cr>"
-"nnoremap <Leader>f :lua require'telescope.builtin'.find_files(require('telescope.themes').get_ivy({previewer = false}))<cr>
-nnoremap <leader>f <cmd>Telescope find_files previewer=false<cr>
+nnoremap <Leader>f :lua require'telescope.builtin'.find_files(require('telescope.themes').get_ivy({previewer = false}))<cr>
+"nnoremap <leader>f <cmd>Telescope find_files previewer=false<cr>
 nnoremap <leader>cp <cmd>Telescope project<cr>
 "nnoremap <leader>fr :lua require'telescope.builtin'.resume{}<CR>
 "
