@@ -232,7 +232,7 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
  
 "Add branch name at the beginning of the commit message
 augroup Commit
-    autocmd FileType gitcommit nnoremap gb :put!=fugitive#head()<cr>
+    autocmd FileType gitcommit nnoremap gb i<C-R>=fugitive#head()<cr>
 augroup END
 
 augroup vimscript
@@ -474,7 +474,9 @@ let g:VimTodoListsMoveItems = 0
 imap <C-BS> <M-BS>
 
 "generate GUID
-nmap <leader>gu :read !python -c "import uuid;print(str(uuid.uuid4()).upper())"<cr>vil"*ydd
+"nmap <leader>gu :read !python -c "import uuid;print(str(uuid.uuid4()).upper())"<cr>vil"*ydd
+"push new branch to remote
+nmap <leader>gu :Git! push -u <C-g><CR>
 nmap <leader>gb :Git blame<CR>
 xmap <leader>gb :Git blame<CR>
 nmap <leader>gl :Git! log -100 --pretty="%h \| %d %s (%cr) [%an]" <CR>
@@ -482,6 +484,12 @@ nmap <leader>gp :Git! push origin<CR>
 nmap <leader>gP :Git! push origin --force<CR>
 nmap <leader>gs :Git<CR>
 nmap <leader>gd :Gdiffsplit<CR>
+" pull the current branch from remote
+" you can remember it like git get branch
+nmap <leader>gg :Git! pull origin <c-g><CR>
+nmap <leader>gG :Git! pull origin
+"put branch name on the command
+cnoremap <c-g> <C-R>=fugitive#head()<cr>
 
 "Run the current line as if it were a command. Often more convenient than q: when experimenting.
 "nnoremap <leader>e :exe getline(line('.'))<cr>
