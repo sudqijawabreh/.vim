@@ -509,6 +509,7 @@ nnoremap <leader>t :call OpenPowershell()<cr>
 nnoremap <Leader>f :lua require'telescope.builtin'.find_files(require('telescope.themes').get_ivy({previewer = false}))<cr>
 "nnoremap <leader>f <cmd>Telescope find_files previewer=false<cr>
 nnoremap <leader>cp <cmd>Telescope project<cr>
+nnoremap <leader>cr <cmd>Telescope resume<cr>
 "nnoremap <leader>fr :lua require'telescope.builtin'.resume{}<CR>
 "
 "beautify json
