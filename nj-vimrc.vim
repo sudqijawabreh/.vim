@@ -69,17 +69,7 @@ set nofixeol
 ""    set shellredir=>
 ""    set shellcmdflag=
 ""endif
-if has('unix')
-    let g:Home="/mnt/c/Users/Sudqi"
-    cd /mnt/c/Users/Sudqi/Documents/r365
-else
-    "cd C:\Users\Sudqi\Documents\project\dc-project-management
-    "cd ~
-    "cd .\Documents\r365\
-    "cd .\Documents\r365\r365forms\
-    "cd .\Documents\r365\r365\
-    let g:Home=$HOME
-endif
+let g:Home=$HOME
 " to allow recursive search using find
 set path =**
 " no need use <C-_> 
@@ -189,7 +179,12 @@ let g:gruvbox_contrast_dark = 'hard'
 "set foldlevelstart=10
 "set foldnestmax=10      " no more than 10 fold levels please
 "map edit vimrc
+if('win32')
 nmap <leader>v :execute("tab drop ".g:Home."/vimfiles/nj-vimrc.vim")<CR>
+else
+    nmap <leader>v :execute("tab drop ".g:Home."/.vim/nj-vimrc.vim")<CR>
+endif
+
 " cd sets path to the path of te file in the current buffer.
 "nnoremap cd :cd %:p:h
 " Open the NERDTree on the path of the file in the current buffer.
@@ -321,7 +316,7 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-fzy-native.nvim'
 Plug 'nvim-telescope/telescope-project.nvim'
 Plug 'cljoly/telescope-repo.nvim'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+"Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'michaeljsmith/vim-indent-object',
 Plug 'AndrewRadev/diffurcate.vim',
 Plug 'dense-analysis/ale'
@@ -349,19 +344,11 @@ Plug 'EdenEast/nightfox.nvim'
 "--------------------
 " can be used to edit text in the browser
 "Plug 'subnut/nvim-ghost.nvim', {'do': ':call nvim_ghost#installer#install()'}
-Plug 'autozimu/LanguageClient-neovim', {
-    \ 'branch': 'next',
-    \ 'do': 'powershell -executionpolicy bypass -File install.ps1',
-    \ }
-Plug 'ionide/Ionide-vim', {
-     \ 'do':  'powershell -ExecutionPolicy Unrestricted .\install.ps1',
-     \}
-
 call plug#end()
 nmap <silent>,, <Plug>LineLetters
 vmap <silent>,, <Plug>LineLetters
-let g:coc_global_extensions=[ 'coc-tsserver']
-let g:coc_sources_disable_map = { 'cs': ['cs-2', 'cs-3', 'cs-4'] }
+"let g:coc_global_extensions=[ 'coc-tsserver']
+"let g:coc_sources_disable_map = { 'cs': ['cs-2', 'cs-3', 'cs-4'] }
 command! -bang -nargs=? -complete=dir Files
         \ call fzf#vim#files(<q-args>, {'options': ['--layout=reverse', '--info=inline', '--preview', 'cat {}']}, <bang>0)
 
@@ -405,12 +392,12 @@ endif
 "python powerline_setup()
 "python del powerline_setup
 
- function! OpenPowershell()
+ function! OpenTerminalBuffer(name)
     try
-        if bufexists(bufname("term://*powershell")) > 0 
-            execute "sb term://*powershell"
+        if bufexists(bufname("term://*".a:name)) > 0 
+            execute "sb term://*".a:name
         else
-            execute 'sp | term powershell'
+            execute 'sp | term '.a:name
         endif
     catch /^Vim\%((\a\+)\)\=:E37/   
             execute "BufOnly"
@@ -503,7 +490,11 @@ tnoremap <silent> <c-j> <C-\><c-n><c-w>j
 
  "nnoremap <C-p> <cmd>Telescope find_files<cr>
 " show terminal buffer if already opend or create a new one
-nnoremap <leader>t :call OpenPowershell()<cr>
+if has('win32')
+    nnoremap <leader>t :call OpenTerminalBuffer('powershell')<cr>
+else
+    nnoremap <leader>t :call OpenTerminalBuffer('bash')<cr>
+endif
 "nnoremap <leader>x :sb term<cr>
 "nnoremap <Leader>f :lua require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({}))<cr>"
 nnoremap <Leader>f :lua require'telescope.builtin'.find_files(require('telescope.themes').get_ivy({previewer = false}))<cr>
@@ -856,7 +847,6 @@ let g:OmniSharp_popup_mappings = {
 \ 'pageUp': ['<C-b>', '<PageUp>']
 \}
 
-
 let g:OmniSharp_highlight_groups = {
 \ 'ExcludedCode': 'NonText'
 \}
@@ -866,6 +856,7 @@ let g:OmniSharp_server_stdio = 1
 let g:OmniSharp_start_server = 0
 
 lua << EOF
+local action_layout = require("telescope.actions.layout")
 require('telescope').setup{
   defaults = {
     vimgrep_arguments = {
@@ -895,7 +886,7 @@ require('telescope').setup{
         treesitter = false,
     },
    path_display = {
-       'shorten',
+       --'shorten',
        'absolute',
      },
     mappings = {
@@ -917,7 +908,7 @@ require('telescope').setup{
     }
   }
 }
-require('telescope').load_extension('fzy_native')
+--require('telescope').load_extension('fzy_native')
 require'telescope'.load_extension'repo'
 require'telescope'.load_extension('project')
 EOF
@@ -951,17 +942,4 @@ EOF
 "tnoremap <C-\><C-l> <C-\><C-n>:call ClearTerminal()<cr>
 "tnoremap <C-\><C-p> <C-\><C-n>:call ClearPythonTerminal()<cr>
 lua <<EOF
---require'nvim-treesitter.configs'.setup {
---   indent = {
---        enable = false
---   },
---  highlight = {
---    enable = false,
---    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
---    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
---    -- Using this option may slow down your editor, and you may see some duplicate highlights.
---    -- Instead of true it can also be a list of languages
---    additional_vim_regex_highlighting = false,
---  },
---}
 EOF
