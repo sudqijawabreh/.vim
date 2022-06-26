@@ -471,6 +471,11 @@ nmap <leader>gp :Git! push origin<CR>
 nmap <leader>gP :Git! push origin --force<CR>
 nmap <leader>gs :Git<CR>
 nmap <leader>gd :Gdiffsplit<CR>
+nmap <leader>gcc :Git commit<CR>
+nmap <leader>gce :Git commit --amend --no-edit<CR>
+nmap <leader>gz<space> :Git stash<space>
+nmap <leader>gzz :Git stash<CR>
+nmap <leader>gzp :Git stash pop<CR>
 " pull the current branch from remote
 " you can remember it like git get branch
 nmap <leader>gg :Git! pull origin <c-g><CR>
