@@ -783,21 +783,33 @@ if g:vsvim == 1
     "Copy full path to clipboard then escap backslash and finally pass it to
     "powershell to split it then copy it back to clipboard
     nmap ,cf :vsc File.CopyFullPath<cr>o<C-r>*<Esc>:s/\\/\\\\/g<CR>vil"*ddd :read !powershell -Command Split-Path <C-r>* -leaf<cr>jvil"*ydd
+    
+    " show find references window
+    nnoremap <leader>n :vsc View.FindReferencesWindow1<CR>:vsc Window.Dock<CR>
 
+
+    " mapped these in visual studio works much better
     " And map goToNextLocaion to <c-p> in visual studio to make it work in
     " the symbols window
-    nnoremap <C-n> :vsc Edit.GoToNextLocation<CR>
-    nnoremap <C-p> :vsc Edit.GoToPrevLocation<CR>
-    xnoremap <C-n> <Esc>:vsc Edit.GoToNextLocation<CR>
-    xnoremap <C-p> <Esc>:vsc Edit.GoToPrevLocation<CR>
+    " nnoremap <c-n> :vsc Edit.GoToNextLocation<CR>
+    " nnoremap <c-p> :vsc Edit.GoToPrevLocation<CR>
+    " xnoremap <c-n> <Esc>:vsc Edit.GoToNextLocation<CR>
+    " xnoremap <c-p> <Esc>:vsc Edit.GoToPrevLocation<CR>
 
-    inoremap <C-n> <C-o>:vsc Edit.CompleteWord<CR>
-    inoremap <C-p> <Esc>:vsc Edit.GoToPrevLocation<CR>
+    " this didn't work because visual studio has already mapings for this
+    " used <m-n> , <m-p>
+    " inoremap <M-j> <C-o>:vsc Edit.LineDown<CR>
+    " inoremap <M-k> <C-o>:vsc Edit.LineUp<CR>
+    " mapped <m-s-m> to dock window
+    " mapped <m-m> to auto hide window
+    " this feels more natural
+    nnoremap <C-W>o :vsc Window.AutoHideAll<CR>
 
     nnoremap gof :vsc File.OpenContainingFolder<cr>
     nnoremap <S-k> :vsc Edit.QuickInfo<CR>
     nnoremap <leader>; :vsc SolutionExplorer.SyncWithActiveDocument<CR>
-    nnoremap <C-W>o :vsc File.CloseAllButThis<CR>
+
+    nnoremap <C-W>O :vsc File.CloseAllButThis<CR>
 
     nnoremap dai          :csx IndentObject dai<CR>
     nnoremap daI          :csx IndentObject daI<CR>
