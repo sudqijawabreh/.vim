@@ -479,6 +479,7 @@ nmap <leader>gzp :Git stash pop<CR>
 " pull the current branch from remote
 " you can remember it like git get branch
 nmap <leader>gg :Git! pull origin <c-g><CR>
+nmap <leader>g<space> :Git! pull origin <c-g>
 nmap <leader>gG :Git! pull origin
 "put branch name on the command
 cnoremap <c-g> <C-R>=fugitive#head()<cr>
