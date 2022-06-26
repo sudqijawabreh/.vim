@@ -463,7 +463,8 @@ imap <C-BS> <M-BS>
 "generate GUID
 "nmap <leader>gu :read !python -c "import uuid;print(str(uuid.uuid4()).upper())"<cr>vil"*ydd
 "push new branch to remote
-nmap <leader>gu :Git! push -u <C-g><CR>
+nmap <leader>gu :Git! push --set-upstream origin <C-g><CR>
+nmap <leader>gu<space> :Git! push --set-upstream origin <C-g>
 nmap <leader>gb :Git blame<CR>
 xmap <leader>gb :Git blame<CR>
 nmap <leader>gl :Git! log -100 --pretty="%h \| %d %s (%cr) [%an]" <CR>
