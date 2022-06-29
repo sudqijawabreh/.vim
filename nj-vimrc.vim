@@ -262,6 +262,7 @@ augroup END
 packadd cfilter
 
 call plug#begin(g:Home.'/.vimfiles/plugged')
+Plug 'szw/vim-maximizer'
 Plug 'tpope/vim-commentary'
 "show code context
 Plug 'wellle/context.vim'
@@ -371,6 +372,7 @@ inoremap <c-s> <c-o>:Update<CR>
 let g:context_enabled = 0
 "show context for a while
 nnoremap <leader>k :ContextPeek<cr>
+nnoremap <c-w>m :MaximizerToggle<CR>
 
 "for wrapping
 nmap j gj
