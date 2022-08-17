@@ -262,6 +262,7 @@ augroup END
 packadd cfilter
 
 call plug#begin(g:Home.'/.vimfiles/plugged')
+Plug 'lewis6991/gitsigns.nvim'
 Plug 'szw/vim-maximizer'
 Plug 'tpope/vim-commentary'
 "show code context
@@ -877,6 +878,18 @@ let g:OmniSharp_server_stdio = 1
 let g:OmniSharp_start_server = 0
 
 lua << EOF
+require('gitsigns').setup
+{
+    current_line_blame = true,
+    current_line_blame_opts = {
+        virt_text = true,
+        virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
+        delay = 50,
+        ignore_whitespace = true,
+        },
+    current_line_blame_formatter = '<author>, <author_time:%R> - <summary>',
+}
+
 local action_layout = require("telescope.actions.layout")
 require('telescope').setup{
   defaults = {
