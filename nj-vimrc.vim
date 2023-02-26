@@ -230,6 +230,12 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
  
 " search transalte for text under selection
 xnoremap <leader>gt "*y:!start https://translate.google.com.eg/?sl=auto"&"tl=ar"&"text=<c-r>*&op=translate<cr>
+
+" Check if the buffer needs to be refreshed from disk (using 'autoread').
+" Useful when branch-hopping with git.
+autocmd FocusGained * checktime
+autocmd WinEnter    * checktime
+
 "Add branch name at the beginning of the commit message
 augroup Commit
     autocmd FileType gitcommit nnoremap gb i<C-R>=fugitive#head()<cr>
