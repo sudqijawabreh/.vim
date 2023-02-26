@@ -276,6 +276,12 @@ augroup lsp
     autocmd FileType fsharp nnoremap ds* /\*)<cr>xx?(\*<cr>xx "delete multiple line comment
 augroup END
 
+
+augroup csharp
+    " go to the next and prev method in csharp files
+    autocmd FileType cs nnoremap ]] /^        {<cr>:noh<cr>zz
+    autocmd FileType cs nnoremap [[ ?^        {<cr>:noh<cr>zz
+augroup END
 " add builtin plugin to fliter quickfix list
 packadd cfilter
 
