@@ -1,3 +1,4 @@
+"
 " Set tabs to 4 character
 " See tabstop help for more info.
 " Setting tabstop & softtabstop to the same value to avoid messy layout with mixed tabs & spaces.
@@ -12,9 +13,12 @@ set list
 set listchars=tab:▷▷⋮
 set showmatch
 set scrolloff=2
+set lazyredraw
+
 "presistante undo between sessions
 set undofile
 set mouse=a "sorry but it reasonable to use mouse sometimes
+"set formatoptions-=cro
 "set verbosefile=~/verbose.log
 "set verbose=8
 " neovide configs
@@ -145,8 +149,9 @@ endif
 "make ripgripp defualt for vim
 if executable("rg")
     set grepprg=rg\ --vimgrep\ --no-heading
-    set grepformat=%f:%l:%c:%m,%f:%l:%m
+    set grepformat=%f:%l:%c:%m
 endif
+
 let g:ctrlp_max_files=0
 let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:10,results:50'
 "change ctrlp match function using plugin
@@ -182,7 +187,7 @@ let g:gruvbox_contrast_dark = 'hard'
 "set foldlevelstart=10
 "set foldnestmax=10      " no more than 10 fold levels please
 "map edit vimrc
-if('win32')
+if has('win32')
 nmap <leader>v :execute("tab drop ".g:Home."/vimfiles/nj-vimrc.vim")<CR>
 else
     nmap <leader>v :execute("tab drop ".g:Home."/.vim/nj-vimrc.vim")<CR>
@@ -191,7 +196,7 @@ endif
 " cd sets path to the path of te file in the current buffer.
 "nnoremap cd :cd %:p:h
 " Open the NERDTree on the path of the file in the current buffer.
-"nnoremap t :NERDTree %:p:h
+    "nnoremap t :NERDTree %:p:h
 nnoremap cd :lcd %:p:h
 nmap <leader>a :NERDTreeToggle<CR>
 nmap ,n :NERDTreeFind<CR>
@@ -227,7 +232,8 @@ filetype off                  " required
 let g:UltiSnipsExpandTrigger="<c-tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
- 
+
+
 " search transalte for text under selection
 xnoremap <leader>gt "*y:!start https://translate.google.com.eg/?sl=auto"&"tl=ar"&"text=<c-r>*&op=translate<cr>
 
@@ -282,11 +288,28 @@ augroup csharp
     autocmd FileType cs nnoremap ]] /^        {<cr>:noh<cr>zz
     autocmd FileType cs nnoremap [[ ?^        {<cr>:noh<cr>zz
 augroup END
+
+"--------------------------------------------------
+"Plugin todo
+"https://github.com/idanarye/vim-merginal
+"--------------------------------------------------
 " add builtin plugin to fliter quickfix list
 packadd cfilter
 
 call plug#begin(g:Home.'/.vimfiles/plugged')
+"usefull for comparing two lines
+"Plug 'statox/vim-compare-lines'
+"Plug 'kevinhwang91/nvim-bqf' "doesnt work with my quickfix list setup
+" not a bad plugin to edit text in termode
+Plug 'chomosuke/term-edit.nvim', {'tag': 'v1.*'}
+Plug 'ggandor/leap.nvim'
 Plug 'lewis6991/gitsigns.nvim'
+Plug 'tpope/vim-afterimage'
+Plug 'AndrewRadev/multichange.vim'
+Plug 'AndrewRadev/dsf.vim'
+Plug 'andrewradev/deleft.vim'
+Plug 'AndrewRadev/undoquit.vim'
+Plug 'folke/zen-mode.nvim'
 Plug 'szw/vim-maximizer'
 Plug 'tpope/vim-commentary'
 "show code context
@@ -306,6 +329,10 @@ Plug 'jceb/vim-textobj-uri'
 "Plug 'terryma/vim-expand-region'
 Plug '9mm/vim-closer'
 Plug 'tpope/vim-fugitive'
+" Add to Gbrows to gitlab
+Plug 'shumphrey/fugitive-gitlab.vim'
+" lets experiment with this plugin
+"Plug 'int3/vim-extradite'
 Plug 'mbbill/undotree'
 Plug 'tommcdo/vim-exchange'
 "Plug 'ctrlpvim/ctrlp.vim'
@@ -314,7 +341,7 @@ Plug 'scrooloose/nerdtree'
 Plug 'tpope/vim-repeat'
 Plug 'vim-airline/vim-airline'
 "Plug 'vim-expand-region'
-Plug 'OmniSharp/omnisharp-vim'
+"Plug 'OmniSharp/omnisharp-vim'
 Plug 'aserebryakov/vim-todo-lists'
 "Plug 'vim-latex/vim-latex'
 "Plug 'Valloric/YouCompleteMe'
@@ -330,6 +357,7 @@ Plug 'kana/vim-textobj-line'
 Plug 'tpope/vim-unimpaired'
 Plug 'sgur/vim-textobj-parameter'
 Plug 'sudqijawabreh/vim-sendtoterm'
+Plug 'ThePrimeagen/harpoon'
 "Plug 'ThePrimeagen/vim-be-good'
 " not needed in nvim 0.6
 Plug 'machakann/vim-highlightedyank'
@@ -341,7 +369,7 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-fzy-native.nvim'
 Plug 'nvim-telescope/telescope-project.nvim'
-Plug 'cljoly/telescope-repo.nvim'
+"Plug 'cljoly/telescope-repo.nvim'
 "Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'michaeljsmith/vim-indent-object',
 Plug 'AndrewRadev/diffurcate.vim',
@@ -356,7 +384,7 @@ Plug 'godlygeek/tabular'
 Plug 'EdenEast/nightfox.nvim'
 "Plug 'tomasiser/vim-code-dark'
 "Plug 'lifepillar/vim-solarized8'
-"Plug 'joshdick/onedark.vim'
+Plug 'joshdick/onedark.vim'
 "Plug 'folke/tokyonight.nvim'
 "Plug 'morhetz/gruvbox'
 "Plug 'tomasiser/vim-code-dark'
@@ -378,6 +406,7 @@ vmap <silent>,, <Plug>LineLetters
 command! -bang -nargs=? -complete=dir Files
         \ call fzf#vim#files(<q-args>, {'options': ['--layout=reverse', '--info=inline', '--preview', 'cat {}']}, <bang>0)
 
+lua require('leap').add_default_mappings()
 " Put your non-
 "s
 "Ctrl s h
@@ -407,19 +436,44 @@ nmap k gk
 "escap to jk
 ":imap jk <Esc>
 ":imap kj <Esc>
+set guifont=Consolas:h10:cDEFAULT
 if has("gui_running")
     " Set a nicer font.
     ""  set guifont=Inconsolata\ for\ Powerline:h12
-    set guifont=Ubuntu\ Mono\ derivative\ Powerline:h10
-    "set guifont=Consolas:h10:cDEFAULT
+    "set guifont=Ubuntu\ Mono\ derivative\ Powerline:h11
+    set guifont=Consolas:h10:cDEFAULT
     " Hide the toolbar.
     set guioptions-=T
+    if has('nvim')
+        GuiFont Consolas:h10
+    endif
+
 endif
 "python from powerline.vim import setup as powerline_setup
 "python powerline_setup()
 "python del powerline_setup
 
- function! OpenTerminalBuffer(name)
+" Quickly switch between / and ? when searching
+cnoremap <expr> <c-l> <SID>CmdlineToggle("\<c-l>")
+function! s:CmdlineToggle(default)
+  let command_type = getcmdtype()
+
+  if command_type != '/' && command_type != '?'
+    return a:default
+  endif
+
+  let command_line     = getcmdline()
+  let command_line_pos = getcmdpos()
+  let other_mode       = (command_type == '/') ? '?' : '/'
+
+  let search_command   = "\<c-c>".other_mode.command_line
+  let position_command = "\<home>".repeat("\<right>", command_line_pos - 1)
+
+  call feedkeys(search_command.position_command, 'n')
+  return ''
+endfunction
+
+function! OpenTerminalBuffer(name)
     try
         if bufexists(bufname("term://*".a:name)) > 0 
             execute "sb term://*".a:name
@@ -432,6 +486,14 @@ endif
     endtry
 endfunction
 
+
+function! OpenTerminal()
+if has('win32')
+    call OpenTerminalBuffer('powershell')
+else
+    call OpenTerminalBuffer('bash')
+endif
+endfunction
 " a function to change fold text to include text in the last line
 function! MyFoldText()
     let nblines = v:foldend - v:foldstart + 1
@@ -467,8 +529,8 @@ else
     colorscheme nightfox
 endif
 if has('win32')
-  nmap ,cs :let @*=substitute(expand("%"), "/", "\\", "g")<CR>
-  nmap ,cl :let @*=substitute(expand("%:p:h"), "/", "\\", "g")<CR>
+  nmap <leader>cs :let @*=substitute(expand("%"), "/", "\\", "g")<CR>
+  nmap <leader>cl :let @*=substitute(expand("%:p:h"), "/", "\\", "g")<CR>
   nmap <leader>cd :redir @a \| pwd \| redir END \| let @*=@a<CR>
   nmap <leader>cf :let @*=substitute(expand("%:t"), "/", "\\", "g")<CR>
 
@@ -487,6 +549,12 @@ let g:VimTodoListsMoveItems = 0
 "not needed you can use <C-w> 
 imap <C-BS> <M-BS>
 
+"stolen from ThePrimeagen
+nnoremap <leader>d "_d
+vnoremap <leader>d "_d
+nnoremap <C-u> <C-u>zz
+nnoremap <C-d> <C-d>zz
+
 "generate GUID
 "nmap <leader>gu :read !python -c "import uuid;print(str(uuid.uuid4()).upper())"<cr>vil"*ydd
 "push new branch to remote
@@ -494,15 +562,17 @@ nmap <leader>gu :Git! push --set-upstream origin <C-g><CR>
 nmap <leader>gu<space> :Git! push --set-upstream origin <C-g>
 nmap <leader>gb :Git blame<CR>
 xmap <leader>gb :Git blame<CR>
-nmap <leader>gl :Git! log -100 --pretty="%h \| %d %s (%cr) [%an]" <CR>
+"nmap <leader>gL :Git! log -100 --pretty="%h \| %d %s (%cr) [%an]" % <CR>
+nmap <leader>gl :Git! log -100 --pretty="%h %d %s (%cr) [%an]" <CR>
+"nmap <leader>gl :Git! log -100 --pretty="%h \| %d %s (%cr) [%an]" <CR>
 nmap <leader>gp :Git! push origin<CR>
 nmap <leader>gP :Git! push origin --force<CR>
-nmap <leader>gs :Git<CR>
+nmap <leader>gs :Git<CR>gU
 nmap <leader>gd :Gdiffsplit<CR>
 nmap <leader>gcc :Git commit<CR>
 nmap <leader>gce :Git commit --amend --no-edit<CR>
 nmap <leader>gz<space> :Git stash<space>
-nmap <leader>gzz :Git stash<CR>
+nmap <leader>gzs :Git stash<CR>
 nmap <leader>gzp :Git stash pop<CR>
 " pull the current branch from remote
 " you can remember it like git get branch
@@ -524,17 +594,16 @@ tnoremap <silent> <c-j> <C-\><c-n><c-w>j
 
  "nnoremap <C-p> <cmd>Telescope find_files<cr>
 " show terminal buffer if already opend or create a new one
-if has('win32')
-    nnoremap <leader>t :call OpenTerminalBuffer('powershell')<cr>
-else
-    nnoremap <leader>t :call OpenTerminalBuffer('bash')<cr>
-endif
+nnoremap <leader>t :call OpenTerminal()<cr>
+
 "nnoremap <leader>x :sb term<cr>
 "nnoremap <Leader>f :lua require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({}))<cr>"
 nnoremap <Leader>f :lua require'telescope.builtin'.find_files(require('telescope.themes').get_ivy({previewer = false}))<cr>
+nnoremap <leader>gco :lua require'telescope.builtin'.git_branches(require("telescope.themes").get_dropdown{default_text = "", previewer = false})<cr>
 "nnoremap <leader>f <cmd>Telescope find_files previewer=false<cr>
 nnoremap <leader>cp <cmd>Telescope project<cr>
 nnoremap <leader>cr <cmd>Telescope resume<cr>
+"nnoremap <leader>gco <cmd>Telescope git_branches<cr>
 "nnoremap <leader>fr :lua require'telescope.builtin'.resume{}<CR>
 "
 "beautify json
@@ -573,9 +642,9 @@ if g:vsvim == 0
     autocmd FileType cs nmap <silent> <buffer> <C-\> <Plug>(omnisharp_signature_help)
     autocmd FileType cs imap <silent> <buffer> <C-\> <Plug>(omnisharp_signature_help)
 
-    " Navigate up and down by method/property/field
-    autocmd FileType cs nmap <silent> <buffer> [[ <Plug>(omnisharp_navigate_up)
-    autocmd FileType cs nmap <silent> <buffer> ]] <Plug>(omnisharp_navigate_down)
+    " Navigate uer and down by method/property/field
+    "autocmd FileType cs nmap <silent> <buffer> [[ <Plug>(omnisharp_navigate_up)
+    "autocmd FileType cs nmap <silent> <buffer> ]] <Plug>(omnisharp_navigate_down)
     " Find all code errors/warnings for the current solution and populate the quickfix window
     autocmd FileType cs nmap <silent> <buffer> <Leader>osgcc <Plug>(omnisharp_global_code_check)
     " Contextual code actions (uses fzf, vim-clap, CtrlP or unite.vim selector when available)
@@ -599,7 +668,10 @@ if g:vsvim == 0
     nmap <m-k> :cprev<cr>
     nmap <m-j> :cnext<cr>
 
-    xnoremap g/ y: grep! <C-r>" \| copen <cr>
+    xnoremap <leader>/ y:vimgrep /<C-R>"/j %<CR>\|:cw<CR>
+    " show last search in quickfix list
+    nnoremap <leader>/ :vimgrep /<C-R>//j %<CR>\|:cw<CR>
+    xnoremap g/ y: grep! "<C-r>"" -i \| copen <cr>
 
     "open current file folder
     nnoremap <silent>gof : !explorer %:h<CR>
@@ -621,8 +693,8 @@ if g:vsvim == 0
     nmap <leader>gmd 0f(h"ayiwvily<leader>gi/<C-R>a<CR><leader>h
     "nmap <leader>gum vilhy0f(hgi0wv$hp
 
-    xnoremap s> <ESC>`<i<<ESC>`>la><ESC>
-    xnoremap s< <ESC>`>a><ESC>`<i<<ESC>
+    "xnoremap s> <ESC>`<i<<ESC>`>la><ESC>
+    "xnoremap s< <ESC>`>a><ESC>`<i<<ESC>
     " Set internal encoding of vim, not needed on neovim, since coc.nvim using some
     " unicode characters in the file autoload/float.vim
     set encoding=utf-8
@@ -660,12 +732,28 @@ endif
 if g:vsvim == 1
     cd C:\Users\MSI\Documents\r365\r365\Application\
     nnoremap gi :vsc Edit.GoToImplementation<CR>
-    "map gr :vsc Edit.FindAllReferences<CR>
     map gr :vsc Edit.FindAllReferences<CR>
     map gp :vsc Edit.PeekDefinition<CR>
     map g; `.
     nmap <leader>f :vsc Edit.GoToAll<CR>
     map <c-s> :w<CR>
+    nnoremap Y y$
+
+    nnoremap ]<leader> mao<Esc>`a
+    nnoremap [<leader> maO<Esc>`a
+
+
+
+    " go to the next and prev method in csharp files
+    nnoremap ]] /^        {<cr>:noh<cr>zz
+    nnoremap ][ /^        }<cr>:noh<cr>zz
+    nnoremap [[ ?^        {<cr>:noh<cr>zz
+    nnoremap [] ?^        }<cr>:noh<cr>zz
+
+    xnoremap ]] /^        {<cr>
+    xnoremap ][ /^        }<cr>
+    xnoremap [[ ?^        {<cr>
+    xnoremap [] ?^        }<cr>
 
     vnoremap // y/\V<C-R>"<CR>
     "go to interface
@@ -686,8 +774,12 @@ if g:vsvim == 1
     "let @g = '0f(h"syiwvily,gi,last,h'
     "noremap <leader>gmd @g
 
-    "nnoremap <C-k> :vsc Edit.MoveControlUP<cr>
-    "nnoremap <C-j> :vsc Edit.MoveControlDown<cr>
+    " Mapped inside visual studio these mappings
+    " <M-p> previous item in completion
+    " <M-n> next item in completion
+    " <M-k> previous item in list find list
+    " <M-j> next item in list find list
+    
     nnoremap <C-e> :vsc View.ErrorList<cr>
     nnoremap <C-o> :vsc View.NavigateBackward<cr>
     nnoremap <C-i> :vsc View.NavigateForward<cr>
@@ -743,9 +835,9 @@ if g:vsvim == 1
     nnoremap <leader>di :vsc Diff.InlineView<cr>
     nnoremap <leader>dl :vsc Diff.RightOnlyView<cr>
 
-    nnoremap <leader>gc :vsc Team.Git.GoToGitChanges<cr>
+    nnoremap <leader>gs :vsc Team.Git.GoToGitChanges<cr>
     nnoremap <leader>gb :vsc Team.Git.Annotate<cr>
-    nnoremap <leader>c :vsc Team.Git.CompareWithUnmodified<cr>
+    nnoremap <leader>gd :vsc Team.Git.CompareWithUnmodified<cr>
 
     nnoremap <leader>i V'[']=<C-[>
 
@@ -902,6 +994,76 @@ let g:OmniSharp_server_stdio = 1
 let g:OmniSharp_start_server = 0
 
 lua << EOF
+-- below code combind with runtime/ftpplugin/qf_fold is to format search result in qf
+function trim1(s)
+   return (s:gsub("^%s*(.-)%s*$", "%1"))
+end
+
+-- http://lua-users.org/lists/lua-l/2020-01/msg00345.html
+function GetFilename(path)   
+    local dirname, filename = path:match('^(.*[\\|/])([^/\\]-)$')    
+    return filename
+end
+
+local fn = vim.fn
+
+function _G.qftf(info)
+    local items
+    local ret = {}
+    -- The name of item in list is based on the directory of quickfix window.
+    -- Change the directory for quickfix window make the name of item shorter.
+    -- It's a good opportunity to change current directory in quickfixtextfunc :)
+    --
+    -- local alterBufnr = fn.bufname('#') -- alternative buffer is the buffer before enter qf window
+    -- local root = getRootByAlterBufnr(alterBufnr)
+    -- vim.cmd(('noa lcd %s'):format(fn.fnameescape(root)))
+    --
+    if info.quickfix == 1 then
+        items = fn.getqflist({id = info.id, items = 0}).items
+    else
+        items = fn.getloclist(info.winid, {id = info.id, items = 0}).items
+    end
+    local limit = 31
+    local fnameFmt1, fnameFmt2 = '%-' .. limit .. 's', '…%.' .. (limit - 1) .. 's'
+    --local validFmt = '%s │%5d:%-3d│%s %s'
+    --local validFmt = '%s |%5d:%-3d|%s %s'
+    --local validFmt = '- %s |%s %s'
+    local validFmt = '%s |%s %s'
+    for i = info.start_idx, info.end_idx do
+        local e = items[i]
+        local fname = ''
+        local str
+        if e.valid == 1 then
+            if e.bufnr > 0 then
+                fname = fn.bufname(e.bufnr)
+                if fname == '' then
+                    fname = '[No Name]'
+                else
+                    fname = fname:gsub('^' .. vim.env.HOME, '~')
+                end
+                -- char in fname may occur more than 1 width, ignore this issue in order to keep performance
+                if #fname <= limit then
+                    --fname = fnameFmt1:format(fname)
+                    fname = GetFilename(fname)
+                else
+                    fname = GetFilename(fname)
+                    --fname = fnameFmt2:format(fname:sub(1 - limit))
+                end
+            end
+            local lnum = e.lnum > 99999 and -1 or e.lnum
+            local col = e.col > 999 and -1 or e.col
+            local qtype = e.type == '' and '' or ' ' .. e.type:sub(1, 1):upper()
+            str = validFmt:format(fname, qtype, trim1(e.text))
+        else
+            str = e.text
+        end
+        table.insert(ret, str)
+    end
+    return ret
+end
+
+vim.o.qftf = '{info -> v:lua._G.qftf(info)}'
+ 
 require('gitsigns').setup
 {
     current_line_blame = true,
@@ -932,7 +1094,7 @@ require('telescope').setup{
     initial_mode = "insert",
     selection_strategy = "reset",
     sorting_strategy = "descending",
-    layout_strategy = "vertical",
+    layout_strategy = "horizontal",
     file_ignore_patterns = {},
     winblend = 20,
     previewer = false, 
@@ -940,9 +1102,6 @@ require('telescope').setup{
     borderchars = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
     path_display = {},
     --set_env = { ['COLORTERM'] = 'truecolor' }, -- default = nil,
-    preview = {
-        treesitter = false,
-    },
    path_display = {
        --'shorten',
        'absolute',
@@ -966,9 +1125,22 @@ require('telescope').setup{
     }
   }
 }
---require('telescope').load_extension('fzy_native')
-require'telescope'.load_extension'repo'
+require('telescope').load_extension('fzy_native')
+--require'telescope'.load_extension('repo')
 require'telescope'.load_extension('project')
+
+-- Calling require 'term-edit'.setup(opts) is mandatory
+require 'term-edit'.setup {
+    -- Mandatory option:
+    -- Set this to a lua pattern that would match the end of your prompt.
+    -- Or a table of multiple lua patterns where at least one would match the
+    -- end of your prompt at any given time.
+    -- For most bash/zsh user this is '%$ '.
+    -- For most powershell/fish user this is '> '.
+    -- For most windows cmd user this is '>'.
+    prompt_end = '> ',
+    -- How to write lua patterns: https://www.lua.org/pil/20.2.html
+}
 EOF
 
 "function! ClearTerminal()
