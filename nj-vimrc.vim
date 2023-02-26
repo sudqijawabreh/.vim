@@ -241,6 +241,13 @@ augroup Commit
     autocmd FileType gitcommit nnoremap gb i<C-R>=fugitive#head()<cr>
 augroup END
 
+augroup git
+    if has('win32')
+        autocmd FileType git nnoremap <leader>j "*yiW:!start https://restaurant365.atlassian.net/browse/<c-r>*<cr>
+        autocmd FileType git xnoremap <leader>j "*y:!start https://restaurant365.atlassian.net/browse/<c-r>*<cr>
+    endif
+augroup END
+
 augroup vimscript
     autocmd!
     if has('win32')
