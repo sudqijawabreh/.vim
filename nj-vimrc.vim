@@ -228,6 +228,8 @@ let g:UltiSnipsExpandTrigger="<c-tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
  
+" search transalte for text under selection
+xnoremap <leader>gt "*y:!start https://translate.google.com.eg/?sl=auto"&"tl=ar"&"text=<c-r>*&op=translate<cr>
 "Add branch name at the beginning of the commit message
 augroup Commit
     autocmd FileType gitcommit nnoremap gb i<C-R>=fugitive#head()<cr>
