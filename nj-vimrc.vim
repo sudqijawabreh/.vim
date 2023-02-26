@@ -12,6 +12,8 @@ set list
 set listchars=tab:▷▷⋮
 set showmatch
 set scrolloff=2
+"presistante undo between sessions
+set undofile
 set mouse=a "sorry but it reasonable to use mouse sometimes
 "set verbosefile=~/verbose.log
 "set verbose=8
