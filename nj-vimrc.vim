@@ -252,6 +252,20 @@ augroup git
         autocmd FileType git nnoremap <leader>j "*yiW:!start https://restaurant365.atlassian.net/browse/<c-r>*<cr>
         autocmd FileType git xnoremap <leader>j "*y:!start https://restaurant365.atlassian.net/browse/<c-r>*<cr>
     endif
+    " This syntax highlighting is to mathc git log pretty with custom format
+    " this is created so when executing Git! log with --pretty="custom format" 
+    " logs will by highlighted beautifully
+    " the highlight group values determined by the colorscheme I use which is nightfox
+    " looks like this
+    " commitHash |  (branch name, origin) commit message (time value ago) [Sudqi Jawabreh]
+    "commit
+    autocmd FileType git syn match String /\((\d\+ .* ago)\)/
+    "elapsed
+    autocmd FileType git syn match Error /^\w\{-}\ze\s|/
+    "branch name
+    autocmd FileType git syn match  WarningMsg /|\s\s\zs(.\{-})/
+    "author name
+    autocmd FileType git syn match  @parameter /\s\zs\[.*\]$/
 augroup END
 
 augroup vimscript
