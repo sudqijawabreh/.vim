@@ -247,6 +247,12 @@ augroup Commit
     autocmd FileType gitcommit nnoremap gb i<C-R>=fugitive#head()<cr>
 augroup END
 
+augroup json
+    autocmd FileType json setlocal foldlevel=99
+    autocmd FileType json setlocal foldmethod=syntax
+    autocmd FileType json setlocal foldtext=foldtext()
+augroup END
+
 augroup git
     if has('win32')
         autocmd FileType git nnoremap <leader>j "*yiW:!start https://restaurant365.atlassian.net/browse/<c-r>*<cr>
