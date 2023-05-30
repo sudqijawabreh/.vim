@@ -65,6 +65,7 @@ nnoremap <leader>j `[
 nnoremap <leader>l `]
 command! BufOnly execute '%bdelete|edit #|normal `"'
 command Python execute "tabnew | call OpenTerminal() |SendTextToTerm python"
+command -range=% Reverse :<line1>,<line2>g/^/m<line1>-1 | :noh
 set nofixeol
 
 "nnoremap <leader>w :set nohlsearch<CR>/[A-Z]<CR>:set hlsearch<CR>
