@@ -26,9 +26,9 @@ let g:neovide_cursor_trail_length=0.0
 let g:neovide_cursor_animation_length=0.0
 let g:neovide_transparency=0.9
 
-noremap <C-v> "*p
+noremap <C-v> "*P
 vnoremap <C-c> "*y
-inoremap <C-v> <Esc>"*pi
+inoremap <C-v> <Esc>"*Pa
 cnoremap <C-v> <C-r>*
 let mapleader = " "
 "nmap s ysiw
@@ -64,7 +64,7 @@ noremap gy `[v`]
 nnoremap <leader>j `[
 nnoremap <leader>l `]
 command! BufOnly execute '%bdelete|edit #|normal `"'
-command Python execute "tabnew | call OpenTerminal() |SendTextToTerm python"
+command Python execute "tabnew | set ft=python | call OpenTerminal() |execute 'SendTextToTerm python'"
 command -range=% Reverse :<line1>,<line2>g/^/m<line1>-1 | :noh
 set nofixeol
 
@@ -187,12 +187,9 @@ let g:gruvbox_contrast_dark = 'hard'
 "set foldenable
 "set foldlevelstart=10
 "set foldnestmax=10      " no more than 10 fold levels please
+"
 "map edit vimrc
-if has('win32')
-nmap <leader>v :execute("tab drop ".g:Home."/vimfiles/nj-vimrc.vim")<CR>
-else
-    nmap <leader>v :execute("tab drop ".g:Home."/.vim/nj-vimrc.vim")<CR>
-endif
+nmap <leader>v :execute("tab drop ".g:Home."/.vim/nj-vimrc.vim")<CR>
 
 " cd sets path to the path of te file in the current buffer.
 "nnoremap cd :cd %:p:h
@@ -245,7 +242,7 @@ autocmd WinEnter    * checktime
 
 "Add branch name at the beginning of the commit message
 augroup Commit
-    autocmd FileType gitcommit nnoremap gb i<C-R>=fugitive#head()<cr>
+    autocmd FileType gitcommit nnoremap gb i<C-R>=FugitiveHead()<cr>
 augroup END
 
 augroup json
@@ -259,7 +256,8 @@ augroup git
         autocmd FileType git nnoremap <leader>j "*yiW:!start https://restaurant365.atlassian.net/browse/<c-r>*<cr>
         autocmd FileType git xnoremap <leader>j "*y:!start https://restaurant365.atlassian.net/browse/<c-r>*<cr>
     endif
-    " This syntax highlighting is to mathc git log pretty with custom format
+
+    " This syntax highlighting is to match git log pretty with custom format
     " this is created so when executing Git! log with --pretty="custom format" 
     " logs will by highlighted beautifully
     " the highlight group values determined by the colorscheme I use which is nightfox
@@ -273,6 +271,7 @@ augroup git
     autocmd FileType git syn match  WarningMsg /|\s\s\zs(.\{-})/
     "author name
     autocmd FileType git syn match  @parameter /\s\zs\[.*\]$/
+
 augroup END
 
 augroup vimscript
@@ -308,6 +307,7 @@ augroup csharp
     " go to the next and prev method in csharp files
     autocmd FileType cs nnoremap ]] /^        {<cr>:noh<cr>zz
     autocmd FileType cs nnoremap [[ ?^        {<cr>:noh<cr>zz
+    autocmd FileType cs xnoremap af j?^        {<cr>kVj%:noh<cr>zz:noh<cr>gv
 augroup END
 
 "--------------------------------------------------
@@ -329,6 +329,7 @@ Plug 'tpope/vim-afterimage'
 Plug 'AndrewRadev/multichange.vim'
 Plug 'AndrewRadev/dsf.vim'
 Plug 'andrewradev/deleft.vim'
+"Plug 'nicwest/vim-http'
 Plug 'AndrewRadev/undoquit.vim'
 Plug 'folke/zen-mode.nvim'
 Plug 'szw/vim-maximizer'
@@ -337,6 +338,8 @@ Plug 'tpope/vim-commentary'
 Plug 'wellle/context.vim'
 Plug 'vimwiki/vimwiki'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
+Plug 'gennaro-tedesco/nvim-jqx'
+"Plug 'junegunn/vim-peekaboo'
 "--------------------
 "query db
 Plug 'tpope/vim-dadbod'
@@ -352,6 +355,7 @@ Plug '9mm/vim-closer'
 Plug 'tpope/vim-fugitive'
 " Add to Gbrows to gitlab
 Plug 'shumphrey/fugitive-gitlab.vim'
+Plug 'tpope/vim-rhubarb'
 " lets experiment with this plugin
 "Plug 'int3/vim-extradite'
 Plug 'mbbill/undotree'
@@ -400,6 +404,7 @@ Plug 'dense-analysis/ale'
 "Plug 'wookayin/fzf-ripgrep.vim'
 Plug 'godlygeek/tabular'
 "Plug 'puremourning/vimspector'
+"Plug 'psliwka/vim-smoothie'
 "--------------------
 " vim colorschemes
 Plug 'EdenEast/nightfox.nvim'
@@ -419,6 +424,11 @@ Plug 'joshdick/onedark.vim'
 "--------------------
 " can be used to edit text in the browser
 "Plug 'subnut/nvim-ghost.nvim', {'do': ':call nvim_ghost#installer#install()'}
+Plug 'azabiong/vim-highlighter'
+" Didn't work revisit in the future
+"Plug 'tpope/vim-endwise'
+"Plug 'rstacruz/vim-closer'
+
 call plug#end()
 nmap <silent>,, <Plug>LineLetters
 vmap <silent>,, <Plug>LineLetters
@@ -426,6 +436,9 @@ vmap <silent>,, <Plug>LineLetters
 "let g:coc_sources_disable_map = { 'cs': ['cs-2', 'cs-3', 'cs-4'] }
 command! -bang -nargs=? -complete=dir Files
         \ call fzf#vim#files(<q-args>, {'options': ['--layout=reverse', '--info=inline', '--preview', 'cat {}']}, <bang>0)
+
+"nnoremap <unique> <C-D> <cmd>call smoothie#do("\<C-D>") <CR>
+"vnoremap <unique> <C-D> <cmd>call smoothie#do("\<C-D>") <CR>
 
 lua require('leap').add_default_mappings()
 " Put your non-
@@ -457,7 +470,7 @@ nmap k gk
 "escap to jk
 ":imap jk <Esc>
 ":imap kj <Esc>
-set guifont=Consolas:h10:cDEFAULT
+"set guifont=Consolas:h10:cDEFAULT
 if has("gui_running")
     " Set a nicer font.
     ""  set guifont=Inconsolata\ for\ Powerline:h12
@@ -557,7 +570,7 @@ if has('win32')
 
   " This will copy the path in 8.3 short format, for DOS and Windows 9x
   nmap ,c8 :let @*=substitute(expand("%:p:8"), "/", "\\", "g")<CR>
-else
+els
   nmap ,cs :let @*=expand("%")<CR>
   nmap ,cl :let @*=expand("%:p")<CR>
 endif
@@ -573,18 +586,18 @@ imap <C-BS> <M-BS>
 "stolen from ThePrimeagen
 nnoremap <leader>d "_d
 vnoremap <leader>d "_d
-nnoremap <C-u> <C-u>zz
-nnoremap <C-d> <C-d>zz
+"nnoremap <C-u> <C-u>zz
+"nnoremap <C-d> <C-d>zz
 
 "generate GUID
-"nmap <leader>gu :read !python -c "import uuid;print(str(uuid.uuid4()).upper())"<cr>vil"*ydd
+"nmap <leader>gu :read !python -c "import uuid;print(str(uuid.uuid4()).upper())" <cr>vil"*ydd
 "push new branch to remote
 nmap <leader>gu :Git! push --set-upstream origin <C-g><CR>
 nmap <leader>gu<space> :Git! push --set-upstream origin <C-g>
 nmap <leader>gb :Git blame<CR>
 xmap <leader>gb :Git blame<CR>
-"nmap <leader>gL :Git! log -100 --pretty="%h \| %d %s (%cr) [%an]" % <CR>
-nmap <leader>gl :Git! log -100 --pretty="%h %d %s (%cr) [%an]" <CR>
+nmap <leader>gL :Git! log -100 --pretty="%h \| %d %s (%cr [%an]" % <CR>
+nmap <leader>gl :Git! log -100 --pretty="%h \| %d %s (%cr) [%an]" <CR>
 "nmap <leader>gl :Git! log -100 --pretty="%h \| %d %s (%cr) [%an]" <CR>
 nmap <leader>gp :Git! push origin<CR>
 nmap <leader>gP :Git! push origin --force<CR>
@@ -600,8 +613,10 @@ nmap <leader>gzp :Git stash pop<CR>
 nmap <leader>gg :Git! pull origin <c-g><CR>
 nmap <leader>g<space> :Git! pull origin <c-g>
 nmap <leader>gG :Git! pull origin
+nmap <leader>gf :Git! fetch<cr>
+nmap <leader>grl :Git reflog<CR>
 "put branch name on the command
-cnoremap <c-g> <C-R>=fugitive#head()<cr>
+cnoremap <c-g> <C-R>=FugitiveHead()<cr>
 
 "Run the current line as if it were a command. Often more convenient than q: when experimenting.
 "nnoremap <leader>e :exe getline(line('.'))<cr>
@@ -620,7 +635,8 @@ nnoremap <leader>t :call OpenTerminal()<cr>
 "nnoremap <leader>x :sb term<cr>
 "nnoremap <Leader>f :lua require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({}))<cr>"
 nnoremap <Leader>f :lua require'telescope.builtin'.find_files(require('telescope.themes').get_ivy({previewer = false}))<cr>
-nnoremap <leader>gco :lua require'telescope.builtin'.git_branches(require("telescope.themes").get_dropdown{default_text = "", previewer = false})<cr>
+"nnoremap <leader>gco :lua require'telescope.builtin'.git_branches(require("telescope.themes").get_dropdown{default_text = "", previewer = false})<cr>
+nnoremap <leader>gco :Git! branch -a 
 "nnoremap <leader>f <cmd>Telescope find_files previewer=false<cr>
 nnoremap <leader>cp <cmd>Telescope project<cr>
 nnoremap <leader>cr <cmd>Telescope resume<cr>
@@ -696,12 +712,11 @@ if g:vsvim == 0
 
     "open current file folder
     nnoremap <silent>gof : !explorer %:h<CR>
-    xnoremap <leader>gf y: Find <C-r>"<CR> 
 
     " start open program or image under the cursor
     if has('win32')
-        nnoremap mm  :lcd %:p:h<CR> :!start <cfile><CR>
-        xnoremap mm  :lcd %:p:h<CR>y:!start "" "<c-r>"" <cr>
+        nnoremap <leader>mm  :lcd %:p:h<CR> :!start <cfile><CR>
+        xnoremap <leader>mm  :lcd %:p:h<CR>y:!start "" "<c-r>"" <cr>
     endif
     
     "go to interface
@@ -765,7 +780,21 @@ if g:vsvim == 1
 
 
 
-    " go to the next and prev method in csharp files
+    "member_name
+    ": identifier
+    "| interface_type '.' identifier
+    ";
+    "
+    "method name :([A-Za-z_]\w*|\w+\.[A-Za-z_]\w*)
+    "" go to the next and prev method in csharp files
+
+    xnoremap af jv?^        {<cr>kVj%:noh<cr>zz:noh<cr>gv
+    xnoremap vaF /^        {<cr>:noh<cr>zz
+    nnoremap ][ /^        }<cr>:noh<cr>zz
+    nnoremap [[ ?^        {<cr>:noh<cr>zz
+    nnoremap [] ?^        }<cr>:noh<cr>zz
+
+
     nnoremap ]] /^        {<cr>:noh<cr>zz
     nnoremap ][ /^        }<cr>:noh<cr>zz
     nnoremap [[ ?^        {<cr>:noh<cr>zz
@@ -924,9 +953,26 @@ if g:vsvim == 1
     xnoremap sc <ESC>`>i*)<ESC>`<i(*<ESC>
     nnoremap dc /\*)<cr>xx?(\*<cr>xx
     xnoremap s* <ESC>`>i*/<ESC>`<i/*<ESC>
-    nnoremap ds* /\*\/<cr>xx?\/\*<cr>xx
+    nnoremap ds* /\*\/<cr>2x?\/\*<cr>2x:noh<cr>
+    nnoremap ds* /\*\/<cr>V?\/\*<cr>:s#\(\*/\)\|\(/\*\)##<cr>:noh<cr>
 
-    nmap ,cs :vsc File.CopyFullPath<cr>
+    " Complete todo
+    nnoremap <leader>tc :s/- \[ \]/- [X]/<CR>:noh<cr>
+    " Incomplete todo
+    nnoremap <leader>tu :s/- \[X\]/- [ ]/<CR>:noh<cr>
+
+    " Advanced version
+    "nnoremap <leader>tc :s/- \[O\]/- [X]/<CR>:s/- \[o\]/- [O]/<CR>:s/- \[\.\]/- [o]/<CR>:s/- \[ \]/- [.]/<CR>:noh<cr>
+
+    " toggle todo
+    " This the state of art of branchless programming
+    nnoremap <leader><cr> :s/- \[ ]/- [x]/<CR>:s/- \[X\]/- [e]/<CR>:s/- \[e\]/- [ ]/<CR>:s/- \[x]/- [X]/<CR>:noh<cr>
+    " visual mode version
+    vnoremap <leader><cr>  :s/- \[ ]/- [x]/<CR>gv:s/- \[X\]/- [e]/<CR>gv:s/- \[e\]/- [ ]/<CR>gv:s/- \[x]/- [X]/<CR>:noh<cr>
+
+    "nmap ,cs :vsc File.CopyFullPath<cr>
+    " copy relative file name
+    nmap ,cs : let @*=@%<cr>
     "Copy full path to clipboard then escap backslash and finally pass it to
     "powershell to split it then copy it back to clipboard
     nmap ,cf :vsc File.CopyFullPath<cr>o<C-r>*<Esc>:s/\\/\\\\/g<CR>vil"*ddd :read !powershell -Command Split-Path <C-r>* -leaf<cr>jvil"*ydd
@@ -1087,6 +1133,7 @@ vim.o.qftf = '{info -> v:lua._G.qftf(info)}'
  
 require('gitsigns').setup
 {
+    signcolumn = false,
     current_line_blame = true,
     current_line_blame_opts = {
         virt_text = true,
