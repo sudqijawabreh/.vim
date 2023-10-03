@@ -191,6 +191,60 @@ let g:gruvbox_contrast_dark = 'hard'
 "map edit vimrc
 nmap <leader>v :execute("tab drop ".g:Home."/.vim/nj-vimrc.vim")<CR>
 
+command! -range=% MakejsonList call MakeList(<line1>, <line2>)
+command! -range=% -nargs=* MakesqlList call MakeList(<line1>, <line2>, "'",")")
+command! -range=% -nargs=* MakecsharpList call MakeList(<line1>, <line2>, "\"","}")
+command! -range=% -nargs=* MakeList call MakeList(<line1>, <line2>, <f-args>)
+
+function! MakeList(startLine, endLine, ...)
+    " Get the first argument (mandatory)
+    let lineSurround = get(a:, 1, "\"")
+    let listSurround = get(a:, 2, "]")
+    let delimiter = get(a:, 3, ",")
+
+    " Define dictionary of surround pairs
+    let surroundPairs = {
+    \   '[' : ']',
+    \   '{' : '}',
+    \   '(' : ')',
+    \   '<' : '>',
+    \   ']' : '[',
+    \   '}' : '{',
+    \   ')' : '(',
+    \   '>' : '<',
+    \ }
+
+    " For each line in the range
+    for lineNum in range(a:startLine, a:endLine)
+        let lineContent = getline(lineNum)
+        " Surround the line with the given delimiter and append a comma
+        if(lineNum != a:endLine)
+            call setline(lineNum, lineSurround . lineContent . lineSurround . delimiter)
+        else
+            call setline(lineNum, lineSurround . lineContent . lineSurround)
+        endif
+    endfor
+
+    " If listSurround exists in surroundPairs dictionary
+    if has_key(surroundPairs, listSurround)
+        let startSurround = listSurround
+        let endSurround = surroundPairs[listSurround]
+        
+        " Swap if parantheses are swapped
+        if startSurround > endSurround
+            let temp = startSurround
+            let startSurround = endSurround
+            let endSurround = temp
+        endif
+        
+        call setline(a:startLine, startSurround . getline(a:startLine))
+        call setline(a:endLine, getline(a:endLine) . endSurround) " Remove the trailing comma and append the closing character
+    elseif listSurround != ""
+        call setline(a:startLine, listSurround . getline(a:startLine))
+        call setline(a:endLine, getline(a:endLine) . listSurround )
+    endif
+endfunction
+
 " cd sets path to the path of te file in the current buffer.
 "nnoremap cd :cd %:p:h
 " Open the NERDTree on the path of the file in the current buffer.
