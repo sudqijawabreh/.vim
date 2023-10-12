@@ -1049,13 +1049,17 @@ if g:vsvim == 1
     nnoremap <leader>tu :s/- \[X\]/- [ ]/<CR>:noh<cr>
 
     " Advanced version
-    "nnoremap <leader>tc :s/- \[O\]/- [X]/<CR>:s/- \[o\]/- [O]/<CR>:s/- \[\.\]/- [o]/<CR>:s/- \[ \]/- [.]/<CR>:noh<cr>
+    " increment
+    nnoremap <leader>ti :s/- \[O\]/- [X]/<CR>:s/- \[o\]/- [O]/<CR>:s/- \[\.\]/- [o]/<CR>:s/- \[ \]/- [.]/<CR>:noh<cr>
+    " decrement
+    nnoremap <leader>td :s/- \[\.\]/- [ ]/<CR> :s/- \[o\]/- [.]/<CR> :s/- \[O\]/- [o]/<CR> :s/- \[X\]/- [O]/<CR>:noh<CR>
+
 
     " toggle todo
     " This the state of art of branchless programming
-    nnoremap <leader><cr> :s/- \[ ]/- [x]/<CR>:s/- \[X\]/- [e]/<CR>:s/- \[e\]/- [ ]/<CR>:s/- \[x]/- [X]/<CR>:noh<cr>
+    nnoremap <leader><cr> :s/- \[ ]/- [x]/<CR>:s/- \[[X\.oO]\]/- [e]/<CR>:s/- \[e\]/- [ ]/<CR>:s/- \[x]/- [X]/<CR>:noh<cr>
     " visual mode version
-    vnoremap <leader><cr>  :s/- \[ ]/- [x]/<CR>gv:s/- \[X\]/- [e]/<CR>gv:s/- \[e\]/- [ ]/<CR>gv:s/- \[x]/- [X]/<CR>:noh<cr>
+    vnoremap <leader><cr>  :s/- \[ ]/- [x]/<CR>gv:s/- \[[X\.oO]\]/- [e]/<CR>gv:s/- \[e\]/- [ ]/<CR>gv:s/- \[x]/- [X]/<CR>:noh<cr>
 
     "nmap ,cs :vsc File.CopyFullPath<cr>
     " copy relative file name
