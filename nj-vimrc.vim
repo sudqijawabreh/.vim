@@ -263,6 +263,7 @@ endfunction
     "nnoremap t :NERDTree %:p:h
 nnoremap cd :lcd %:p:h
 nmap <leader>a :NERDTreeToggle<CR>
+let g:NERDTreeHijackNetrw = 0
 nmap ,n :NERDTreeFind<CR>
 "let NERDTreeDirArrowExpandable = '+'
 "let NERDTreeDirArrowCollapsible = '~'
