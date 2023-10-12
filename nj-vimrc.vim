@@ -724,7 +724,8 @@ nnoremap <leader>gco :Git checkout
 vnoremap <leader>gco y:Git checkout <c-r>"<CR>
 nnoremap <leader>gcb :Git! branch -a<cr><c-w>k/
 "nnoremap <leader>f <cmd>Telescope find_files previewer=false<cr>
-nnoremap <leader>cp <cmd>Telescope project<cr>
+nnoremap <leader>cp <cmd>Telescope project theme=dropdown layout=vertical <cr>
+"nnoremap <leader>cp :lua require'telescope'.extensions.project.project{layout='vertical'}  <cr>
 nnoremap <leader>cr <cmd>Telescope resume<cr>
 "nnoremap <leader>gco <cmd>Telescope git_branches<cr>
 "nnoremap <leader>fr :lua require'telescope.builtin'.resume{}<CR>
