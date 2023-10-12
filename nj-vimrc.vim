@@ -703,6 +703,11 @@ cnoremap <c-g> <C-R>=FugitiveHead()<cr>
 
 vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
 
+highlight LineHighlight ctermbg=lightgray guibg=#2b4b51
+nnoremap <silent> <Leader>l :call matchadd('LineHighlight', '\%'.line('.').'l')<CR> 
+" clear all the highlighted lines
+nnoremap <silent> <Leader>cl :call clearmatches()<CR>
+
 " terminal mode mappings
 tnoremap <silent> <ESC> <C-\><C-n>
 tnoremap <silent> <c-j> <C-\><c-n><c-w>j
