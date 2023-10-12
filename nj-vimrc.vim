@@ -661,19 +661,31 @@ vnoremap <leader>d "_d
 "push new branch to remote
 nmap <leader>gu :Git! push --set-upstream origin <C-g><CR>
 nmap <leader>gu<space> :Git! push --set-upstream origin <C-g>
+
+"blame the entire file
 nmap <leader>gb :Git blame<CR>
+"blame only selected lines
 xmap <leader>gb :Git blame<CR>
-nmap <leader>gL :Git! log -100 --pretty="%h \| %d %s (%cr [%an]" % <CR>
+" git log for the first 100 commits with custom format
 nmap <leader>gl :Git! log -100 --pretty="%h \| %d %s (%cr) [%an]" <CR>
-"nmap <leader>gl :Git! log -100 --pretty="%h \| %d %s (%cr) [%an]" <CR>
+" git log the current file
+nmap <leader>gL :Git! log -100 --pretty="%h \| %d %s (%cr [%an]" % <CR>
+" push current branch
 nmap <leader>gp :Git! push origin<CR>
+" push with force
 nmap <leader>gP :Git! push origin --force<CR>
+" open git status
 nmap <leader>gs :Git<CR>gU
+" show changes in the current file
 nmap <leader>gd :Gdiffsplit<CR>
+" commit changes
 nmap <leader>gcc :Git commit<CR>
+" commit amend without changing commit message
 nmap <leader>gce :Git commit --amend --no-edit<CR>
+" stash changes
 nmap <leader>gz<space> :Git stash<space>
 nmap <leader>gzs :Git stash<CR>
+" pop stash
 nmap <leader>gzp :Git stash pop<CR>
 " pull the current branch from remote
 " you can remember it like git get branch
@@ -681,10 +693,10 @@ nmap <leader>gg :Git! pull origin <c-g><CR>
 nmap <leader>g<space> :Git! pull origin <c-g>
 nmap <leader>gG :Git! pull origin
 nmap <leader>gf :Git! fetch<cr>
+" git the hsitory of HEAD
 nmap <leader>grl :Git reflog<CR>
 "put branch name on the command
 cnoremap <c-g> <C-R>=FugitiveHead()<cr>
-
 "Run the current line as if it were a command. Often more convenient than q: when experimenting.
 "nnoremap <leader>e :exe getline(line('.'))<cr>
 "nnoremap <leader>f 0f(h
