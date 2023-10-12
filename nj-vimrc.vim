@@ -720,7 +720,9 @@ nnoremap <leader>t :call OpenTerminal()<cr>
 "nnoremap <Leader>f :lua require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({}))<cr>"
 nnoremap <Leader>f :lua require'telescope.builtin'.find_files(require('telescope.themes').get_ivy({previewer = false}))<cr>
 "nnoremap <leader>gco :lua require'telescope.builtin'.git_branches(require("telescope.themes").get_dropdown{default_text = "", previewer = false})<cr>
-nnoremap <leader>gco :Git! branch -a 
+nnoremap <leader>gco :Git checkout 
+vnoremap <leader>gco y:Git checkout <c-r>"<CR>
+nnoremap <leader>gcb :Git! branch -a<cr><c-w>k/
 "nnoremap <leader>f <cmd>Telescope find_files previewer=false<cr>
 nnoremap <leader>cp <cmd>Telescope project<cr>
 nnoremap <leader>cr <cmd>Telescope resume<cr>
