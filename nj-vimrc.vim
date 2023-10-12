@@ -191,10 +191,22 @@ let g:gruvbox_contrast_dark = 'hard'
 "map edit vimrc
 nmap <leader>v :execute("tab drop ".g:Home."/.vim/nj-vimrc.vim")<CR>
 
+"command! -range=% -nargs=+ SplitLine :s/\t/\r/g
+command! -range=% -nargs=? SplistLine call SplitLine(<line1>, <line2>, <q-args>)
 command! -range=% MakejsonList call MakeList(<line1>, <line2>)
 command! -range=% -nargs=* MakesqlList call MakeList(<line1>, <line2>, "'",")")
 command! -range=% -nargs=* MakecsharpList call MakeList(<line1>, <line2>, "\"","}")
 command! -range=% -nargs=* MakeList call MakeList(<line1>, <line2>, <f-args>)
+
+function! SplitLine(startLine,endLine,delimiter)
+  if a:delimiter == ''
+        let l:finalArg = ','
+    else
+        let l:finalArg = a:delimiter
+    endif
+
+    execute a:startLine . "," . a:endLine."s/". l:finalArg . "/\\r/g"
+endfunction
 
 function! MakeList(startLine, endLine, ...)
     " Get the first argument (mandatory)
