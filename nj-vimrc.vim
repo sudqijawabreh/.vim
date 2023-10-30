@@ -198,6 +198,88 @@ command! -range=% -nargs=* MakesqlList call MakeList(<line1>, <line2>, "'",")")
 command! -range=% -nargs=* MakecsharpList call MakeList(<line1>, <line2>, "\"","}")
 command! -range=% -nargs=* MakeList call MakeList(<line1>, <line2>, <f-args>)
 
+let s:buffer = ''
+
+let s:buffer = ""
+
+function! MyCallback(job_id, data, event)
+    " Add the buffered content to the start of the concatenated data
+    let data_str = s:buffer . join(a:data, "\n")
+    
+    " Reset the buffer
+    let s:buffer = ""
+
+    " Split the data by newlines
+    let lines = split(data_str, '\n')
+
+    " Process each line, except potentially the last
+    for i in range(0, len(lines) - 2)
+        call append('$', lines[i])
+    endfor
+
+    " If the last line does not end with a newline (based on original data), it's incomplete
+    if len(a:data) > 0 && a:data[-1] !~ '\n$'
+        let s:buffer = lines[-1]
+    else
+        call append('$', lines[-1])
+    endif
+endfunction
+
+function! MyExitCallback(job_id, data, event)
+    if s:buffer != ""
+        call append('$', s:buffer)
+        let s:buffer = ""
+    endif
+endfunction
+
+" function! MyCallback(job_id, data, event)
+"     for i in range(0, len(a:data) - 1)
+"         call append('$', a:data[i])
+"     endfor
+" "    call append('$', a:data)
+" endfunction
+
+function! TempNameBuffer()
+    let tempname = "temp_" . strftime("%Y%m%d_%H%M%S")
+    execute "new " . tempname
+endfunction
+
+function! RunAsyncCommand(command)
+    call TempNameBuffer()
+    setlocal nowrap
+    setlocal tabstop=8
+    setlocal bufhidden=delete
+    setlocal buftype=nofile
+    setlocal noautoindent
+    setlocal nolist
+    setlocal ft=jira
+    let s:job = jobstart(a:command, {'on_stdout': 'MyCallback','on_exit': 'MyExitCallback'})
+endfunction
+
+command! -nargs=1 Async call RunAsyncCommand(<q-args>)
+
+command! ListMyTickets call ListMyTickets()
+
+function! GoToFirstSyntaxToken(syntax_group)
+    let l:line_num = line('.')
+    let l:line_content = getline(l:line_num)
+    for l:col in range(1, len(l:line_content) + 1)
+        let l:id = synID(l:line_num, l:col, 1)
+        if synIDattr(l:id, 'name') == a:syntax_group
+            call cursor(l:line_num, l:col)
+            return
+        endif
+    endfor
+    echo "No token with syntax group " . a:syntax_group . " found in the current line."
+endfunction
+
+function! ListMyTickets()
+    call RunAsyncCommand('jira sprint list --current -a"sjawabreh@restaurant365.com"')
+    "call RunAsyncCommand('jira sprint list --plain -a"sjawabreh@restaurant365.com"')
+    "call RunAsyncCommand('jira sprint list --current -a"$(jira me)"')
+endfunction
+
+
 function! SplitLine(startLine,endLine,delimiter)
   if a:delimiter == ''
         let l:finalArg = ','
@@ -338,6 +420,38 @@ augroup git
     autocmd FileType git syn match  WarningMsg /|\s\s\zs(.\{-})/
     "author name
     autocmd FileType git syn match  @parameter /\s\zs\[.*\]$/
+
+augroup END
+
+augroup jira
+    if executable("jira")
+        nnoremap <leader>J :silent !jira open<cr>
+    endif
+
+    if executable("jira")
+        autocmd FileType jira nnoremap <leader>j :call GoToFirstSyntaxToken('String')<cr>"*yiW:silent !jira open <c-r>*<cr>
+        autocmd FileType jira xnoremap <leader>j :call GoToFirstSyntaxToken('String')<cr>"*y:silent !start https://restaurant365.atlassian.net/browse/<c-r>*<cr>
+        "jira open 
+    elseif has('win32')
+        autocmd FileType jira nnoremap <leader>j :call GoToFirstSyntaxToken('String')<cr>"*yiW:silent !start https://restaurant365.atlassian.net/browse/<c-r>*<cr>
+        autocmd FileType jira xnoremap <leader>j :call GoToFirstSyntaxToken('String')<cr>"*y:silent !start https://restaurant365.atlassian.net/browse/<c-r>*<cr>
+    endif
+
+    " This syntax highlighting is to match jira log pretty with custom format
+    " this is created so when executing jira! log with --pretty="custom format" 
+    " logs will by highlighted beautifully
+    " the highlight group values determined by the colorscheme I use which is nightfox
+    " looks like this
+    " commitHash |  (branch name, origin) commit message (time value ago) [Sudqi Jawabreh]
+    "commit
+    autocmd FileType jira syn match String /\t\zs\w*-\d\+\ze\t/
+    "autocmd FileType jira syn match String /\zs\t[^\t].\{-}\t\ze[^\t].\{-}\ze\t[^\t].\{-}/
+    "elapsed
+    autocmd FileType jira syn match Error /^.\{-}\ze\t/
+    "branch name
+    "autocmd FileType jira syn match String /\zs\t[^\t].\{-}\t\ze[^\t].\{-}\t[^\t].\{-}/
+    "author name
+    "autocmd FileType jira syn match  @parameter /\s\zs\[.*\]$/
 
 augroup END
 
