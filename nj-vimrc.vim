@@ -382,7 +382,7 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
 
 " search transalte for text under selection
-xnoremap <leader>gt "*y:!start https://translate.google.com.eg/?sl=auto"&"tl=ar"&"text=<c-r>*&op=translate<cr>
+xnoremap <leader>gt "*y:silent !start https://translate.google.com.eg/?sl=auto"&"tl=ar"&"text=<c-r>*&op=translate<cr>
 
 " Check if the buffer needs to be refreshed from disk (using 'autoread').
 " Useful when branch-hopping with git.
@@ -402,8 +402,8 @@ augroup END
 
 augroup git
     if has('win32')
-        autocmd FileType git nnoremap <leader>j "*yiW:!start https://restaurant365.atlassian.net/browse/<c-r>*<cr>
-        autocmd FileType git xnoremap <leader>j "*y:!start https://restaurant365.atlassian.net/browse/<c-r>*<cr>
+        autocmd FileType git nnoremap <leader>j "*yiW:silent !start https://restaurant365.atlassian.net/browse/<c-r>*<cr>
+        autocmd FileType git xnoremap <leader>j "*y:silent !start https://restaurant365.atlassian.net/browse/<c-r>*<cr>
     endif
 
     " This syntax highlighting is to match git log pretty with custom format
@@ -459,8 +459,8 @@ augroup vimscript
     autocmd!
     if has('win32')
         "open plugin in the browser
-        autocmd FileType vim xnoremap <leader>gx y:!start https://github.com/<c-r>"<cr>
-        autocmd FileType vim nnoremap <leader>gx 0vi'y:!start https://github.com/<c-r>"<cr>
+        autocmd FileType vim xnoremap <leader>gx y:silent !start https://github.com/<c-r>"<cr>
+        autocmd FileType vim nnoremap <leader>gx 0vi'y:silent !start https://github.com/<c-r>"<cr>
     endif
 augroup END
 
