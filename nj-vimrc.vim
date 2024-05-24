@@ -194,9 +194,11 @@ nmap <leader>v :execute("tab drop ".g:Home."/.vim/nj-vimrc.vim")<CR>
 "command! -range=% -nargs=+ SplitLine :s/\t/\r/g
 command! -range=% -nargs=? SplistLine call SplitLine(<line1>, <line2>, <q-args>)
 command! -range=% MakejsonList call MakeList(<line1>, <line2>)
-command! -range=% -nargs=* MakesqlList call MakeList(<line1>, <line2>, "'",")")
-command! -range=% -nargs=* MakecsharpList call MakeList(<line1>, <line2>, "\"","}")
+command! -range=% -nargs=* MakeSqlStringList call MakeList(<line1>, <line2>, ",", "'",")")
+command! -range=% -nargs=* MakeSqlIntList call MakeList(<line1>, <line2>, ",", "",")")
+command! -range=% -nargs=* MakecsharpList call MakeList(<line1>, <line2>, ",","\"","}")
 command! -range=% -nargs=* MakeList call MakeList(<line1>, <line2>, <f-args>)
+command! -range=% -nargs=* MakeCSVList call MakeList(<line1>, <line2>, ",", "", "")
 
 let s:buffer = ''
 
@@ -292,9 +294,9 @@ endfunction
 
 function! MakeList(startLine, endLine, ...)
     " Get the first argument (mandatory)
-    let lineSurround = get(a:, 1, "\"")
-    let listSurround = get(a:, 2, "]")
-    let delimiter = get(a:, 3, ",")
+    let lineSurround = get(a:, 2, "\"")
+    let listSurround = get(a:, 3, "]")
+    let delimiter = get(a:, 1, ",")
 
     " Define dictionary of surround pairs
     let surroundPairs = {
@@ -502,12 +504,13 @@ call plug#begin(g:Home.'/.vimfiles/plugged')
 "usefull for comparing two lines
 "Plug 'statox/vim-compare-lines'
 "Plug 'kevinhwang91/nvim-bqf' "doesnt work with my quickfix list setup
-" not a bad plugin to edit text in termode
+Plug 'HakonHarnes/img-clip.nvim'
+" great plugin really useful
 Plug 'chomosuke/term-edit.nvim', {'tag': 'v1.*'}
 Plug 'ggandor/leap.nvim'
-Plug 'lewis6991/gitsigns.nvim'
+"Plug 'lewis6991/gitsigns.nvim'
 Plug 'tpope/vim-afterimage'
-Plug 'AndrewRadev/multichange.vim'
+"Plug 'AndrewRadev/multichange.vim'
 Plug 'AndrewRadev/dsf.vim'
 Plug 'andrewradev/deleft.vim'
 "Plug 'nicwest/vim-http'
@@ -745,7 +748,7 @@ else
 endif
 if has('win32')
   nmap <leader>cs :let @*=substitute(expand("%"), "/", "\\", "g")<CR>
-  nmap <leader>cl :let @*=substitute(expand("%:p:h"), "/", "\\", "g")<CR>
+  nmap ,cl :let @*=substitute(expand("%:p:h"), "/", "\\", "g")<CR>
   nmap <leader>cd :redir @a \| pwd \| redir END \| let @*=@a<CR>
   nmap <leader>cf :let @*=substitute(expand("%:t"), "/", "\\", "g")<CR>
 
@@ -782,8 +785,9 @@ nmap <leader>gb :Git blame<CR>
 xmap <leader>gb :Git blame<CR>
 " git log for the first 100 commits with custom format
 nmap <leader>gl :Git! log -100 --pretty="%h \| %d %s (%cr) [%an]" <CR>
+nmap <leader>g<space>l :Git! log  --pretty="%h \| %d %s (%cr) [%an]" -100
 " git log the current file
-nmap <leader>gL :Git! log -100 --pretty="%h \| %d %s (%cr [%an]" % <CR>
+nmap <leader>gL :Git! log --pretty="%h \| %d %s (%cr [%an]" % <CR>
 " push current branch
 nmap <leader>gp :Git! push origin<CR>
 " push with force
@@ -836,9 +840,11 @@ nnoremap <Leader>f :lua require'telescope.builtin'.find_files(require('telescope
 "nnoremap <leader>gco :lua require'telescope.builtin'.git_branches(require("telescope.themes").get_dropdown{default_text = "", previewer = false})<cr>
 nnoremap <leader>gco :Git checkout 
 vnoremap <leader>gco y:Git checkout <c-r>"<CR>
-nnoremap <leader>gcb :Git! branch -a<cr><c-w>k/
+" use backward search to escap /
+nnoremap <leader>gcb :Git! branch -a<cr><c-w>k?\V
 "nnoremap <leader>f <cmd>Telescope find_files previewer=false<cr>
-nnoremap <leader>cp <cmd>Telescope project theme=dropdown layout=vertical <cr>
+nnoremap <leader>cp <cmd>lua require'telescope'.extensions.project.project{theme='dropdown', layout='vertical'}<CR>
+"nnoremap <leader>cp <cmd>Telescope project theme=dropdown layout=vertical <cr>
 "nnoremap <leader>cp :lua require'telescope'.extensions.project.project{layout='vertical'}  <cr>
 nnoremap <leader>cr <cmd>Telescope resume<cr>
 "nnoremap <leader>gco <cmd>Telescope git_branches<cr>
@@ -912,12 +918,12 @@ if g:vsvim == 0
     xnoremap g/ y: grep! "<C-r>"" -i \| copen <cr>
 
     "open current file folder
-    nnoremap <silent>gof : !explorer %:h<CR>
+    nnoremap <silent>gof :silent !explorer %:h<CR>
 
     " start open program or image under the cursor
     if has('win32')
-        nnoremap <leader>mm  :lcd %:p:h<CR> :!start <cfile><CR>
-        xnoremap <leader>mm  :lcd %:p:h<CR>y:!start "" "<c-r>"" <cr>
+        nnoremap <leader>mm  :lcd %:p:h<CR> :silent !start <cfile><CR>
+        xnoremap <leader>mm  :lcd %:p:h<CR>y:silent !start "" "<c-r>"" <cr>
     endif
     
     "go to interface
@@ -1336,18 +1342,18 @@ end
 
 vim.o.qftf = '{info -> v:lua._G.qftf(info)}'
  
-require('gitsigns').setup
-{
-    signcolumn = false,
-    current_line_blame = true,
-    current_line_blame_opts = {
-        virt_text = true,
-        virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
-        delay = 50,
-        ignore_whitespace = true,
-        },
-    current_line_blame_formatter = '<author>, <author_time:%R> - <summary>',
-}
+-- require('gitsigns').setup
+-- {
+--     signcolumn = false,
+--     current_line_blame = true,
+--     current_line_blame_opts = {
+--         virt_text = true,
+--         virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
+--         delay = 50,
+--         ignore_whitespace = true,
+--         },
+--     current_line_blame_formatter = '<author>, <author_time:%R> - <summary>',
+-- }
 
 local action_layout = require("telescope.actions.layout")
 require('telescope').setup{
