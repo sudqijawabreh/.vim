@@ -779,6 +779,8 @@ vnoremap <leader>d "_d
 nmap <leader>gu :Git! push --set-upstream origin <C-g><CR>
 nmap <leader>gu<space> :Git! push --set-upstream origin <C-g>
 
+vmap <leader>gi d$i//#start_exclude_commit<esc>p']o<esc>0Di//#end_exclude_commit<esc>
+
 "blame the entire file
 nmap <leader>gb :Git blame<CR>
 "blame only selected lines
