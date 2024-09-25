@@ -26,10 +26,10 @@ let g:neovide_cursor_trail_length=0.0
 let g:neovide_cursor_animation_length=0.0
 let g:neovide_transparency=0.9
 
-noremap <C-v> "*P
-vnoremap <C-c> "*y
-inoremap <C-v> <Esc>"*Pa
-cnoremap <C-v> <C-r>*
+noremap <C-v> "+P
+vnoremap <C-c> "+y
+inoremap <C-v> <Esc>"+pa
+cnoremap <C-v> <C-r>+
 let mapleader = " "
 "nmap s ysiw
 "xmap s S
@@ -149,7 +149,10 @@ if has("gui_running")
 endif
 "make ripgripp defualt for vim
 if executable("rg")
-    set grepprg=rg\ --vimgrep\ --no-heading
+    " also you can use git as grep 
+    " git grep -n {yousearch}
+    " also search fo hidden files
+    set grepprg=rg\ --vimgrep\ --no-heading\ --hidden
     set grepformat=%f:%l:%c:%m
 endif
 
@@ -200,13 +203,21 @@ command! -range=% -nargs=* MakecsharpList call MakeList(<line1>, <line2>, ",","\
 command! -range=% -nargs=* MakeList call MakeList(<line1>, <line2>, <f-args>)
 command! -range=% -nargs=* MakeCSVList call MakeList(<line1>, <line2>, ",", "", "")
 
+
+" a function that split lines by a delimiter
+
 let s:buffer = ''
 
 let s:buffer = ""
 
 function! MyCallback(job_id, data, event)
     " Add the buffered content to the start of the concatenated data
-    let data_str = s:buffer . join(a:data, "\n")
+    if s:buffer != ""
+        let data_str = s:buffer . join(a:data, "\n")
+    else
+        let data_str = join(a:data, "\n")
+    endif
+
     
     " Reset the buffer
     let s:buffer = ""
@@ -216,7 +227,12 @@ function! MyCallback(job_id, data, event)
 
     " Process each line, except potentially the last
     for i in range(0, len(lines) - 2)
-        call append('$', lines[i])
+        " replace the first empty line in the buffer
+        if i == 0 && getline(1) == ''
+            call setline(1, lines[i])
+        else
+            call append('$', lines[i])
+        endif
     endfor
 
     " If the last line does not end with a newline (based on original data), it's incomplete
@@ -228,9 +244,11 @@ function! MyCallback(job_id, data, event)
 endfunction
 
 function! MyExitCallback(job_id, data, event)
-    if s:buffer != ""
+    if s:buffer != "" && s:buffer !~ '\n$'
         call append('$', s:buffer)
         let s:buffer = ""
+        " if you want to tabularize data
+        "exec "Jt"
     endif
 endfunction
 
@@ -261,6 +279,8 @@ endfunction
 command! -nargs=1 Async call RunAsyncCommand(<q-args>)
 
 command! ListMyTickets call ListMyTickets()
+command! Jt exec "silent %s/\\t\\+/|/g | silent %s/^/|/ | silent %s/$/|/ | 1t1 | 2s/\\w/-/g | noh | Tabularize /|/"
+command! Jt exec "silent %s/\\t\\+/|/g | silent %s/^/|/ | silent %s/$/|/ | 1t1 | 2s/\\w/-/g | noh | Tabularize /|/ | %awk -F'|' '{print $1|$2|$3|$4|$5|"
 
 function! GoToFirstSyntaxToken(syntax_group)
     let l:line_num = line('.')
@@ -276,7 +296,8 @@ function! GoToFirstSyntaxToken(syntax_group)
 endfunction
 
 function! ListMyTickets()
-    call RunAsyncCommand('jira sprint list --current -a"sjawabreh@restaurant365.com"')
+    call RunAsyncCommand('jira sprint list --current --jql "Developers = \"sjawabreh@restaurant365.com\" OR assignee = \"sjawabreh@restaurant365.com\""')
+    "call RunAsyncCommand('jira sprint list --current -a"sjawabreh@restaurant365.com"')
     "call RunAsyncCommand('jira sprint list --plain -a"sjawabreh@restaurant365.com"')
     "call RunAsyncCommand('jira sprint list --current -a"$(jira me)"')
 endfunction
@@ -384,7 +405,11 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
 
 " search transalte for text under selection
-xnoremap <leader>gt "*y:silent !start https://translate.google.com.eg/?sl=auto"&"tl=ar"&"text=<c-r>*&op=translate<cr>
+if has('win32')
+    xnoremap <leader>gt "*y:silent !start https://translate.google.com.eg/?sl=auto"&"tl=ar"&"text=<c-r>*&op=translate<cr>
+else
+    xnoremap <leader>gt "*y:silent !xdg-open https://translate.google.com.eg/?sl=auto"&"tl=ar"&"text=<c-r>*&op=translate<cr>
+endif
 
 " Check if the buffer needs to be refreshed from disk (using 'autoread').
 " Useful when branch-hopping with git.
@@ -406,6 +431,9 @@ augroup git
     if has('win32')
         autocmd FileType git nnoremap <leader>j "*yiW:silent !start https://restaurant365.atlassian.net/browse/<c-r>*<cr>
         autocmd FileType git xnoremap <leader>j "*y:silent !start https://restaurant365.atlassian.net/browse/<c-r>*<cr>
+    else
+        autocmd FileType git nnoremap <leader>j "*yiW:silent !xdg-open https://restaurant365.atlassian.net/browse/<c-r>*<cr>
+        autocmd FileType git xnoremap <leader>j "*y:silent !xdg-open https://restaurant365.atlassian.net/browse/<c-r>*<cr>
     endif
 
     " This syntax highlighting is to match git log pretty with custom format
@@ -463,6 +491,9 @@ augroup vimscript
         "open plugin in the browser
         autocmd FileType vim xnoremap <leader>gx y:silent !start https://github.com/<c-r>"<cr>
         autocmd FileType vim nnoremap <leader>gx 0vi'y:silent !start https://github.com/<c-r>"<cr>
+    else
+        autocmd FileType vim xnoremap <leader>gx y:silent !xdg-open https://github.com/<c-r>"<cr>
+        autocmd FileType vim nnoremap <leader>gx 0vi'y:silent !xdg-open https://github.com/<c-r>"<cr>
     endif
 augroup END
 
@@ -491,6 +522,10 @@ augroup csharp
     autocmd FileType cs nnoremap ]] /^        {<cr>:noh<cr>zz
     autocmd FileType cs nnoremap [[ ?^        {<cr>:noh<cr>zz
     autocmd FileType cs xnoremap af j?^        {<cr>kVj%:noh<cr>zz:noh<cr>gv
+    "autocmd FileType cs setlocal foldmethod=expr
+    " todo fix the folding
+    "autocmd FileType cs setlocal foldexpr=CustomCSFold(v:lnum)
+    "autocmd FileType cs setlocal foldlevel=0
 augroup END
 
 "--------------------------------------------------
@@ -501,14 +536,24 @@ augroup END
 packadd cfilter
 
 call plug#begin(g:Home.'/.vimfiles/plugged')
-"usefull for comparing two lines
-"Plug 'statox/vim-compare-lines'
-"Plug 'kevinhwang91/nvim-bqf' "doesnt work with my quickfix list setup
-Plug 'HakonHarnes/img-clip.nvim'
-" great plugin really useful
-Plug 'chomosuke/term-edit.nvim', {'tag': 'v1.*'}
-Plug 'ggandor/leap.nvim'
-"Plug 'lewis6991/gitsigns.nvim'
+Plug 'zbirenbaum/copilot.lua'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'CopilotC-Nvim/CopilotChat.nvim', { 'branch': 'canary' }
+"Plug 'github/copilot.vim'
+" add indentation lines
+Plug 'lukas-reineke/indent-blankline.nvim'
+Plug 'mg979/vim-visual-multi' 
+"usefull for comparing two lines 
+"Plug 'statox/vim-compare-lines' 
+"Plug 'kevinhwang91/nvim-bqf' "doesnt work with my quickfix list setup 
+Plug 'HakonHarnes/img-clip.nvim' 
+" great plugin really useful 
+Plug 'chomosuke/term-edit.nvim', {'tag': 'v1.*'} 
+Plug 'ggandor/leap.nvim' 
+"Plug 'lewis6991/gitsigns.nvim' 
+"cleverSubstitution and camelcase changing
+":%Subvert/facilit{y,ies}/building{,s}/g
+Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-afterimage'
 "Plug 'AndrewRadev/multichange.vim'
 Plug 'AndrewRadev/dsf.vim'
@@ -555,6 +600,7 @@ Plug 'aserebryakov/vim-todo-lists'
 "Plug 'vim-latex/vim-latex'
 "Plug 'Valloric/YouCompleteMe'
 "Plug 'fsharp/vim-fsharp'
+Plug 'ionide/Ionide-vim'
 Plug 'tpope/vim-rsi'
 "Plug 'taku-o/vim-zoom'
 Plug 'tommcdo/vim-fubitive'
@@ -582,7 +628,7 @@ Plug 'nvim-telescope/telescope-project.nvim'
 "Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'michaeljsmith/vim-indent-object',
 Plug 'AndrewRadev/diffurcate.vim',
-Plug 'dense-analysis/ale'
+"Plug 'dense-analysis/ale'
 "Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 "Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
 "Plug 'wookayin/fzf-ripgrep.vim'
@@ -709,7 +755,8 @@ function! OpenTerminal()
 if has('win32')
     call OpenTerminalBuffer('powershell')
 else
-    call OpenTerminalBuffer('bash')
+    "call OpenTerminalBuffer('bash')
+    call OpenTerminalBuffer('zsh')
 endif
 endfunction
 " a function to change fold text to include text in the last line
@@ -723,7 +770,49 @@ function! MyFoldText()
     let txt = '"' . line . '....' . nblines
     return txt
 endfunction
-set foldtext=MyFoldText()
+" only call it when you need it
+"set foldtext=MyFoldText()
+
+" Custom function for fold expression
+function! CustomFold(lnum)
+    " Get the current line text
+    let line = getline(a:lnum)
+    
+    " Fold based on indentation (8 spaces)
+    if match(line, '^\s\{8\}') >= 0
+        return ">1"  " Increase fold level for lines with 8 spaces
+    endif
+
+    " Fold based on '{' (open fold)
+    if match(line, '{') >= 0
+        return ">1"  " Start a fold at '{'
+    endif
+
+    " Fold based on '}' (close fold)
+    if match(line, '}') >= 0
+        return "<1"  " End the fold at '}'
+    endif
+
+    " No fold for other lines
+    return "="
+endfunction
+
+" Custom function for fold expression
+function! CustomCSFold(lnum)
+    " Get the current line text
+    let line = getline(a:lnum)
+
+    " Fold method definitions and braces
+    if line =~? '^\s*{'
+        return ">1"  " Start a fold at an opening brace
+    elseif line =~? '^\s*}'
+        return "<1"  " Close a fold at a closing brace
+    elseif line =~? '^\s*\(public\|private\|protected\|internal\)\s*\(static\|async\|\)\s*\S\+.*('
+        return "a1"  " Start a fold at a method signature
+    else
+        return "="   " Keep current fold level
+    endif
+endfunction
 
 " copy macthed search to clippored
 "http://vim.wikia.com/wiki/Copy_search_matches
@@ -824,9 +913,11 @@ cnoremap <c-g> <C-R>=FugitiveHead()<cr>
 vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
 
 highlight LineHighlight ctermbg=lightgray guibg=#2b4b51
+vnoremap <silent> <Leader>l :call matchadd('LineHighlight', '\%'.line('.').'l')<CR> 
 nnoremap <silent> <Leader>l :call matchadd('LineHighlight', '\%'.line('.').'l')<CR> 
 " clear all the highlighted lines
 nnoremap <silent> <Leader>cl :call clearmatches()<CR>
+vnoremap <silent> <Leader>cl :call clearmatches()<CR>
 
 " terminal mode mappings
 tnoremap <silent> <ESC> <C-\><C-n>
@@ -876,40 +967,42 @@ if !has('g:vsvim') || g:vsvim == 0
     autocmd FileType cs nmap <silent> <buffer> K <Plug>(omnisharp_type_lookup)
 
     " The following commands are contextual, based on the cursor position.
-    autocmd FileType cs nmap <silent> <buffer> gd <Plug>(omnisharp_go_to_definition)
-    autocmd FileType cs nmap <silent> <buffer> gr <Plug>(omnisharp_find_usages)
-    autocmd FileType cs nmap <silent> <buffer> gi <Plug>(omnisharp_find_implementations)
-    autocmd FileType cs nmap <silent> <buffer> gp <Plug>(omnisharp_preview_definition)
-    "autocmd FileType cs nmap <silent> <buffer> <Leader>ospi <Plug>(omnisharp_preview_implementations)
-    "autocmd FileType cs nmap <silent> <buffer> <Leader>ost <Plug>(omnisharp_type_lookup)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>osd <Plug>(omnisharp_documentation)
-    "autocmd FileType cs nmap <silent> <buffer> <Leader>osfs <Plug>(omnisharp_find_symbol)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>osfx <Plug>(omnisharp_fix_usings)
-    autocmd FileType cs nmap <silent> <buffer> <C-\> <Plug>(omnisharp_signature_help)
-    autocmd FileType cs imap <silent> <buffer> <C-\> <Plug>(omnisharp_signature_help)
+    if exists(":OmniSharpStartServer")
+        autocmd FileType cs nmap <silent> <buffer> gd <Plug>(omnisharp_go_to_definition)
+        autocmd FileType cs nmap <silent> <buffer> gr <Plug>(omnisharp_find_usages)
+        autocmd FileType cs nmap <silent> <buffer> gi <Plug>(omnisharp_find_implementations)
+        autocmd FileType cs nmap <silent> <buffer> gp <Plug>(omnisharp_preview_definition)
+        "autocmd FileType cs nmap <silent> <buffer> <Leader>ospi <Plug>(omnisharp_preview_implementations)
+        "autocmd FileType cs nmap <silent> <buffer> <Leader>ost <Plug>(omnisharp_type_lookup)
+        autocmd FileType cs nmap <silent> <buffer> <Leader>osd <Plug>(omnisharp_documentation)
+        "autocmd FileType cs nmap <silent> <buffer> <Leader>osfs <Plug>(omnisharp_find_symbol)
+        autocmd FileType cs nmap <silent> <buffer> <Leader>osfx <Plug>(omnisharp_fix_usings)
+        autocmd FileType cs nmap <silent> <buffer> <C-\> <Plug>(omnisharp_signature_help)
+        autocmd FileType cs imap <silent> <buffer> <C-\> <Plug>(omnisharp_signature_help)
 
-    " Navigate uer and down by method/property/field
-    "autocmd FileType cs nmap <silent> <buffer> [[ <Plug>(omnisharp_navigate_up)
-    "autocmd FileType cs nmap <silent> <buffer> ]] <Plug>(omnisharp_navigate_down)
-    " Find all code errors/warnings for the current solution and populate the quickfix window
-    autocmd FileType cs nmap <silent> <buffer> <Leader>osgcc <Plug>(omnisharp_global_code_check)
-    " Contextual code actions (uses fzf, vim-clap, CtrlP or unite.vim selector when available)
-    autocmd FileType cs nmap <silent> <buffer> <leader>oa <Plug>(omnisharp_code_actions)
-    autocmd FileType cs xmap <silent> <buffer> <leader>oa <Plug>(omnisharp_code_actions)
-    " Repeat the last code action performed (does not use a selector)
-    autocmd FileType cs nmap <silent> <buffer> <leader>os. <Plug>(omnisharp_code_action_repeat)
-    autocmd FileType cs xmap <silent> <buffer> <leader>os. <Plug>(omnisharp_code_action_repeat)
-    autocmd FileType cs nmap <silent> <buffer> <leader>oh <Plug>(omnisharp_highlight)
+        " Navigate uer and down by method/property/field
+        "autocmd FileType cs nmap <silent> <buffer> [[ <Plug>(omnisharp_navigate_up)
+        "autocmd FileType cs nmap <silent> <buffer> ]] <Plug>(omnisharp_navigate_down)
+        " Find all code errors/warnings for the current solution and populate the quickfix window
+        autocmd FileType cs nmap <silent> <buffer> <Leader>osgcc <Plug>(omnisharp_global_code_check)
+        " Contextual code actions (uses fzf, vim-clap, CtrlP or unite.vim selector when available)
+        autocmd FileType cs nmap <silent> <buffer> <leader>oa <Plug>(omnisharp_code_actions)
+        autocmd FileType cs xmap <silent> <buffer> <leader>oa <Plug>(omnisharp_code_actions)
+        " Repeat the last code action performed (does not use a selector)
+        autocmd FileType cs nmap <silent> <buffer> <leader>os. <Plug>(omnisharp_code_action_repeat)
+        autocmd FileType cs xmap <silent> <buffer> <leader>os. <Plug>(omnisharp_code_action_repeat)
+        autocmd FileType cs nmap <silent> <buffer> <leader>oh <Plug>(omnisharp_highlight)
 
-    autocmd FileType cs nmap <silent> <buffer> <Leader>os= <Plug>(omnisharp_code_format)
+        autocmd FileType cs nmap <silent> <buffer> <Leader>os= <Plug>(omnisharp_code_format)
 
-    autocmd FileType cs nmap <silent> <buffer> <Leader>rr <Plug>(omnisharp_rename)
+        autocmd FileType cs nmap <silent> <buffer> <Leader>rr <Plug>(omnisharp_rename)
 
-    autocmd FileType cs nmap <silent> <buffer> <Leader>osre <Plug>(omnisharp_restart_server)
-    "autocmd FileType cs nmap <silent> <buffer> <Leader>osst <Plug>(omnisharp_start_server)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>ost <Plug>(omnisharp_start_server)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>osp <Plug>(omnisharp_stop_server)
-    augroup END
+        autocmd FileType cs nmap <silent> <buffer> <Leader>osre <Plug>(omnisharp_restart_server)
+        "autocmd FileType cs nmap <silent> <buffer> <Leader>osst <Plug>(omnisharp_start_server)
+        autocmd FileType cs nmap <silent> <buffer> <Leader>ost <Plug>(omnisharp_start_server)
+        autocmd FileType cs nmap <silent> <buffer> <Leader>osp <Plug>(omnisharp_stop_server)
+        augroup END
+    endif
 
     nmap <m-k> :cprev<cr>
     nmap <m-j> :cnext<cr>
@@ -920,7 +1013,11 @@ if !has('g:vsvim') || g:vsvim == 0
     xnoremap g/ y: grep! "<C-r>"" -i \| copen <cr>
 
     "open current file folder
-    nnoremap <silent>gof :silent !explorer %:h<CR>
+    if has('win32')
+        nnoremap <silent>gof :silent !explorer %:h<CR>
+    else
+        nnoremap <silent>gof :!xdg-open %:h<CR>
+    endif
 
     " start open program or image under the cursor
     if has('win32')
@@ -1422,6 +1519,14 @@ require 'term-edit'.setup {
     prompt_end = '> ',
     -- How to write lua patterns: https://www.lua.org/pil/20.2.html
 }
+
+require("CopilotChat").setup {
+  debug = true, -- Enable debugging
+  -- See Configuration section for rest
+}
+
+-- Indented-blankline
+require("ibl").setup()
 EOF
 
 "function! ClearTerminal()
