@@ -152,7 +152,7 @@ if executable("rg")
     " also you can use git as grep 
     " git grep -n {yousearch}
     " also search fo hidden files
-    set grepprg=rg\ --vimgrep\ --no-heading\ --hidden
+    set grepprg=rg\ --vimgrep\ --no-heading\ --hidden\ -g'\!.git/*'
     set grepformat=%f:%l:%c:%m
 endif
 
@@ -366,6 +366,7 @@ endfunction
 "nnoremap cd :cd %:p:h
 " Open the NERDTree on the path of the file in the current buffer.
     "nnoremap t :NERDTree %:p:h
+let NERDTreeShowHidden=1
 nnoremap cd :lcd %:p:h
 nmap <leader>a :NERDTreeToggle<CR>
 let g:NERDTreeHijackNetrw = 0
@@ -1282,7 +1283,7 @@ if has('g:vsvim') && g:vsvim == 1
 
     "nmap ,cs :vsc File.CopyFullPath<cr>
     " copy relative file name
-    nmap ,cs : let @*=@%<cr>
+    nmap ,cs : let @+=@%<cr>
     "Copy full path to clipboard then escap backslash and finally pass it to
     "powershell to split it then copy it back to clipboard
     nmap ,cf :vsc File.CopyFullPath<cr>o<C-r>*<Esc>:s/\\/\\\\/g<CR>vil"*ddd :read !powershell -Command Split-Path <C-r>* -leaf<cr>jvil"*ydd
