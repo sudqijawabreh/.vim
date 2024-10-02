@@ -498,6 +498,18 @@ augroup vimscript
     endif
 augroup END
 
+augroup solution
+    autocmd!
+    if has('win32')
+        "open plugin in the browser
+        autocmd FileType solution nnoremap <leader>gx :silent execute '!start ' . shellescape(expand('%:p'))<CR>
+
+    else
+        autocmd FileType solution nnoremap <leader>gx :silent execute '!xdg-open ' . shellescape(expand('%:p'))<CR>
+
+    endif
+augroup END
+
 augroup Spell
     autocmd!
     autocmd FileType gitcommit setlocal spell
