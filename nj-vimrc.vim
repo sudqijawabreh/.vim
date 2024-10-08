@@ -549,6 +549,8 @@ augroup END
 packadd cfilter
 
 call plug#begin(g:Home.'/.vimfiles/plugged')
+" This is prefect to get row from sql and be able to transpose it 
+Plug 'salsifis/vim-transpose'
 Plug 'zbirenbaum/copilot.lua'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'CopilotC-Nvim/CopilotChat.nvim', { 'branch': 'canary' }
@@ -672,6 +674,15 @@ Plug 'azabiong/vim-highlighter'
 "Plug 'tpope/vim-endwise'
 "Plug 'rstacruz/vim-closer'
 
+nnoremap <leader>ja : lua require("harpoon.mark").add_file()<cr>
+nnoremap <leader>m : lua require("harpoon.ui").toggle_quick_menu() <cr>
+nnoremap <leader>jc : lua require("harpoon.cmd-ui").toggle_quick_menu() <cr>
+nnoremap <leader>1 : luarequire("harpoon.ui").nav_file(1)<cr>
+nnoremap <leader>2 : luarequire("harpoon.ui").nav_file(2)<cr>
+" <leader>3 : luarequire("harpoon.term").gotoTerminal(1) end, desc = "Terminal 1" },
+" <leader>4 : luarequire("harpoon.term").gotoTerminal(2) end, desc = "Terminal 2" },
+" <leader>5 : luarequire("harpoon.term").sendCommand(1,1) end, desc = "Command 1" },
+" <leader>6 : luarequire("harpoon.term").sendCommand(1,2) end, desc = "Command 2" },
 call plug#end()
 nmap <silent>,, <Plug>LineLetters
 vmap <silent>,, <Plug>LineLetters
@@ -869,9 +880,12 @@ let g:VimTodoListsMoveItems = 0
 "not needed you can use <C-w> 
 imap <C-BS> <M-BS>
 
-"stolen from ThePrimeagen
-nnoremap <leader>d "_d
-vnoremap <leader>d "_d
+" This because tsoding was talking about duplicate a line without moving
+" cursor
+" dupilcate line under
+nnoremap <leader>d :.t.<cr>
+" duplicate line above
+nnoremap <leader>D :.t-1<cr>
 "nnoremap <C-u> <C-u>zz
 "nnoremap <C-d> <C-d>zz
 
@@ -1536,6 +1550,20 @@ require 'term-edit'.setup {
 require("CopilotChat").setup {
   debug = true, -- Enable debugging
   -- See Configuration section for rest
+  mappings = {
+      complete = {
+          detail = 'Use @<Tab> or /<Tab> for options.',
+          insert ='<Tab>',
+      },
+      close = {
+          normal = 'q',
+          insert = '<C-c>'
+      },
+      reset = {
+          normal ='<leader>c',
+          insert = nil
+      },
+  }
 }
 
 -- Indented-blankline
