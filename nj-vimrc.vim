@@ -1,3 +1,4 @@
+"
 " Set tabs to 4 character
 " See tabstop help for more info.
 " Setting tabstop & softtabstop to the same value to avoid messy layout with mixed tabs & spaces.
@@ -12,7 +13,12 @@ set list
 set listchars=tab:▷▷⋮
 set showmatch
 set scrolloff=2
+set lazyredraw
+
+"presistante undo between sessions
+set undofile
 set mouse=a "sorry but it reasonable to use mouse sometimes
+"set formatoptions-=cro
 "set verbosefile=~/verbose.log
 "set verbose=8
 " neovide configs
@@ -20,13 +26,13 @@ let g:neovide_cursor_trail_length=0.0
 let g:neovide_cursor_animation_length=0.0
 let g:neovide_transparency=0.9
 
-noremap <C-v> "*p
-vnoremap <C-c> "*y
-inoremap <C-v> <Esc>"*pi
-cnoremap <C-v> <C-r>*
+noremap <C-v> "+P
+vnoremap <C-c> "+y
+inoremap <C-v> <Esc>"+pa
+cnoremap <C-v> <C-r>+
 let mapleader = " "
-nmap s ysiw
-xmap s S
+"nmap s ysiw
+"xmap s S
 "map <S-s> <nop>
 "nmap <S-s> <nop>
 
@@ -58,6 +64,8 @@ noremap gy `[v`]
 nnoremap <leader>j `[
 nnoremap <leader>l `]
 command! BufOnly execute '%bdelete|edit #|normal `"'
+command Python execute "tabnew | set ft=python | call OpenTerminal() |execute 'SendTextToTerm python'"
+command -range=% Reverse :<line1>,<line2>g/^/m<line1>-1 | :noh
 set nofixeol
 
 "nnoremap <leader>w :set nohlsearch<CR>/[A-Z]<CR>:set hlsearch<CR>
@@ -141,9 +149,13 @@ if has("gui_running")
 endif
 "make ripgripp defualt for vim
 if executable("rg")
-    set grepprg=rg\ --vimgrep\ --no-heading
-    set grepformat=%f:%l:%c:%m,%f:%l:%m
+    " also you can use git as grep 
+    " git grep -n {yousearch}
+    " also search fo hidden files
+    set grepprg=rg\ --vimgrep\ --no-heading\ --hidden\ -g'\!.git/*'
+    set grepformat=%f:%l:%c:%m
 endif
+
 let g:ctrlp_max_files=0
 let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:10,results:50'
 "change ctrlp match function using plugin
@@ -178,19 +190,186 @@ let g:gruvbox_contrast_dark = 'hard'
 "set foldenable
 "set foldlevelstart=10
 "set foldnestmax=10      " no more than 10 fold levels please
+"
 "map edit vimrc
-if('win32')
-nmap <leader>v :execute("tab drop ".g:Home."/vimfiles/nj-vimrc.vim")<CR>
-else
-    nmap <leader>v :execute("tab drop ".g:Home."/.vim/nj-vimrc.vim")<CR>
-endif
+nmap <leader>v :execute("tab drop ".g:Home."/.vim/nj-vimrc.vim")<CR>
+
+"command! -range=% -nargs=+ SplitLine :s/\t/\r/g
+command! -range=% -nargs=? SplistLine call SplitLine(<line1>, <line2>, <q-args>)
+command! -range=% MakejsonList call MakeList(<line1>, <line2>)
+command! -range=% -nargs=* MakeSqlStringList call MakeList(<line1>, <line2>, ",", "'",")")
+command! -range=% -nargs=* MakeSqlIntList call MakeList(<line1>, <line2>, ",", "",")")
+command! -range=% -nargs=* MakecsharpList call MakeList(<line1>, <line2>, ",","\"","}")
+command! -range=% -nargs=* MakeList call MakeList(<line1>, <line2>, <f-args>)
+command! -range=% -nargs=* MakeCSVList call MakeList(<line1>, <line2>, ",", "", "")
+
+
+" a function that split lines by a delimiter
+
+let s:buffer = ''
+
+let s:buffer = ""
+
+function! MyCallback(job_id, data, event)
+    " Add the buffered content to the start of the concatenated data
+    if s:buffer != ""
+        let data_str = s:buffer . join(a:data, "\n")
+    else
+        let data_str = join(a:data, "\n")
+    endif
+
+    
+    " Reset the buffer
+    let s:buffer = ""
+
+    " Split the data by newlines
+    let lines = split(data_str, '\n')
+
+    " Process each line, except potentially the last
+    for i in range(0, len(lines) - 2)
+        " replace the first empty line in the buffer
+        if i == 0 && getline(1) == ''
+            call setline(1, lines[i])
+        else
+            call append('$', lines[i])
+        endif
+    endfor
+
+    " If the last line does not end with a newline (based on original data), it's incomplete
+    if len(a:data) > 0 && a:data[-1] !~ '\n$'
+        let s:buffer = lines[-1]
+    else
+        call append('$', lines[-1])
+    endif
+endfunction
+
+function! MyExitCallback(job_id, data, event)
+    if s:buffer != "" && s:buffer !~ '\n$'
+        call append('$', s:buffer)
+        let s:buffer = ""
+        " if you want to tabularize data
+        "exec "Jt"
+    endif
+endfunction
+
+" function! MyCallback(job_id, data, event)
+"     for i in range(0, len(a:data) - 1)
+"         call append('$', a:data[i])
+"     endfor
+" "    call append('$', a:data)
+" endfunction
+
+function! TempNameBuffer()
+    let tempname = "temp_" . strftime("%Y%m%d_%H%M%S")
+    execute "new " . tempname
+endfunction
+
+function! RunAsyncCommand(command)
+    call TempNameBuffer()
+    setlocal nowrap
+    setlocal tabstop=8
+    setlocal bufhidden=delete
+    setlocal buftype=nofile
+    setlocal noautoindent
+    setlocal nolist
+    setlocal ft=jira
+    let s:job = jobstart(a:command, {'on_stdout': 'MyCallback','on_exit': 'MyExitCallback'})
+endfunction
+
+command! -nargs=1 Async call RunAsyncCommand(<q-args>)
+
+command! ListMyTickets call ListMyTickets()
+command! Jt exec "silent %s/\\t\\+/|/g | silent %s/^/|/ | silent %s/$/|/ | 1t1 | 2s/\\w/-/g | noh | Tabularize /|/"
+command! Jt exec "silent %s/\\t\\+/|/g | silent %s/^/|/ | silent %s/$/|/ | 1t1 | 2s/\\w/-/g | noh | Tabularize /|/ | %awk -F'|' '{print $1|$2|$3|$4|$5|"
+
+function! GoToFirstSyntaxToken(syntax_group)
+    let l:line_num = line('.')
+    let l:line_content = getline(l:line_num)
+    for l:col in range(1, len(l:line_content) + 1)
+        let l:id = synID(l:line_num, l:col, 1)
+        if synIDattr(l:id, 'name') == a:syntax_group
+            call cursor(l:line_num, l:col)
+            return
+        endif
+    endfor
+    echo "No token with syntax group " . a:syntax_group . " found in the current line."
+endfunction
+
+function! ListMyTickets()
+    call RunAsyncCommand('jira sprint list --current --jql "Developers = "sjawabreh@restaurant365.com" OR assignee = \"sjawabreh@restaurant365.com\""')
+    "call RunAsyncCommand('jira sprint list --current -a"sjawabreh@restaurant365.com"')
+    "call RunAsyncCommand('jira sprint list --plain -a"sjawabreh@restaurant365.com"')
+    "call RunAsyncCommand('jira sprint list --current -a"$(jira me)"')
+endfunction
+
+
+function! SplitLine(startLine,endLine,delimiter)
+  if a:delimiter == ''
+        let l:finalArg = ','
+    else
+        let l:finalArg = a:delimiter
+    endif
+
+    execute a:startLine . "," . a:endLine."s/". l:finalArg . "/\\r/g"
+endfunction
+
+function! MakeList(startLine, endLine, ...)
+    " Get the first argument (mandatory)
+    let lineSurround = get(a:, 2, "\"")
+    let listSurround = get(a:, 3, "]")
+    let delimiter = get(a:, 1, ",")
+
+    " Define dictionary of surround pairs
+    let surroundPairs = {
+    \   '[' : ']',
+    \   '{' : '}',
+    \   '(' : ')',
+    \   '<' : '>',
+    \   ']' : '[',
+    \   '}' : '{',
+    \   ')' : '(',
+    \   '>' : '<',
+    \ }
+
+    " For each line in the range
+    for lineNum in range(a:startLine, a:endLine)
+        let lineContent = getline(lineNum)
+        " Surround the line with the given delimiter and append a comma
+        if(lineNum != a:endLine)
+            call setline(lineNum, lineSurround . lineContent . lineSurround . delimiter)
+        else
+            call setline(lineNum, lineSurround . lineContent . lineSurround)
+        endif
+    endfor
+
+    " If listSurround exists in surroundPairs dictionary
+    if has_key(surroundPairs, listSurround)
+        let startSurround = listSurround
+        let endSurround = surroundPairs[listSurround]
+        
+        " Swap if parentheses are swapped
+        if startSurround > endSurround
+            let temp = startSurround
+            let startSurround = endSurround
+            let endSurround = temp
+        endif
+        
+        call setline(a:startLine, startSurround . getline(a:startLine))
+        call setline(a:endLine, getline(a:endLine) . endSurround) " Remove the trailing comma and append the closing character
+    elseif listSurround != ""
+        call setline(a:startLine, listSurround . getline(a:startLine))
+        call setline(a:endLine, getline(a:endLine) . listSurround )
+    endif
+endfunction
 
 " cd sets path to the path of te file in the current buffer.
 "nnoremap cd :cd %:p:h
 " Open the NERDTree on the path of the file in the current buffer.
-"nnoremap t :NERDTree %:p:h
+    "nnoremap t :NERDTree %:p:h
+let NERDTreeShowHidden=1
 nnoremap cd :lcd %:p:h
 nmap <leader>a :NERDTreeToggle<CR>
+let g:NERDTreeHijackNetrw = 0
 nmap ,n :NERDTreeFind<CR>
 "let NERDTreeDirArrowExpandable = '+'
 "let NERDTreeDirArrowCollapsible = '~'
@@ -224,18 +403,110 @@ filetype off                  " required
 let g:UltiSnipsExpandTrigger="<c-tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
- 
+
+
+" search transalte for text under selection
+if has('win32')
+    xnoremap <leader>gt "*y:silent !start https://translate.google.com.eg/?sl=auto"&"tl=ar"&"text=<c-r>*&op=translate<cr>
+else
+    xnoremap <leader>gt "*y:silent !xdg-open https://translate.google.com.eg/?sl=auto"&"tl=ar"&"text=<c-r>*&op=translate<cr>
+endif
+
+" Check if the buffer needs to be refreshed from disk (using 'autoread').
+" Useful when branch-hopping with git.
+autocmd FocusGained * checktime
+autocmd WinEnter    * checktime
+
 "Add branch name at the beginning of the commit message
 augroup Commit
-    autocmd FileType gitcommit nnoremap gb i<C-R>=fugitive#head()<cr>
+    autocmd FileType gitcommit nnoremap gb i<C-R>=FugitiveHead()<cr>
+augroup END
+
+augroup json
+    autocmd FileType json setlocal foldlevel=99
+    autocmd FileType json setlocal foldmethod=syntax
+    autocmd FileType json setlocal foldtext=foldtext()
+augroup END
+
+augroup git
+    if has('win32')
+        autocmd FileType git nnoremap <leader>j "*yiW:silent !start https://restaurant365.atlassian.net/browse/<c-r>*<cr>
+        autocmd FileType git xnoremap <leader>j "*y:silent !start https://restaurant365.atlassian.net/browse/<c-r>*<cr>
+    else
+        autocmd FileType git nnoremap <leader>j "*yiW:silent !xdg-open https://restaurant365.atlassian.net/browse/<c-r>*<cr>
+        autocmd FileType git xnoremap <leader>j "*y:silent !xdg-open https://restaurant365.atlassian.net/browse/<c-r>*<cr>
+    endif
+
+    " This syntax highlighting is to match git log pretty with custom format
+    " this is created so when executing Git! log with --pretty="custom format" 
+    " logs will by highlighted beautifully
+    " the highlight group values determined by the colorscheme I use which is nightfox
+    " looks like this
+    " commitHash |  (branch name, origin) commit message (time value ago) [Sudqi Jawabreh]
+    "commit
+    autocmd FileType git syn match String /\((\d\+ .* ago)\)/
+    "elapsed
+    autocmd FileType git syn match Error /^\w\{-}\ze\s|/
+    "branch name
+    autocmd FileType git syn match  WarningMsg /|\s\s\zs(.\{-})/
+    "author name
+    autocmd FileType git syn match  @parameter /\s\zs\[.*\]$/
+
+augroup END
+
+augroup jira
+    if executable("jira")
+        nnoremap <leader>J :silent !jira open<cr>
+    endif
+
+    if executable("jira")
+        autocmd FileType jira nnoremap <leader>j :call GoToFirstSyntaxToken('String')<cr>"*yiW:silent !jira open <c-r>*<cr>
+        autocmd FileType jira xnoremap <leader>j :call GoToFirstSyntaxToken('String')<cr>"*y:silent !start https://restaurant365.atlassian.net/browse/<c-r>*<cr>
+        "jira open 
+    elseif has('win32')
+        autocmd FileType jira nnoremap <leader>j :call GoToFirstSyntaxToken('String')<cr>"*yiW:silent !start https://restaurant365.atlassian.net/browse/<c-r>*<cr>
+        autocmd FileType jira xnoremap <leader>j :call GoToFirstSyntaxToken('String')<cr>"*y:silent !start https://restaurant365.atlassian.net/browse/<c-r>*<cr>
+    endif
+
+    " This syntax highlighting is to match jira log pretty with custom format
+    " this is created so when executing jira! log with --pretty="custom format" 
+    " logs will by highlighted beautifully
+    " the highlight group values determined by the colorscheme I use which is nightfox
+    " looks like this
+    " commitHash |  (branch name, origin) commit message (time value ago) [Sudqi Jawabreh]
+    "commit
+    autocmd FileType jira syn match String /\t\zs\w*-\d\+\ze\t/
+    "autocmd FileType jira syn match String /\zs\t[^\t].\{-}\t\ze[^\t].\{-}\ze\t[^\t].\{-}/
+    "elapsed
+    autocmd FileType jira syn match Error /^.\{-}\ze\t/
+    "branch name
+    "autocmd FileType jira syn match String /\zs\t[^\t].\{-}\t\ze[^\t].\{-}\t[^\t].\{-}/
+    "author name
+    "autocmd FileType jira syn match  @parameter /\s\zs\[.*\]$/
+
 augroup END
 
 augroup vimscript
     autocmd!
     if has('win32')
         "open plugin in the browser
-        autocmd FileType vim xnoremap <leader>gx y:!start https://github.com/<c-r>"<cr>
-        autocmd FileType vim nnoremap <leader>gx 0vi'y:!start https://github.com/<c-r>"<cr>
+        autocmd FileType vim xnoremap <leader>gx y:silent !start https://github.com/<c-r>"<cr>
+        autocmd FileType vim nnoremap <leader>gx 0vi'y:silent !start https://github.com/<c-r>"<cr>
+    else
+        autocmd FileType vim xnoremap <leader>gx y:silent !xdg-open https://github.com/<c-r>"<cr>
+        autocmd FileType vim nnoremap <leader>gx 0vi'y:silent !xdg-open https://github.com/<c-r>"<cr>
+    endif
+augroup END
+
+augroup solution
+    autocmd!
+    if has('win32')
+        "open plugin in the browser
+        autocmd FileType solution nnoremap <leader>gx :silent execute '!start ' . shellescape(expand('%:p'))<CR>
+
+    else
+        autocmd FileType solution nnoremap <leader>gx :silent execute '!xdg-open ' . shellescape(expand('%:p'))<CR>
+
     endif
 augroup END
 
@@ -258,17 +529,75 @@ augroup lsp
     autocmd FileType fsharp nnoremap ds* /\*)<cr>xx?(\*<cr>xx "delete multiple line comment
 augroup END
 
+
+augroup csharp
+    " go to the next and prev method in csharp files
+    autocmd FileType cs nnoremap ]] /^        {<cr>:noh<cr>zz
+    autocmd FileType cs nnoremap [[ ?^        {<cr>:noh<cr>zz
+    autocmd FileType cs xnoremap af j?^        {<cr>kVj%:noh<cr>zz:noh<cr>gv
+    "autocmd FileType cs setlocal foldmethod=expr
+    " todo fix the folding
+    "autocmd FileType cs setlocal foldexpr=CustomCSFold(v:lnum)
+    "autocmd FileType cs setlocal foldlevel=0
+augroup END
+
+"--------------------------------------------------
+"Plugin todo
+"https://github.com/idanarye/vim-merginal
+"--------------------------------------------------
 " add builtin plugin to fliter quickfix list
 packadd cfilter
 
+function! BuildGitlabServer()
+  call system('nvim --headless +"lua require(\"gitlab.server\").build(true)" +qa')
+endfunction
+
 call plug#begin(g:Home.'/.vimfiles/plugged')
-Plug 'lewis6991/gitsigns.nvim'
+
+" ----- Dependencies -----
+Plug 'MunifTanjim/nui.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'sindrets/diffview.nvim'
+Plug 'stevearc/dressing.nvim'         " Recommended but not required. Better UI for pickers.
+Plug 'nvim-tree/nvim-web-devicons'   " Recommended but not required. Icons in discussion tree.
+
+" ----- Main Plugin with Correctly Escaped Build Command -----
+Plug 'harrisoncramer/gitlab.nvim', { 'do':  {-> BuildGitlabServer() }}
+" This is prefect to get row from sql and be able to transpose it 
+Plug 'salsifis/vim-transpose'
+Plug 'zbirenbaum/copilot.lua'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'CopilotC-Nvim/CopilotChat.nvim', { 'branch': 'canary' }
+"Plug 'github/copilot.vim'
+" add indentation lines
+Plug 'lukas-reineke/indent-blankline.nvim'
+Plug 'mg979/vim-visual-multi' 
+"usefull for comparing two lines 
+"Plug 'statox/vim-compare-lines' 
+"Plug 'kevinhwang91/nvim-bqf' "doesnt work with my quickfix list setup 
+Plug 'HakonHarnes/img-clip.nvim' 
+" great plugin really useful 
+Plug 'chomosuke/term-edit.nvim', {'tag': 'v1.*'} 
+Plug 'ggandor/leap.nvim' 
+"Plug 'lewis6991/gitsigns.nvim' 
+"cleverSubstitution and camelcase changing
+":%Subvert/facilit{y,ies}/building{,s}/g
+Plug 'tpope/vim-abolish'
+Plug 'tpope/vim-afterimage'
+"Plug 'AndrewRadev/multichange.vim'
+Plug 'AndrewRadev/dsf.vim'
+Plug 'andrewradev/deleft.vim'
+"Plug 'nicwest/vim-http'
+Plug 'AndrewRadev/undoquit.vim'
+Plug 'folke/zen-mode.nvim'
 Plug 'szw/vim-maximizer'
 Plug 'tpope/vim-commentary'
 "show code context
 Plug 'wellle/context.vim'
 Plug 'vimwiki/vimwiki'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
+Plug 'gennaro-tedesco/nvim-jqx'
+"Plug 'junegunn/vim-peekaboo'
 "--------------------
 "query db
 Plug 'tpope/vim-dadbod'
@@ -282,6 +611,11 @@ Plug 'jceb/vim-textobj-uri'
 "Plug 'terryma/vim-expand-region'
 Plug '9mm/vim-closer'
 Plug 'tpope/vim-fugitive'
+" Add to Gbrows to gitlab
+Plug 'shumphrey/fugitive-gitlab.vim'
+Plug 'tpope/vim-rhubarb'
+" lets experiment with this plugin
+"Plug 'int3/vim-extradite'
 Plug 'mbbill/undotree'
 Plug 'tommcdo/vim-exchange'
 "Plug 'ctrlpvim/ctrlp.vim'
@@ -290,11 +624,12 @@ Plug 'scrooloose/nerdtree'
 Plug 'tpope/vim-repeat'
 Plug 'vim-airline/vim-airline'
 "Plug 'vim-expand-region'
-Plug 'OmniSharp/omnisharp-vim'
+"Plug 'OmniSharp/omnisharp-vim'
 Plug 'aserebryakov/vim-todo-lists'
 "Plug 'vim-latex/vim-latex'
 "Plug 'Valloric/YouCompleteMe'
 "Plug 'fsharp/vim-fsharp'
+Plug 'ionide/Ionide-vim'
 Plug 'tpope/vim-rsi'
 "Plug 'taku-o/vim-zoom'
 Plug 'tommcdo/vim-fubitive'
@@ -306,6 +641,7 @@ Plug 'kana/vim-textobj-line'
 Plug 'tpope/vim-unimpaired'
 Plug 'sgur/vim-textobj-parameter'
 Plug 'sudqijawabreh/vim-sendtoterm'
+Plug 'ThePrimeagen/harpoon'
 "Plug 'ThePrimeagen/vim-be-good'
 " not needed in nvim 0.6
 Plug 'machakann/vim-highlightedyank'
@@ -317,22 +653,23 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-fzy-native.nvim'
 Plug 'nvim-telescope/telescope-project.nvim'
-Plug 'cljoly/telescope-repo.nvim'
+"Plug 'cljoly/telescope-repo.nvim'
 "Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'michaeljsmith/vim-indent-object',
 Plug 'AndrewRadev/diffurcate.vim',
-Plug 'dense-analysis/ale'
+"Plug 'dense-analysis/ale'
 "Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 "Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
 "Plug 'wookayin/fzf-ripgrep.vim'
 Plug 'godlygeek/tabular'
 "Plug 'puremourning/vimspector'
+"Plug 'psliwka/vim-smoothie'
 "--------------------
 " vim colorschemes
 Plug 'EdenEast/nightfox.nvim'
 "Plug 'tomasiser/vim-code-dark'
 "Plug 'lifepillar/vim-solarized8'
-"Plug 'joshdick/onedark.vim'
+Plug 'joshdick/onedark.vim'
 "Plug 'folke/tokyonight.nvim'
 "Plug 'morhetz/gruvbox'
 "Plug 'tomasiser/vim-code-dark'
@@ -346,6 +683,20 @@ Plug 'EdenEast/nightfox.nvim'
 "--------------------
 " can be used to edit text in the browser
 "Plug 'subnut/nvim-ghost.nvim', {'do': ':call nvim_ghost#installer#install()'}
+Plug 'azabiong/vim-highlighter'
+" Didn't work revisit in the future
+"Plug 'tpope/vim-endwise'
+"Plug 'rstacruz/vim-closer'
+
+nnoremap <leader>ja : lua require("harpoon.mark").add_file()<cr>
+nnoremap <leader>m : lua require("harpoon.ui").toggle_quick_menu() <cr>
+nnoremap <leader>jc : lua require("harpoon.cmd-ui").toggle_quick_menu() <cr>
+nnoremap <leader>1 : luarequire("harpoon.ui").nav_file(1)<cr>
+nnoremap <leader>2 : luarequire("harpoon.ui").nav_file(2)<cr>
+" <leader>3 : luarequire("harpoon.term").gotoTerminal(1) end, desc = "Terminal 1" },
+" <leader>4 : luarequire("harpoon.term").gotoTerminal(2) end, desc = "Terminal 2" },
+" <leader>5 : luarequire("harpoon.term").sendCommand(1,1) end, desc = "Command 1" },
+" <leader>6 : luarequire("harpoon.term").sendCommand(1,2) end, desc = "Command 2" },
 call plug#end()
 nmap <silent>,, <Plug>LineLetters
 vmap <silent>,, <Plug>LineLetters
@@ -354,6 +705,10 @@ vmap <silent>,, <Plug>LineLetters
 command! -bang -nargs=? -complete=dir Files
         \ call fzf#vim#files(<q-args>, {'options': ['--layout=reverse', '--info=inline', '--preview', 'cat {}']}, <bang>0)
 
+"nnoremap <unique> <C-D> <cmd>call smoothie#do("\<C-D>") <CR>
+"vnoremap <unique> <C-D> <cmd>call smoothie#do("\<C-D>") <CR>
+
+lua require('leap').add_default_mappings()
 " Put your non-
 "s
 "Ctrl s h
@@ -383,19 +738,44 @@ nmap k gk
 "escap to jk
 ":imap jk <Esc>
 ":imap kj <Esc>
+"set guifont=Consolas:h10:cDEFAULT
 if has("gui_running")
     " Set a nicer font.
     ""  set guifont=Inconsolata\ for\ Powerline:h12
-    set guifont=Ubuntu\ Mono\ derivative\ Powerline:h10
-    "set guifont=Consolas:h10:cDEFAULT
+    "set guifont=Ubuntu\ Mono\ derivative\ Powerline:h11
+    set guifont=Consolas:h10:cDEFAULT
     " Hide the toolbar.
     set guioptions-=T
+    if has('nvim')
+        GuiFont Consolas:h10
+    endif
+
 endif
 "python from powerline.vim import setup as powerline_setup
 "python powerline_setup()
 "python del powerline_setup
 
- function! OpenTerminalBuffer(name)
+" Quickly switch between / and ? when searching
+cnoremap <expr> <c-l> <SID>CmdlineToggle("\<c-l>")
+function! s:CmdlineToggle(default)
+  let command_type = getcmdtype()
+
+  if command_type != '/' && command_type != '?'
+    return a:default
+  endif
+
+  let command_line     = getcmdline()
+  let command_line_pos = getcmdpos()
+  let other_mode       = (command_type == '/') ? '?' : '/'
+
+  let search_command   = "\<c-c>".other_mode.command_line
+  let position_command = "\<home>".repeat("\<right>", command_line_pos - 1)
+
+  call feedkeys(search_command.position_command, 'n')
+  return ''
+endfunction
+
+function! OpenTerminalBuffer(name)
     try
         if bufexists(bufname("term://*".a:name)) > 0 
             execute "sb term://*".a:name
@@ -408,6 +788,15 @@ endif
     endtry
 endfunction
 
+
+function! OpenTerminal()
+if has('win32')
+    call OpenTerminalBuffer('powershell')
+else
+    "call OpenTerminalBuffer('bash')
+    call OpenTerminalBuffer('zsh')
+endif
+endfunction
 " a function to change fold text to include text in the last line
 function! MyFoldText()
     let nblines = v:foldend - v:foldstart + 1
@@ -419,7 +808,49 @@ function! MyFoldText()
     let txt = '"' . line . '....' . nblines
     return txt
 endfunction
-set foldtext=MyFoldText()
+" only call it when you need it
+"set foldtext=MyFoldText()
+
+" Custom function for fold expression
+function! CustomFold(lnum)
+    " Get the current line text
+    let line = getline(a:lnum)
+    
+    " Fold based on indentation (8 spaces)
+    if match(line, '^\s\{8\}') >= 0
+        return ">1"  " Increase fold level for lines with 8 spaces
+    endif
+
+    " Fold based on '{' (open fold)
+    if match(line, '{') >= 0
+        return ">1"  " Start a fold at '{'
+    endif
+
+    " Fold based on '}' (close fold)
+    if match(line, '}') >= 0
+        return "<1"  " End the fold at '}'
+    endif
+
+    " No fold for other lines
+    return "="
+endfunction
+
+" Custom function for fold expression
+function! CustomCSFold(lnum)
+    " Get the current line text
+    let line = getline(a:lnum)
+
+    " Fold method definitions and braces
+    if line =~? '^\s*{'
+        return ">1"  " Start a fold at an opening brace
+    elseif line =~? '^\s*}'
+        return "<1"  " Close a fold at a closing brace
+    elseif line =~? '^\s*\(public\|private\|protected\|internal\)\s*\(static\|async\|\)\s*\S\+.*('
+        return "a1"  " Start a fold at a method signature
+    else
+        return "="   " Keep current fold level
+    endif
+endfunction
 
 " copy macthed search to clippored
 "http://vim.wikia.com/wiki/Copy_search_matches
@@ -443,14 +874,14 @@ else
     colorscheme nightfox
 endif
 if has('win32')
-  nmap ,cs :let @*=substitute(expand("%"), "/", "\\", "g")<CR>
+  nmap <leader>cs :let @*=substitute(expand("%"), "/", "\\", "g")<CR>
   nmap ,cl :let @*=substitute(expand("%:p:h"), "/", "\\", "g")<CR>
   nmap <leader>cd :redir @a \| pwd \| redir END \| let @*=@a<CR>
   nmap <leader>cf :let @*=substitute(expand("%:t"), "/", "\\", "g")<CR>
 
   " This will copy the path in 8.3 short format, for DOS and Windows 9x
   nmap ,c8 :let @*=substitute(expand("%:p:8"), "/", "\\", "g")<CR>
-else
+els
   nmap ,cs :let @*=expand("%")<CR>
   nmap ,cl :let @*=expand("%:p")<CR>
 endif
@@ -463,36 +894,71 @@ let g:VimTodoListsMoveItems = 0
 "not needed you can use <C-w> 
 imap <C-BS> <M-BS>
 
+" This because tsoding was talking about duplicate a line without moving
+" cursor
+" dupilcate line under
+nnoremap <leader>d :.t.<cr>
+" duplicate line above
+nnoremap <leader>D :.t-1<cr>
+"nnoremap <C-u> <C-u>zz
+"nnoremap <C-d> <C-d>zz
+
 "generate GUID
-"nmap <leader>gu :read !python -c "import uuid;print(str(uuid.uuid4()).upper())"<cr>vil"*ydd
+"nmap <leader>gu :read !python -c "import uuid;print(str(uuid.uuid4()).upper())" <cr>vil"*ydd
 "push new branch to remote
 nmap <leader>gu :Git! push --set-upstream origin <C-g><CR>
 nmap <leader>gu<space> :Git! push --set-upstream origin <C-g>
+
+vmap <leader>gi d$i//#start_exclude_commit<esc>p']o<esc>0Di//#end_exclude_commit<esc>
+
+"blame the entire file
 nmap <leader>gb :Git blame<CR>
+"blame only selected lines
 xmap <leader>gb :Git blame<CR>
+" git log for the first 100 commits with custom format
 nmap <leader>gl :Git! log -100 --pretty="%h \| %d %s (%cr) [%an]" <CR>
+nmap <leader>g<space>l :Git! log  --pretty="%h \| %d %s (%cr) [%an]" -100
+" git log the current file
+nmap <leader>gL :Git! log --pretty="%h \| %d %s (%cr [%an]" % <CR>
+" push current branch
 nmap <leader>gp :Git! push origin<CR>
+" push with force
 nmap <leader>gP :Git! push origin --force<CR>
-nmap <leader>gs :Git<CR>
+" open git status
+nmap <leader>gs :Git<CR>gU
+" show changes in the current file
 nmap <leader>gd :Gdiffsplit<CR>
+" commit changes
 nmap <leader>gcc :Git commit<CR>
+" commit amend without changing commit message
 nmap <leader>gce :Git commit --amend --no-edit<CR>
+" stash changes
 nmap <leader>gz<space> :Git stash<space>
-nmap <leader>gzz :Git stash<CR>
+nmap <leader>gzs :Git stash<CR>
+" pop stash
 nmap <leader>gzp :Git stash pop<CR>
 " pull the current branch from remote
 " you can remember it like git get branch
 nmap <leader>gg :Git! pull origin <c-g><CR>
 nmap <leader>g<space> :Git! pull origin <c-g>
 nmap <leader>gG :Git! pull origin
+nmap <leader>gf :Git! fetch<cr>
+" git the hsitory of HEAD
+nmap <leader>grl :Git reflog<CR>
 "put branch name on the command
-cnoremap <c-g> <C-R>=fugitive#head()<cr>
-
+cnoremap <c-g> <C-R>=FugitiveHead()<cr>
 "Run the current line as if it were a command. Often more convenient than q: when experimenting.
 "nnoremap <leader>e :exe getline(line('.'))<cr>
 "nnoremap <leader>f 0f(h
 
 vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
+
+highlight LineHighlight ctermbg=lightgray guibg=#2b4b51
+vnoremap <silent> <Leader>l :call matchadd('LineHighlight', '\%'.line('.').'l')<CR> 
+nnoremap <silent> <Leader>l :call matchadd('LineHighlight', '\%'.line('.').'l')<CR> 
+" clear all the highlighted lines
+nnoremap <silent> <Leader>cl :call clearmatches()<CR>
+vnoremap <silent> <Leader>cl :call clearmatches()<CR>
 
 " terminal mode mappings
 tnoremap <silent> <ESC> <C-\><C-n>
@@ -500,17 +966,22 @@ tnoremap <silent> <c-j> <C-\><c-n><c-w>j
 
  "nnoremap <C-p> <cmd>Telescope find_files<cr>
 " show terminal buffer if already opend or create a new one
-if has('win32')
-    nnoremap <leader>t :call OpenTerminalBuffer('powershell')<cr>
-else
-    nnoremap <leader>t :call OpenTerminalBuffer('bash')<cr>
-endif
+nnoremap <leader>t :call OpenTerminal()<cr>
+
 "nnoremap <leader>x :sb term<cr>
 "nnoremap <Leader>f :lua require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({}))<cr>"
-nnoremap <Leader>f :lua require'telescope.builtin'.find_files(require('telescope.themes').get_ivy({previewer = false}))<cr>
+nnoremap <Leader>f :lua require'telescope.builtin'.find_files(require('telescope.themes').get_ivy({previewer = false,hidden = true}))<cr>
+"nnoremap <leader>gco :lua require'telescope.builtin'.git_branches(require("telescope.themes").get_dropdown{default_text = "", previewer = false})<cr>
+nnoremap <leader>gco :Git checkout 
+vnoremap <leader>gco y:Git checkout <c-r>"<CR>
+" use backward search to escap /
+nnoremap <leader>gcb :Git! branch -a<cr><c-w>k?\V
 "nnoremap <leader>f <cmd>Telescope find_files previewer=false<cr>
-nnoremap <leader>cp <cmd>Telescope project<cr>
+nnoremap <leader>cp <cmd>lua require'telescope'.extensions.project.project{theme='dropdown', layout='vertical'}<CR>
+"nnoremap <leader>cp <cmd>Telescope project theme=dropdown layout=vertical <cr>
+"nnoremap <leader>cp :lua require'telescope'.extensions.project.project{layout='vertical'}  <cr>
 nnoremap <leader>cr <cmd>Telescope resume<cr>
+"nnoremap <leader>gco <cmd>Telescope git_branches<cr>
 "nnoremap <leader>fr :lua require'telescope.builtin'.resume{}<CR>
 "
 "beautify json
@@ -537,54 +1008,62 @@ if has('g:vsvim') && g:vsvim == 0
     autocmd FileType cs nmap <silent> <buffer> K <Plug>(omnisharp_type_lookup)
 
     " The following commands are contextual, based on the cursor position.
-    autocmd FileType cs nmap <silent> <buffer> gd <Plug>(omnisharp_go_to_definition)
-    autocmd FileType cs nmap <silent> <buffer> gr <Plug>(omnisharp_find_usages)
-    autocmd FileType cs nmap <silent> <buffer> gi <Plug>(omnisharp_find_implementations)
-    autocmd FileType cs nmap <silent> <buffer> gp <Plug>(omnisharp_preview_definition)
-    "autocmd FileType cs nmap <silent> <buffer> <Leader>ospi <Plug>(omnisharp_preview_implementations)
-    "autocmd FileType cs nmap <silent> <buffer> <Leader>ost <Plug>(omnisharp_type_lookup)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>osd <Plug>(omnisharp_documentation)
-    "autocmd FileType cs nmap <silent> <buffer> <Leader>osfs <Plug>(omnisharp_find_symbol)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>osfx <Plug>(omnisharp_fix_usings)
-    autocmd FileType cs nmap <silent> <buffer> <C-\> <Plug>(omnisharp_signature_help)
-    autocmd FileType cs imap <silent> <buffer> <C-\> <Plug>(omnisharp_signature_help)
+    if exists(":OmniSharpStartServer")
+        autocmd FileType cs nmap <silent> <buffer> gd <Plug>(omnisharp_go_to_definition)
+        autocmd FileType cs nmap <silent> <buffer> gr <Plug>(omnisharp_find_usages)
+        autocmd FileType cs nmap <silent> <buffer> gi <Plug>(omnisharp_find_implementations)
+        autocmd FileType cs nmap <silent> <buffer> gp <Plug>(omnisharp_preview_definition)
+        "autocmd FileType cs nmap <silent> <buffer> <Leader>ospi <Plug>(omnisharp_preview_implementations)
+        "autocmd FileType cs nmap <silent> <buffer> <Leader>ost <Plug>(omnisharp_type_lookup)
+        autocmd FileType cs nmap <silent> <buffer> <Leader>osd <Plug>(omnisharp_documentation)
+        "autocmd FileType cs nmap <silent> <buffer> <Leader>osfs <Plug>(omnisharp_find_symbol)
+        autocmd FileType cs nmap <silent> <buffer> <Leader>osfx <Plug>(omnisharp_fix_usings)
+        autocmd FileType cs nmap <silent> <buffer> <C-\> <Plug>(omnisharp_signature_help)
+        autocmd FileType cs imap <silent> <buffer> <C-\> <Plug>(omnisharp_signature_help)
 
-    " Navigate up and down by method/property/field
-    autocmd FileType cs nmap <silent> <buffer> [[ <Plug>(omnisharp_navigate_up)
-    autocmd FileType cs nmap <silent> <buffer> ]] <Plug>(omnisharp_navigate_down)
-    " Find all code errors/warnings for the current solution and populate the quickfix window
-    autocmd FileType cs nmap <silent> <buffer> <Leader>osgcc <Plug>(omnisharp_global_code_check)
-    " Contextual code actions (uses fzf, vim-clap, CtrlP or unite.vim selector when available)
-    autocmd FileType cs nmap <silent> <buffer> <leader>oa <Plug>(omnisharp_code_actions)
-    autocmd FileType cs xmap <silent> <buffer> <leader>oa <Plug>(omnisharp_code_actions)
-    " Repeat the last code action performed (does not use a selector)
-    autocmd FileType cs nmap <silent> <buffer> <leader>os. <Plug>(omnisharp_code_action_repeat)
-    autocmd FileType cs xmap <silent> <buffer> <leader>os. <Plug>(omnisharp_code_action_repeat)
-    autocmd FileType cs nmap <silent> <buffer> <leader>oh <Plug>(omnisharp_highlight)
+        " Navigate uer and down by method/property/field
+        "autocmd FileType cs nmap <silent> <buffer> [[ <Plug>(omnisharp_navigate_up)
+        "autocmd FileType cs nmap <silent> <buffer> ]] <Plug>(omnisharp_navigate_down)
+        " Find all code errors/warnings for the current solution and populate the quickfix window
+        autocmd FileType cs nmap <silent> <buffer> <Leader>osgcc <Plug>(omnisharp_global_code_check)
+        " Contextual code actions (uses fzf, vim-clap, CtrlP or unite.vim selector when available)
+        autocmd FileType cs nmap <silent> <buffer> <leader>oa <Plug>(omnisharp_code_actions)
+        autocmd FileType cs xmap <silent> <buffer> <leader>oa <Plug>(omnisharp_code_actions)
+        " Repeat the last code action performed (does not use a selector)
+        autocmd FileType cs nmap <silent> <buffer> <leader>os. <Plug>(omnisharp_code_action_repeat)
+        autocmd FileType cs xmap <silent> <buffer> <leader>os. <Plug>(omnisharp_code_action_repeat)
+        autocmd FileType cs nmap <silent> <buffer> <leader>oh <Plug>(omnisharp_highlight)
 
-    autocmd FileType cs nmap <silent> <buffer> <Leader>os= <Plug>(omnisharp_code_format)
+        autocmd FileType cs nmap <silent> <buffer> <Leader>os= <Plug>(omnisharp_code_format)
 
-    autocmd FileType cs nmap <silent> <buffer> <Leader>rr <Plug>(omnisharp_rename)
+        autocmd FileType cs nmap <silent> <buffer> <Leader>rr <Plug>(omnisharp_rename)
 
-    autocmd FileType cs nmap <silent> <buffer> <Leader>osre <Plug>(omnisharp_restart_server)
-    "autocmd FileType cs nmap <silent> <buffer> <Leader>osst <Plug>(omnisharp_start_server)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>ost <Plug>(omnisharp_start_server)
-    autocmd FileType cs nmap <silent> <buffer> <Leader>osp <Plug>(omnisharp_stop_server)
-    augroup END
+        autocmd FileType cs nmap <silent> <buffer> <Leader>osre <Plug>(omnisharp_restart_server)
+        "autocmd FileType cs nmap <silent> <buffer> <Leader>osst <Plug>(omnisharp_start_server)
+        autocmd FileType cs nmap <silent> <buffer> <Leader>ost <Plug>(omnisharp_start_server)
+        autocmd FileType cs nmap <silent> <buffer> <Leader>osp <Plug>(omnisharp_stop_server)
+        augroup END
+    endif
 
     nmap <m-k> :cprev<cr>
     nmap <m-j> :cnext<cr>
 
-    xnoremap g/ y: grep! <C-r>" \| copen <cr>
+    xnoremap <leader>/ y:vimgrep /<C-R>"/j %<CR>\|:cw<CR>
+    " show last search in quickfix list
+    nnoremap <leader>/ :vimgrep /<C-R>//j %<CR>\|:cw<CR>
+    xnoremap g/ y: grep! "<C-r>"" -i \| copen <cr>
 
     "open current file folder
-    nnoremap <silent>gof : !explorer %:h<CR>
-    xnoremap <leader>gf y: Find <C-r>"<CR> 
+    if has('win32')
+        nnoremap <silent>gof :silent !explorer %:h<CR>
+    else
+        nnoremap <silent>gof :!xdg-open %:h<CR>
+    endif
 
     " start open program or image under the cursor
     if has('win32')
-        nnoremap mm  :lcd %:p:h<CR> :!start <cfile><CR>
-        xnoremap mm  :lcd %:p:h<CR>y:!start "" "<c-r>"" <cr>
+        nnoremap <leader>mm  :lcd %:p:h<CR> :silent !start <cfile><CR>
+        xnoremap <leader>mm  :lcd %:p:h<CR>y:silent !start "" "<c-r>"" <cr>
     endif
     
     "go to interface
@@ -597,8 +1076,8 @@ if has('g:vsvim') && g:vsvim == 0
     nmap <leader>gmd 0f(h"ayiwvily<leader>gi/<C-R>a<CR><leader>h
     "nmap <leader>gum vilhy0f(hgi0wv$hp
 
-    xnoremap s> <ESC>`<i<<ESC>`>la><ESC>
-    xnoremap s< <ESC>`>a><ESC>`<i<<ESC>
+    "xnoremap s> <ESC>`<i<<ESC>`>la><ESC>
+    "xnoremap s< <ESC>`>a><ESC>`<i<<ESC>
     " Set internal encoding of vim, not needed on neovim, since coc.nvim using some
     " unicode characters in the file autoload/float.vim
     set encoding=utf-8
@@ -636,12 +1115,42 @@ endif
 if has('g:vsvim') && g:vsvim == 1
     cd C:\Users\MSI\Documents\r365\r365\Application\
     nnoremap gi :vsc Edit.GoToImplementation<CR>
-    "map gr :vsc Edit.FindAllReferences<CR>
     map gr :vsc Edit.FindAllReferences<CR>
     map gp :vsc Edit.PeekDefinition<CR>
     map g; `.
     nmap <leader>f :vsc Edit.GoToAll<CR>
     map <c-s> :w<CR>
+    nnoremap Y y$
+
+    nnoremap ]<leader> mao<Esc>`a
+    nnoremap [<leader> maO<Esc>`a
+
+
+
+    "member_name
+    ": identifier
+    "| interface_type '.' identifier
+    ";
+    "
+    "method name :([A-Za-z_]\w*|\w+\.[A-Za-z_]\w*)
+    "" go to the next and prev method in csharp files
+
+    xnoremap af jv?^        {<cr>kVj%:noh<cr>zz:noh<cr>gv
+    xnoremap vaF /^        {<cr>:noh<cr>zz
+    nnoremap ][ /^        }<cr>:noh<cr>zz
+    nnoremap [[ ?^        {<cr>:noh<cr>zz
+    nnoremap [] ?^        }<cr>:noh<cr>zz
+
+
+    nnoremap ]] /^        {<cr>:noh<cr>zz
+    nnoremap ][ /^        }<cr>:noh<cr>zz
+    nnoremap [[ ?^        {<cr>:noh<cr>zz
+    nnoremap [] ?^        }<cr>:noh<cr>zz
+
+    xnoremap ]] /^        {<cr>
+    xnoremap ][ /^        }<cr>
+    xnoremap [[ ?^        {<cr>
+    xnoremap [] ?^        }<cr>
 
     vnoremap // y/\V<C-R>"<CR>
     "go to interface
@@ -662,8 +1171,12 @@ if has('g:vsvim') && g:vsvim == 1
     "let @g = '0f(h"syiwvily,gi,last,h'
     "noremap <leader>gmd @g
 
-    "nnoremap <C-k> :vsc Edit.MoveControlUP<cr>
-    "nnoremap <C-j> :vsc Edit.MoveControlDown<cr>
+    " Mapped inside visual studio these mappings
+    " <M-p> previous item in completion
+    " <M-n> next item in completion
+    " <M-k> previous item in list find list
+    " <M-j> next item in list find list
+    
     nnoremap <C-e> :vsc View.ErrorList<cr>
     nnoremap <C-o> :vsc View.NavigateBackward<cr>
     nnoremap <C-i> :vsc View.NavigateForward<cr>
@@ -719,9 +1232,9 @@ if has('g:vsvim') && g:vsvim == 1
     nnoremap <leader>di :vsc Diff.InlineView<cr>
     nnoremap <leader>dl :vsc Diff.RightOnlyView<cr>
 
-    nnoremap <leader>gc :vsc Team.Git.GoToGitChanges<cr>
+    nnoremap <leader>gs :vsc Team.Git.GoToGitChanges<cr>
     nnoremap <leader>gb :vsc Team.Git.Annotate<cr>
-    nnoremap <leader>c :vsc Team.Git.CompareWithUnmodified<cr>
+    nnoremap <leader>gd :vsc Team.Git.CompareWithUnmodified<cr>
 
     nnoremap <leader>i V'[']=<C-[>
 
@@ -787,9 +1300,30 @@ if has('g:vsvim') && g:vsvim == 1
     xnoremap sc <ESC>`>i*)<ESC>`<i(*<ESC>
     nnoremap dc /\*)<cr>xx?(\*<cr>xx
     xnoremap s* <ESC>`>i*/<ESC>`<i/*<ESC>
-    nnoremap ds* /\*\/<cr>xx?\/\*<cr>xx
+    nnoremap ds* /\*\/<cr>2x?\/\*<cr>2x:noh<cr>
+    nnoremap ds* /\*\/<cr>V?\/\*<cr>:s#\(\*/\)\|\(/\*\)##<cr>:noh<cr>
 
-    nmap ,cs :vsc File.CopyFullPath<cr>
+    " Complete todo
+    nnoremap <leader>tc :s/- \[ \]/- [X]/<CR>:noh<cr>
+    " Incomplete todo
+    nnoremap <leader>tu :s/- \[X\]/- [ ]/<CR>:noh<cr>
+
+    " Advanced version
+    " increment
+    nnoremap <leader>ti :s/- \[O\]/- [X]/<CR>:s/- \[o\]/- [O]/<CR>:s/- \[\.\]/- [o]/<CR>:s/- \[ \]/- [.]/<CR>:noh<cr>
+    " decrement
+    nnoremap <leader>td :s/- \[\.\]/- [ ]/<CR> :s/- \[o\]/- [.]/<CR> :s/- \[O\]/- [o]/<CR> :s/- \[X\]/- [O]/<CR>:noh<CR>
+
+
+    " toggle todo
+    " This the state of art of branchless programming
+    nnoremap <leader><cr> :s/- \[ ]/- [x]/<CR>:s/- \[[X\.oO]\]/- [e]/<CR>:s/- \[e\]/- [ ]/<CR>:s/- \[x]/- [X]/<CR>:noh<cr>
+    " visual mode version
+    vnoremap <leader><cr>  :s/- \[ ]/- [x]/<CR>gv:s/- \[[X\.oO]\]/- [e]/<CR>gv:s/- \[e\]/- [ ]/<CR>gv:s/- \[x]/- [X]/<CR>:noh<cr>
+
+    "nmap ,cs :vsc File.CopyFullPath<cr>
+    " copy relative file name
+    nmap ,cs : let @+=@%<cr>
     "Copy full path to clipboard then escap backslash and finally pass it to
     "powershell to split it then copy it back to clipboard
     nmap ,cf :vsc File.CopyFullPath<cr>o<C-r>*<Esc>:s/\\/\\\\/g<CR>vil"*ddd :read !powershell -Command Split-Path <C-r>* -leaf<cr>jvil"*ydd
@@ -878,17 +1412,288 @@ let g:OmniSharp_server_stdio = 1
 let g:OmniSharp_start_server = 0
 
 lua << EOF
-require('gitsigns').setup
-{
-    current_line_blame = true,
-    current_line_blame_opts = {
-        virt_text = true,
-        virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
-        delay = 50,
-        ignore_whitespace = true,
-        },
-    current_line_blame_formatter = '<author>, <author_time:%R> - <summary>',
-}
+require('diffview')
+require("gitlab").setup({
+    port = nil, -- The port of the Go server, which runs in the background, if omitted or `nil` the port will be chosen automatically
+    log_path = vim.fn.stdpath("cache") .. "/gitlab.nvim.log", -- Log path for the Go server
+    config_path = nil, -- Custom path for `.gitlab.nvim` file, please read the "Connecting to Gitlab" section
+    debug = {
+        request = false, -- Requests to/from Go server
+        response = false,
+        gitlab_request = false, -- Requests to/from Gitlab
+        gitlab_response = false,
+    },
+    attachment_dir = nil, -- The local directory for files (see the "summary" section)
+    reviewer_settings = {
+    jump_with_no_diagnostics = false, -- Jump to last position in discussion tree if true, otherwise stay in reviewer and show warning.
+    diffview = {
+        imply_local = false, -- If true, will attempt to use --imply_local option when calling |:DiffviewOpen|
+    },
+    },
+    connection_settings = {
+    insecure = false, -- Like curl's --insecure option, ignore bad x509 certificates on connection
+    remote = "origin", -- The default remote that your MRs target
+    },
+    keymaps = {
+    disable_all = false, -- Disable all mappings created by the plugin
+    help = "g?", -- Open a help popup for local keymaps when a relevant view is focused (popup, discussion panel, etc)
+    global = {
+        disable_all = false, -- Disable all global mappings created by the plugin
+        add_assignee = "glaa",
+        delete_assignee = "glad",
+        add_label = "glla",
+        delete_label = "glld",
+        add_reviewer = "glra",
+        delete_reviewer = "glrd",
+        approve = "glA", -- Approve MR
+        revoke = "glR", -- Revoke MR approval
+        merge = "glM", -- Merge the feature branch to the target branch and close MR
+        create_mr = "glC", -- Create a new MR for currently checked-out feature branch
+        choose_merge_request = "glc", -- Chose MR for review (if necessary check out the feature branch)
+        start_review = "glS", -- Start review for the currently checked-out branch
+        summary = "gls", -- Show the editable summary of the MR
+        copy_mr_url = "glu", -- Copy the URL of the MR to the system clipboard
+        open_in_browser = "glo", -- Openthe URL of the MR in the default Internet browser
+        create_note = "gln", -- Create a note (comment not linked to a specific line)
+        pipeline = "glp", -- Show the pipeline status
+        toggle_discussions = "gld", -- Toggle the discussions window
+        toggle_draft_mode = "glD", -- Toggle between draft mode (comments posted as drafts) and live mode (comments are posted immediately)
+        publish_all_drafts = "glP", -- Publish all draft comments/notes
+    },
+    popup = {
+        disable_all = false, -- Disable all default mappings for the popup windows (comments, summary, MR creation, etc.)
+        next_field = "<Tab>", -- Cycle to the next field. Accepts |count|.
+        prev_field = "<S-Tab>", -- Cycle to the previous field. Accepts |count|.
+        perform_action = "ZZ", -- Once in normal mode, does action (like saving comment or applying description edit, etc)
+        perform_linewise_action = "ZA", -- Once in normal mode, does the linewise action (see logs for this job, etc)
+        discard_changes = "ZQ", -- Quit the popup discarding changes, the popup content is not saved to the `temp_registers` (see `:h gitlab.nvim.temp-registers`)
+    },
+    discussion_tree = {
+        disable_all = false, -- Disable all default mappings for the discussion tree window
+        add_emoji = "Ea", -- Add an emoji to the note/comment
+        delete_emoji = "Ed", -- Remove an emoji from a note/comment
+        delete_comment = "dd", -- Delete comment
+        edit_comment = "e", -- Edit comment
+        reply = "r", -- Reply to comment
+        toggle_resolved = "-", -- Toggle the resolved status of the whole discussion
+        jump_to_file = "o", -- Jump to comment location in file
+        jump_to_reviewer = "a", -- Jump to the comment location in the reviewer window
+        open_in_browser = "b", -- Jump to the URL of the current note/discussion
+        copy_node_url = "u", -- Copy the URL of the current node to clipboard
+        switch_view = "c", -- Toggle between the notes and discussions views
+        toggle_tree_type = "i", -- Toggle type of discussion tree - "simple", or "by_file_name"
+        publish_draft = "P", -- Publish the currently focused note/comment
+        toggle_draft_mode = "D", -- Toggle between draft mode (comments posted as drafts) and live mode (comments are posted immediately)
+        toggle_node = "t", -- Open or close the discussion
+        toggle_all_discussions = "T", -- Open or close separately both resolved and unresolved discussions
+        toggle_resolved_discussions = "R", -- Open or close all resolved discussions
+        toggle_unresolved_discussions = "U", -- Open or close all unresolved discussions
+        refresh_data = "<C-R>", -- Refresh the data in the view by hitting Gitlab's APIs again
+        print_node = "<leader>p", -- Print the current node (for debugging)
+    },
+    reviewer = {
+        disable_all = false, -- Disable all default mappings for the reviewer windows
+        create_comment = "c", -- Create a comment for the lines that the following {motion} moves over. Repeat the key(s) for creating comment for the current line
+        create_suggestion = "s", -- Create a suggestion for the lines that the following {motion} moves over. Repeat the key(s) for creating comment for the current line
+        move_to_discussion_tree = "a", -- Jump to the comment in the discussion tree
+    },
+    },
+    popup = { -- The popup for comment creation, editing, and replying
+    width = "40%",
+    height = "60%",
+    border = "rounded", -- One of "rounded", "single", "double", "solid"
+    opacity = 1.0, -- From 0.0 (fully transparent) to 1.0 (fully opaque)
+    comment = nil, -- Individual popup overrides, e.g. { width = "60%", height = "80%", border = "single", opacity = 0.85 },
+    edit = nil,
+    note = nil,
+    pipeline = nil,
+    reply = nil,
+    squash_message = nil,
+    temp_registers = {}, -- List of registers for backing up popup content (see `:h gitlab.nvim.temp-registers`)
+    },
+    discussion_tree = { -- The discussion tree that holds all comments
+    expanders = { -- Discussion tree icons
+        expanded = " ", -- Icon for expanded discussion thread
+        collapsed = " ",  -- Icon for collapsed discussion thread
+        indentation = "  ", -- Indentation Icon
+    },
+    auto_open = true, -- Automatically open when the reviewer is opened
+    default_view = "discussions", -- Show "discussions" or "notes" by default
+    blacklist = {}, -- List of usernames to remove from tree (bots, CI, etc)
+    keep_current_open = false, -- If true, current discussion stays open even if it should otherwise be closed when toggling
+    position = "left", -- "top", "right", "bottom" or "left"
+    size = "20%", -- Size of split
+    relative = "editor", -- Position of tree split relative to "editor" or "window"
+    resolved = '✓', -- Symbol to show next to resolved discussions
+    unresolved = '-', -- Symbol to show next to unresolved discussions
+    tree_type = "simple", -- Type of discussion tree - "simple" means just list of discussions, "by_file_name" means file tree with discussions under file
+    draft_mode = true, -- Whether comments are posted as drafts as part of a review
+    winbar = nil -- Custom function to return winbar title, should return a string. Provided with WinbarTable (defined in annotations.lua)
+                    -- If using lualine, please add "gitlab" to disabled file types, otherwise you will not see the winbar.
+    },
+    choose_merge_request = {
+    open_reviewer = true, -- Open the reviewer window automatically after switching merge requests
+    },
+    info = { -- Show additional fields in the summary view
+    enabled = true,
+    horizontal = false, -- Display metadata to the left of the summary rather than underneath
+    fields = { -- The fields listed here will be displayed, in whatever order you choose
+        "author",
+        "created_at",
+        "updated_at",
+        "merge_status",
+        "draft",
+        "conflicts",
+        "assignees",
+        "reviewers",
+        "pipeline",
+        "branch",
+        "target_branch",
+        "delete_branch",
+        "squash",
+        "labels",
+    },
+    },
+    discussion_signs = {
+    enabled = true, -- Show diagnostics for gitlab comments in the reviewer
+    skip_resolved_discussion = false, -- Show diagnostics for resolved discussions
+    severity = vim.diagnostic.severity.INFO, -- ERROR, WARN, INFO, or HINT
+    virtual_text = true, -- Whether to show the comment text inline as floating virtual text
+    use_diagnostic_signs = true, -- Show diagnostic sign (depending on the `severity` setting, e.g., I for INFO) along with the comment icon
+    priority = 100, -- Higher will override LSP warnings, etc
+    icons = {
+        comment = "→|",
+        range = " |",
+    },
+    },
+    pipeline = {
+    created = "",
+    pending = "",
+    preparing = "",
+    scheduled = "",
+    running = "",
+    canceled = "↪",
+    skipped = "↪",
+    success = "✓",
+    failed = "",
+    },
+    create_mr = {
+    target = nil, -- Default branch to target when creating an MR
+    template_file = nil, -- Default MR template in .gitlab/merge_request_templates
+    delete_branch = false, -- Whether the source branch will be marked for deletion
+    squash = false, -- Whether the commits will be marked for squashing
+    fork = {
+        enabled = false, -- If making an MR from a fork
+        forked_project_id = nil -- The ID of the project you are merging into. If nil, will be prompted.
+    },
+    title_input = { -- Default settings for MR title input window
+        width = 40,
+        border = "rounded",
+    },
+    },
+    colors = {
+    discussion_tree = {
+        username = "Keyword",
+        mention = "WarningMsg",
+        date = "Comment",
+        expander = "DiffviewNonText",
+        directory = "Directory",
+        directory_icon = "DiffviewFolderSign",
+        file_name = "Normal",
+        resolved = "DiagnosticSignOk",
+        unresolved = "DiagnosticSignWarn",
+        draft = "DiffviewNonText",
+    }
+    }
+})
+
+
+
+
+
+-- below code combind with runtime/ftpplugin/qf_fold is to format search result in qf
+function trim1(s)
+   return (s:gsub("^%s*(.-)%s*$", "%1"))
+end
+
+
+-- http://lua-users.org/lists/lua-l/2020-01/msg00345.html
+function GetFilename(path)   
+    local dirname, filename = path:match('^(.*[\\|/])([^/\\]-)$')    
+    return filename
+end
+
+local fn = vim.fn
+
+function _G.qftf(info)
+    local items
+    local ret = {}
+    -- The name of item in list is based on the directory of quickfix window.
+    -- Change the directory for quickfix window make the name of item shorter.
+    -- It's a good opportunity to change current directory in quickfixtextfunc :)
+    --
+    -- local alterBufnr = fn.bufname('#') -- alternative buffer is the buffer before enter qf window
+    -- local root = getRootByAlterBufnr(alterBufnr)
+    -- vim.cmd(('noa lcd %s'):format(fn.fnameescape(root)))
+    --
+    if info.quickfix == 1 then
+        items = fn.getqflist({id = info.id, items = 0}).items
+    else
+        items = fn.getloclist(info.winid, {id = info.id, items = 0}).items
+    end
+    local limit = 31
+    local fnameFmt1, fnameFmt2 = '%-' .. limit .. 's', '…%.' .. (limit - 1) .. 's'
+    --local validFmt = '%s │%5d:%-3d│%s %s'
+    --local validFmt = '%s |%5d:%-3d|%s %s'
+    --local validFmt = '- %s |%s %s'
+    local validFmt = '%s |%s %s'
+    for i = info.start_idx, info.end_idx do
+        local e = items[i]
+        local fname = ''
+        local str
+        if e.valid == 1 then
+            if e.bufnr > 0 then
+                fname = fn.bufname(e.bufnr)
+                if fname == '' then
+                    fname = '[No Name]'
+                else
+                    fname = fname:gsub('^' .. vim.env.HOME, '~')
+                end
+                -- char in fname may occur more than 1 width, ignore this issue in order to keep performance
+                if #fname <= limit then
+                    --fname = fnameFmt1:format(fname)
+                    fname = GetFilename(fname)
+                else
+                    fname = GetFilename(fname)
+                    --fname = fnameFmt2:format(fname:sub(1 - limit))
+                end
+            end
+            local lnum = e.lnum > 99999 and -1 or e.lnum
+            local col = e.col > 999 and -1 or e.col
+            local qtype = e.type == '' and '' or ' ' .. e.type:sub(1, 1):upper()
+            str = validFmt:format(fname, qtype, trim1(e.text))
+        else
+            str = e.text
+        end
+        table.insert(ret, str)
+    end
+    return ret
+end
+
+vim.o.qftf = '{info -> v:lua._G.qftf(info)}'
+ 
+-- require('gitsigns').setup
+-- {
+--     signcolumn = false,
+--     current_line_blame = true,
+--     current_line_blame_opts = {
+--         virt_text = true,
+--         virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
+--         delay = 50,
+--         ignore_whitespace = true,
+--         },
+--     current_line_blame_formatter = '<author>, <author_time:%R> - <summary>',
+-- }
 
 local action_layout = require("telescope.actions.layout")
 require('telescope').setup{
@@ -908,7 +1713,7 @@ require('telescope').setup{
     initial_mode = "insert",
     selection_strategy = "reset",
     sorting_strategy = "descending",
-    layout_strategy = "vertical",
+    layout_strategy = "horizontal",
     file_ignore_patterns = {},
     winblend = 20,
     previewer = false, 
@@ -916,9 +1721,6 @@ require('telescope').setup{
     borderchars = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
     path_display = {},
     --set_env = { ['COLORTERM'] = 'truecolor' }, -- default = nil,
-    preview = {
-        treesitter = false,
-    },
    path_display = {
        --'shorten',
        'absolute',
@@ -942,9 +1744,44 @@ require('telescope').setup{
     }
   }
 }
---require('telescope').load_extension('fzy_native')
-require'telescope'.load_extension'repo'
+require('telescope').load_extension('fzy_native')
+--require'telescope'.load_extension('repo')
 require'telescope'.load_extension('project')
+
+-- Calling require 'term-edit'.setup(opts) is mandatory
+require 'term-edit'.setup {
+    -- Mandatory option:
+    -- Set this to a lua pattern that would match the end of your prompt.
+    -- Or a table of multiple lua patterns where at least one would match the
+    -- end of your prompt at any given time.
+    -- For most bash/zsh user this is '%$ '.
+    -- For most powershell/fish user this is '> '.
+    -- For most windows cmd user this is '>'.
+    prompt_end = '> ',
+    -- How to write lua patterns: https://www.lua.org/pil/20.2.html
+}
+
+require("CopilotChat").setup {
+  debug = true, -- Enable debugging
+  -- See Configuration section for rest
+  mappings = {
+      complete = {
+          detail = 'Use @<Tab> or /<Tab> for options.',
+          insert ='<Tab>',
+      },
+      close = {
+          normal = 'q',
+          insert = '<C-c>'
+      },
+      reset = {
+          normal ='<leader>c',
+          insert = nil
+      },
+  }
+}
+
+-- Indented-blankline
+require("ibl").setup()
 EOF
 
 "function! ClearTerminal()
