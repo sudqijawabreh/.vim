@@ -1527,7 +1527,7 @@ require("gitlab").setup({
     resolved = '✓', -- Symbol to show next to resolved discussions
     unresolved = '-', -- Symbol to show next to unresolved discussions
     tree_type = "simple", -- Type of discussion tree - "simple" means just list of discussions, "by_file_name" means file tree with discussions under file
-    draft_mode = false, -- Whether comments are posted as drafts as part of a review
+    draft_mode = true, -- Whether comments are posted as drafts as part of a review
     winbar = nil -- Custom function to return winbar title, should return a string. Provided with WinbarTable (defined in annotations.lua)
                     -- If using lualine, please add "gitlab" to disabled file types, otherwise you will not see the winbar.
     },
@@ -1558,7 +1558,7 @@ require("gitlab").setup({
     enabled = true, -- Show diagnostics for gitlab comments in the reviewer
     skip_resolved_discussion = false, -- Show diagnostics for resolved discussions
     severity = vim.diagnostic.severity.INFO, -- ERROR, WARN, INFO, or HINT
-    virtual_text = false, -- Whether to show the comment text inline as floating virtual text
+    virtual_text = true, -- Whether to show the comment text inline as floating virtual text
     use_diagnostic_signs = true, -- Show diagnostic sign (depending on the `severity` setting, e.g., I for INFO) along with the comment icon
     priority = 100, -- Higher will override LSP warnings, etc
     icons = {
