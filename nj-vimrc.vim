@@ -989,7 +989,7 @@ vnoremap =j :!python -m json.tool<CR>
 
 "let g:node_client_debug = 1
 "let $NODE_CLIENT_LOG_FILE = '~/sudqilog.txt'
-if has('g:vsvim') && g:vsvim == 0
+if !has('g:vsvim') || g:vsvim == 0
     xmap <leader>r  <Plug>(SendToTerm)
     nmap <leader>r  <Plug>(SendToTerm)
     omap <leader>r  <Plug>(SendToTerm)
