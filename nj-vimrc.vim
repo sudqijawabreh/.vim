@@ -775,9 +775,12 @@ function! s:CmdlineToggle(default)
   return ''
 endfunction
 
-function! OpenTerminalBuffer(name)
+function! OpenTerminalBuffer(name, new)
     try
-        if bufexists(bufname("term://*".a:name)) > 0 
+        if bufexists(bufname("term://*".a:name)) > 0 && a:new
+            execute "bd! term://*".a:name
+            execute 'sp | term '.a:name
+        elseif bufexists(bufname("term://*".a:name)) > 0 
             execute "sb term://*".a:name
         else
             execute 'sp | term '.a:name
@@ -789,12 +792,12 @@ function! OpenTerminalBuffer(name)
 endfunction
 
 
-function! OpenTerminal()
+function! OpenTerminal(new)
 if has('win32')
-    call OpenTerminalBuffer('powershell')
+    call OpenTerminalBuffer('powershell', a:new)
 else
     "call OpenTerminalBuffer('bash')
-    call OpenTerminalBuffer('zsh')
+    call OpenTerminalBuffer('zsh', a:new)
 endif
 endfunction
 " a function to change fold text to include text in the last line
@@ -966,7 +969,8 @@ tnoremap <silent> <c-j> <C-\><c-n><c-w>j
 
  "nnoremap <C-p> <cmd>Telescope find_files<cr>
 " show terminal buffer if already opend or create a new one
-nnoremap <leader>t :call OpenTerminal()<cr>
+nnoremap <leader>t :call OpenTerminal(0)<cr>
+nnoremap <leader>T :call OpenTerminal(1)<cr>
 
 "nnoremap <leader>x :sb term<cr>
 "nnoremap <Leader>f :lua require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({}))<cr>"
